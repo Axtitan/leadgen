@@ -1,0 +1,64 @@
+# ── LeadFinder local data ──────────────────────────────────────────
+# Lead database, saved API keys (settings.json) and page captures.
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment and temporary files
+.env
+.env.local
+.env.*.local
+*.log
+*.tmp
+
+# OS / editor files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code local state
+CLAUDE.md
+.claude/projects/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+.worktrees/
+.playwright-mcp/
+.superpowers/
+
+# ── Impeccable ─────────────────────────────────────────────────────
+# Tracked on purpose: DESIGN.md, PRODUCT.md, .impeccable/design.json and
+# .impeccable/surfaces/ (the design record). Everything below is working
+# state, previews or per-machine config, which stays local.
+.impeccable.md
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/critique/*
+!.impeccable/critique/ignore.md
+.impeccable/history/
+.impeccable/live/
+.impeccable/provider-smoke/
+.impeccable/config.local.json
+**/.impeccable/hook.cache.json
+**/.impeccable/hook.pending.json
+.impeccable-live.json
+.impeccable-live/
+
+# ── Intent ─────────────────────────────────────────────────────────
+# Private planning notes, design-doc scratch and eval runs.
+project-plan.md
+design-docs/
+wireframe-eval-workspace/
+present-eval-workspace/
+.venv-present/
+/wireframes-*.html
+
+# Debug screenshots
+*.png

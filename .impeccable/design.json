@@ -1,0 +1,722 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-22T13:36:47+00:00",
+  "title": "Design System: LeadFinder",
+  "extensions": {
+    "colorMeta": {
+      "dye-1": {
+        "role": "secondary",
+        "displayName": "Dye 1, Faint Wash",
+        "canonical": "#C5CEEC",
+        "oklch": "oklch(85.4% 0.043 272.3)",
+        "tonalRamp": [
+          "#0B1430",
+          "#2A4396",
+          "#4E66B4",
+          "#8798D3",
+          "#C5CEEC"
+        ],
+        "dark": "#2C3350"
+      },
+      "dye-2": {
+        "role": "secondary",
+        "displayName": "Dye 2, Light Indigo",
+        "canonical": "#8798D3",
+        "oklch": "oklch(68.9% 0.089 271.5)",
+        "tonalRamp": [
+          "#0B1430",
+          "#2A4396",
+          "#4E66B4",
+          "#8798D3",
+          "#C5CEEC"
+        ],
+        "dark": "#313F7E"
+      },
+      "dye-3": {
+        "role": "secondary",
+        "displayName": "Dye 3, Mid Indigo",
+        "canonical": "#4E66B4",
+        "oklch": "oklch(53.0% 0.126 268.9)",
+        "tonalRamp": [
+          "#0B1430",
+          "#2A4396",
+          "#4E66B4",
+          "#8798D3",
+          "#C5CEEC"
+        ],
+        "dark": "#3549AE"
+      },
+      "dye-4": {
+        "role": "secondary",
+        "displayName": "Dye 4, Deep Indigo",
+        "canonical": "#2A4396",
+        "oklch": "oklch(41.4% 0.140 267.3)",
+        "tonalRamp": [
+          "#0B1430",
+          "#2A4396",
+          "#4E66B4",
+          "#8798D3",
+          "#C5CEEC"
+        ],
+        "dark": "#3F58DA"
+      },
+      "dye-5": {
+        "role": "secondary",
+        "displayName": "Dye 5, Night Indigo",
+        "canonical": "#0B1430",
+        "oklch": "oklch(20.1% 0.057 267.6)",
+        "tonalRamp": [
+          "#0B1430",
+          "#2A4396",
+          "#4E66B4",
+          "#8798D3",
+          "#C5CEEC"
+        ],
+        "dark": "#5C77FF"
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Ink (action)",
+        "canonical": "#121A33",
+        "oklch": "oklch(22.5% 0.050 268.8)",
+        "tonalRamp": [
+          "#040920",
+          "#1A233C",
+          "#353F5B",
+          "#525D7B",
+          "#717D9C",
+          "#919EBF",
+          "#B6C4E6",
+          "#E0EEFF"
+        ],
+        "dark": "#E6EAF5"
+      },
+      "primary-ink": {
+        "role": "neutral",
+        "displayName": "Ink on Ink",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#7D7D7D",
+          "#9E9E9E",
+          "#C4C4C4",
+          "#EEEEEE"
+        ],
+        "dark": "#0B1124"
+      },
+      "undyed-cloth": {
+        "role": "neutral",
+        "displayName": "Undyed Cloth",
+        "canonical": "#EEF0F5",
+        "oklch": "oklch(95.5% 0.007 268.5)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#222428",
+          "#3E4044",
+          "#5C5D62",
+          "#7B7D82",
+          "#9C9EA3",
+          "#C2C4C9",
+          "#ECEEF3"
+        ],
+        "dark": "#0B1124"
+      },
+      "panel-white": {
+        "role": "neutral",
+        "displayName": "Panel White",
+        "canonical": "#FBFCFE",
+        "oklch": "oklch(99.1% 0.003 264.5)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#232425",
+          "#3F4041",
+          "#5D5E5F",
+          "#7C7D7F",
+          "#9D9EA0",
+          "#C3C4C6",
+          "#EDEEF0"
+        ],
+        "dark": "#111A33"
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "canonical": "#F4F6FA",
+        "oklch": "oklch(97.3% 0.006 264.5)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#232427",
+          "#3E4043",
+          "#5C5E61",
+          "#7B7D81",
+          "#9D9EA2",
+          "#C2C4C8",
+          "#ECEEF2"
+        ],
+        "dark": "#0E1630"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#121A33",
+        "oklch": "oklch(22.5% 0.050 268.8)",
+        "tonalRamp": [
+          "#040920",
+          "#1A233C",
+          "#353F5B",
+          "#525D7B",
+          "#717D9C",
+          "#919EBF",
+          "#B6C4E6",
+          "#E0EEFF"
+        ],
+        "dark": "#E6EAF5"
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#4E5977",
+        "oklch": "oklch(46.7% 0.051 268.8)",
+        "tonalRamp": [
+          "#040920",
+          "#1A223D",
+          "#343F5B",
+          "#525D7B",
+          "#717C9C",
+          "#919EBF",
+          "#B6C4E6",
+          "#E0EEFF"
+        ],
+        "dark": "#A9B3CF"
+      },
+      "faint-ink": {
+        "role": "neutral",
+        "displayName": "Faint Ink",
+        "canonical": "#6A7491",
+        "oklch": "oklch(56.1% 0.047 270.0)",
+        "tonalRamp": [
+          "#05091E",
+          "#1B233B",
+          "#363F59",
+          "#535D79",
+          "#727C9A",
+          "#939EBC",
+          "#B8C3E3",
+          "#E2EEFF"
+        ],
+        "dark": "#8893B2"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#D5DAE8",
+        "oklch": "oklch(88.9% 0.020 270.2)",
+        "tonalRamp": [
+          "#080B14",
+          "#20242E",
+          "#3C3F4B",
+          "#595D69",
+          "#787D8A",
+          "#999EAB",
+          "#BFC4D1",
+          "#E9EEFC"
+        ],
+        "dark": "#26325C"
+      },
+      "hairline-soft": {
+        "role": "neutral",
+        "displayName": "Soft Hairline",
+        "canonical": "#E4E8F1",
+        "oklch": "oklch(93.1% 0.013 266.7)",
+        "tonalRamp": [
+          "#090B11",
+          "#21242A",
+          "#3D4047",
+          "#5A5E65",
+          "#7A7D85",
+          "#9B9EA7",
+          "#C0C4CD",
+          "#EAEEF7"
+        ],
+        "dark": "#1D2850"
+      },
+      "focus-indigo": {
+        "role": "neutral",
+        "displayName": "Focus Indigo",
+        "canonical": "#4A5FA0",
+        "oklch": "oklch(50.0% 0.107 268.8)",
+        "tonalRamp": [
+          "#030037",
+          "#101C57",
+          "#293A78",
+          "#45599A",
+          "#637ABD",
+          "#839BE1",
+          "#A7C1FF",
+          "#DEEEFF"
+        ],
+        "dark": "#8EA2E8"
+      },
+      "selection-wash": {
+        "role": "neutral",
+        "displayName": "Selection Wash",
+        "canonical": "#DDE3F4",
+        "oklch": "oklch(91.6% 0.024 270.3)",
+        "tonalRamp": [
+          "#070B15",
+          "#1F2430",
+          "#3B3F4D",
+          "#585D6C",
+          "#787D8C",
+          "#989EAE",
+          "#BEC4D4",
+          "#E8EEFF"
+        ],
+        "dark": "#1C2850"
+      },
+      "rail-indigo": {
+        "role": "neutral",
+        "displayName": "Rail Indigo",
+        "canonical": "#0E1838",
+        "oklch": "oklch(22.1% 0.064 267.9)",
+        "tonalRamp": [
+          "#030725",
+          "#172243",
+          "#313E62",
+          "#4E5C82",
+          "#6D7CA4",
+          "#8D9EC7",
+          "#B2C3EE",
+          "#DDEEFF"
+        ],
+        "dark": "#070C1B"
+      },
+      "rail-ink": {
+        "role": "neutral",
+        "displayName": "Rail Ink",
+        "canonical": "#DCE3F7",
+        "oklch": "oklch(91.7% 0.028 270.4)",
+        "tonalRamp": [
+          "#070A17",
+          "#1F2332",
+          "#3A3F4F",
+          "#575D6E",
+          "#777D8F",
+          "#979EB1",
+          "#BDC4D7",
+          "#E7EEFF"
+        ]
+      },
+      "rail-muted": {
+        "role": "neutral",
+        "displayName": "Rail Muted",
+        "canonical": "#9AA8D4",
+        "oklch": "oklch(73.6% 0.066 271.0)",
+        "tonalRamp": [
+          "#040626",
+          "#182144",
+          "#333D63",
+          "#505C83",
+          "#6F7BA5",
+          "#8F9DC8",
+          "#B4C3F0",
+          "#DFEDFF"
+        ]
+      },
+      "rail-active": {
+        "role": "neutral",
+        "displayName": "Rail Active",
+        "canonical": "#2A3E7A",
+        "oklch": "oklch(38.1% 0.105 267.4)",
+        "tonalRamp": [
+          "#020036",
+          "#0E1D56",
+          "#273B77",
+          "#435A99",
+          "#627ABC",
+          "#829CE0",
+          "#A6C2FF",
+          "#DDEEFF"
+        ],
+        "dark": "#1F2D5C"
+      },
+      "resist-ground": {
+        "role": "neutral",
+        "displayName": "Resist Ground",
+        "canonical": "#1B2A5C",
+        "oklch": "oklch(30.3% 0.092 268.0)",
+        "tonalRamp": [
+          "#020231",
+          "#111F50",
+          "#2B3C70",
+          "#475B91",
+          "#667BB4",
+          "#869DD8",
+          "#ABC3FF",
+          "#DDEEFF"
+        ]
+      },
+      "status-broken-rust": {
+        "role": "tertiary",
+        "displayName": "Broken Rust",
+        "canonical": "#B93A0B",
+        "oklch": "oklch(53.0% 0.171 37.2)",
+        "tonalRamp": [
+          "#380000",
+          "#5D0000",
+          "#820000",
+          "#A82800",
+          "#CE4E26",
+          "#F5714A",
+          "#FF9870",
+          "#FFE1D2"
+        ],
+        "dark": "#FF8A5C"
+      },
+      "status-no-website": {
+        "role": "tertiary",
+        "displayName": "Plum",
+        "canonical": "#7E3B8A",
+        "oklch": "oklch(47.2% 0.141 321.3)",
+        "tonalRamp": [
+          "#21002D",
+          "#40004B",
+          "#5F1C6B",
+          "#803D8C",
+          "#A35EAF",
+          "#C67FD3",
+          "#EEA5FB",
+          "#FFE2FF"
+        ],
+        "dark": "#D58BE0"
+      },
+      "status-social": {
+        "role": "tertiary",
+        "displayName": "Teal",
+        "canonical": "#0E6F72",
+        "oklch": "oklch(49.3% 0.081 198.3)",
+        "tonalRamp": [
+          "#001317",
+          "#002E32",
+          "#004C4F",
+          "#046B6E",
+          "#378C8F",
+          "#5BAEB1",
+          "#82D5D7",
+          "#C0FCFD"
+        ],
+        "dark": "#4FC6C6"
+      },
+      "status-weak-site": {
+        "role": "tertiary",
+        "displayName": "Burnt Amber",
+        "canonical": "#A34D07",
+        "oklch": "oklch(52.0% 0.133 50.5)",
+        "tonalRamp": [
+          "#2E0000",
+          "#500000",
+          "#732000",
+          "#964100",
+          "#BA6227",
+          "#DF844C",
+          "#FFAA71",
+          "#FFE4CB"
+        ],
+        "dark": "#F2A65A"
+      },
+      "status-needs-work": {
+        "role": "tertiary",
+        "displayName": "Ochre",
+        "canonical": "#876A0B",
+        "oklch": "oklch(53.8% 0.107 89.0)",
+        "tonalRamp": [
+          "#1C0300",
+          "#381E00",
+          "#563B00",
+          "#765900",
+          "#977924",
+          "#B99B4A",
+          "#E0C170",
+          "#FFEDC1"
+        ],
+        "dark": "#E3C45A"
+      },
+      "status-good": {
+        "role": "tertiary",
+        "displayName": "Leaf",
+        "canonical": "#2F7A4B",
+        "oklch": "oklch(52.0% 0.105 153.1)",
+        "tonalRamp": [
+          "#001500",
+          "#003106",
+          "#004F23",
+          "#216E40",
+          "#458F5F",
+          "#68B27F",
+          "#8DD8A4",
+          "#D1FBDC"
+        ],
+        "dark": "#6FCB90"
+      },
+      "status-unknown": {
+        "role": "tertiary",
+        "displayName": "Slate",
+        "canonical": "#6A7491",
+        "oklch": "oklch(56.1% 0.047 270.0)",
+        "tonalRamp": [
+          "#05091E",
+          "#1B233B",
+          "#363F59",
+          "#535D79",
+          "#727C9A",
+          "#939EBC",
+          "#B8C3E3",
+          "#E2EEFF"
+        ],
+        "dark": "#8893B2"
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "#B42318",
+        "oklch": "oklch(50.0% 0.182 29.5)",
+        "tonalRamp": [
+          "#3B0000",
+          "#610000",
+          "#870000",
+          "#AD1A10",
+          "#D44536",
+          "#FB6957",
+          "#FF907C",
+          "#FFE0D7"
+        ],
+        "dark": "#FF7B72"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Selected lead's name in the detail panel; 23px on mobile."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "View titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section headings; 15px in-panel, 20px in dialogs."
+      },
+      "row-name": {
+        "displayName": "Row Name",
+        "purpose": "Business name in queue rows, ellipsis-truncated."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text and form values; tabular figures."
+      },
+      "guide": {
+        "displayName": "Guide",
+        "purpose": "One-line guide under titles, muted ink."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, chips, status markers, queue section labels; sentence case."
+      }
+    },
+    "shadows": [
+      {
+        "name": "float",
+        "value": "0 1px 2px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.12)",
+        "dark": "0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.45)",
+        "purpose": "Dialogs, toasts, slide-in detail sheet, mobile nav overlay only."
+      },
+      {
+        "name": "tab-lift",
+        "value": "0 1px 2px rgba(0,0,0,.1)",
+        "purpose": "Selected segment in the segmented control."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 3px color-mix(in srgb, var(--focus) 25%, transparent)",
+        "purpose": "Focused input, paired with a focus-indigo border."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-dip",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Swatch dip and detail sheet slide-in."
+      },
+      {
+        "name": "duration-dip",
+        "value": "220ms",
+        "purpose": "Detail swatch dye rising from the bottom on selection; sheet slide-in."
+      },
+      {
+        "name": "duration-state",
+        "value": "150ms ease",
+        "purpose": "Hover colour and border transitions."
+      },
+      {
+        "name": "row-leave",
+        "value": "200ms; opacity 0, translateX(16px)",
+        "purpose": "Logged lead lifts out of the queue."
+      },
+      {
+        "name": "dye-pulse",
+        "value": "1.6s ease-in-out infinite",
+        "purpose": "Live-work dot and pending-check marker. All motion off under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sheet",
+        "value": "1180px",
+        "purpose": "At or below: split collapses, detail becomes a slide-in sheet."
+      },
+      {
+        "name": "topbar",
+        "value": "820px",
+        "purpose": "At or below: rail becomes a top bar; resist band moves to its bottom edge."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled action (WhatsApp, confirm). Never a dye value.",
+      "html": "<button class=\"ds-btn ds-btn-primary\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z\"/></svg>WhatsApp</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:6px;padding:8px 15px;font:650 14px/1.25 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}.ds-btn-primary{background:#121A33;color:#FFFFFF}.ds-btn-primary:hover{background:color-mix(in srgb,#121A33 86%,#EEF0F5)}.ds-btn:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Secondary actions: Call, Open their site, Copy, Filters.",
+      "html": "<button class=\"ds-btn-quiet\">Call</button>",
+      "css": ".ds-btn-quiet{display:inline-flex;align-items:center;gap:7px;background:#FBFCFE;color:#121A33;border:1px solid #D5DAE8;border-radius:6px;padding:8px 15px;font:650 14px/1.25 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer;transition:border-color .15s ease}.ds-btn-quiet:hover{border-color:#8798D3}.ds-btn-quiet:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Area and pipeline filters; the pressed state is ink.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">All areas</button><button class=\"ds-chip\" aria-pressed=\"true\">Portsmouth</button><button class=\"ds-chip\">Abuja <small>40</small></button></div>",
+      "css": ".ds-chips{display:flex;gap:6px;flex-wrap:wrap}.ds-chip{border:1px solid #D5DAE8;background:#FBFCFE;border-radius:999px;padding:5px 13px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977;cursor:pointer}.ds-chip:hover{border-color:#8798D3;color:#121A33}.ds-chip[aria-pressed=true]{background:#121A33;border-color:#121A33;color:#fff}.ds-chip small{font-weight:500;opacity:.75;margin-left:4px}.ds-chip:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Hairline field with an indigo focus halo.",
+      "html": "<label class=\"ds-label\">Notes<input class=\"ds-input\" placeholder=\"Who you spoke to, what they said\"></label>",
+      "css": ".ds-label{display:flex;flex-direction:column;gap:5px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977}.ds-input{background:#FBFCFE;border:1px solid #D5DAE8;border-radius:6px;padding:8px 11px;min-height:38px;font:400 15px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#121A33;caret-color:#4E66B4}.ds-input::placeholder{color:#6A7491}.ds-input:focus{outline:none;border-color:#4A5FA0;box-shadow:0 0 0 3px color-mix(in srgb,#4A5FA0 25%,transparent)}"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Indigo rail with the starch-resist edge band, the only place the cloth pattern appears.",
+      "html": "<nav class=\"ds-rail\"><a href=\"#\" aria-current=\"page\">Next up <b>1,134</b></a><a href=\"#\">All leads <b>1,253</b></a><a href=\"#\">Follow-ups <b class=\"due\">3</b></a><button class=\"ds-cloth\">Find leads</button></nav>",
+      "css": ".ds-rail{position:relative;width:232px;background:#0E1838;padding:16px 26px 16px 16px;display:flex;flex-direction:column;gap:2px;font-family:'Hanken Grotesk','Segoe UI',system-ui,sans-serif}.ds-rail::after{content:'';position:absolute;top:0;bottom:0;right:0;width:10px;background:#1B2A5C url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='64' viewBox='0 0 10 64'%3E%3Crect width='10' height='64' fill='%231B2A5C'/%3E%3Cg fill='none' stroke='%235A70B8' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M2.2 2.5c1.6 1.1 3.9.6 5.6 1.9'/%3E%3Cpath d='M1.6 14.2c2.2-.8 4.4.4 6.7-.6'/%3E%3Cpath d='M3 25.8c1.3 1.4 3.4 1 4.6 2.1'/%3E%3Cpath d='M1.8 41.5c2-.9 4.6.6 6.2-.4'/%3E%3Cpath d='M2.6 53c1.8 1.2 3.4.5 5.2 1.6'/%3E%3C/g%3E%3Cg fill='%237387C9'%3E%3Ccircle cx='5' cy='8.6' r='1.05'/%3E%3Ccircle cx='3.4' cy='20' r='.85'/%3E%3Ccircle cx='6.6' cy='34' r='1.1'/%3E%3Ccircle cx='4.4' cy='47.4' r='.9'/%3E%3Ccircle cx='6' cy='59.4' r='.8'/%3E%3C/g%3E%3C/svg%3E\") repeat-y}.ds-rail a{display:flex;align-items:center;padding:9px 10px;border-radius:8px;color:#DCE3F7;text-decoration:none;font-weight:600;font-size:14.5px}.ds-rail a:hover{background:color-mix(in srgb,#2A3E7A 60%,transparent)}.ds-rail a[aria-current=page]{background:#2A3E7A;color:#fff}.ds-rail b{margin-left:auto;font-size:12.5px;font-weight:600;color:#9AA8D4}.ds-rail b.due{background:#EEF0F5;color:#0E1838;border-radius:999px;padding:0 8px}.ds-cloth{margin-top:16px;background:#EEF0F5;color:#0E1838;border:0;border-radius:6px;padding:8px 15px;font:650 14px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer}.ds-cloth:hover{background:#fff}.ds-rail a:focus-visible,.ds-cloth:focus-visible{outline:2px solid #8EA2E8;outline-offset:2px}"
+    },
+    {
+      "name": "Lead Row",
+      "kind": "custom",
+      "refersTo": "lead-swatch",
+      "description": "Hairline row led by a dye swatch; selection is an outline around the swatch, never a side stripe.",
+      "html": "<ol class=\"ds-rows\"><li><button class=\"ds-row\" aria-current=\"true\"><i class=\"ds-sw\" style=\"background:#0B1430\"></i><span><b>National Slimming &amp; Cosmetic Clinics</b><small>Aesthetics clinics · Portsmouth</small></span><span class=\"ds-mk ds-mk-broken\">Domain expired</span></button></li><li><button class=\"ds-row\"><i class=\"ds-sw\" style=\"background:#2A4396\"></i><span><b>Tan &amp; Envy</b><small>Beauty, nails &amp; lashes · Portsmouth</small></span><span class=\"ds-mk ds-mk-social\">Facebook only</span></button></li><li><button class=\"ds-row\"><i class=\"ds-sw\" style=\"background:#8798D3\"></i><span><b>Geo Heating</b><small>Plumbers · Fareham</small></span><span class=\"ds-mk ds-mk-none\">No website listed</span></button></li></ol>",
+      "css": ".ds-rows{list-style:none;margin:0;padding:0;background:#EEF0F5;font-family:'Hanken Grotesk','Segoe UI',system-ui,sans-serif}.ds-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;padding:12px 28px;border:0;border-top:1px solid #D5DAE8;background:transparent;cursor:pointer;color:#121A33;font:inherit;transition:background-color .15s ease}.ds-rows li:last-child .ds-row{border-bottom:1px solid #D5DAE8}.ds-row:hover{background:#F4F6FA}.ds-row[aria-current=true]{background:#FBFCFE}.ds-row[aria-current=true] .ds-sw{outline:2px solid #4A5FA0;outline-offset:2px}.ds-sw{width:26px;height:34px;border-radius:3px;display:block}.ds-row b{display:block;font-weight:700;font-size:15px}.ds-row small{display:block;font-size:13px;color:#4E5977}.ds-mk{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:650}.ds-mk::before{content:'';width:10px;height:10px;background:var(--c)}.ds-mk-broken{--c:#B93A0B}.ds-mk-none{--c:#7E3B8A}.ds-mk-none::before{border-radius:50%}.ds-mk-social{--c:#0E6F72}.ds-mk-social::before{transform:rotate(45deg) scale(.85)}.ds-row:focus-visible{outline:2px solid #4A5FA0;outline-offset:-2px}"
+    },
+    {
+      "name": "Status Marker",
+      "kind": "custom",
+      "description": "Shape plus word for every website status; never colour alone.",
+      "html": "<div class=\"ds-mks\"><span class=\"ds-m ds-m-b\">Domain expired</span><span class=\"ds-m ds-m-n\">No website listed</span><span class=\"ds-m ds-m-s\">Facebook only</span><span class=\"ds-m ds-m-w\">Weak website</span><span class=\"ds-m ds-m-nw\">Needs work</span><span class=\"ds-m ds-m-o\">Decent site</span><span class=\"ds-m ds-m-u\">Couldn't check</span></div>",
+      "css": ".ds-mks{display:flex;flex-direction:column;gap:8px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#121A33}.ds-m{display:inline-flex;align-items:center;gap:7px}.ds-m::before{content:'';width:10px;height:10px;background:var(--c)}.ds-m-b{--c:#B93A0B}.ds-m-n{--c:#7E3B8A}.ds-m-n::before{border-radius:50%}.ds-m-s{--c:#0E6F72}.ds-m-s::before{transform:rotate(45deg) scale(.85)}.ds-m-w{--c:#A34D07}.ds-m-w::before{clip-path:polygon(50% 0,100% 100%,0 100%)}.ds-m-nw{--c:#876A0B}.ds-m-nw::before{clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.7}.ds-m-o::before{border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2.5px #2F7A4B}.ds-m-u::before{border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2px #6A7491}"
+    },
+    {
+      "name": "Dye Key",
+      "kind": "custom",
+      "description": "The five dye steps, weak to strong; thresholds come from /api/status dye_cuts.",
+      "html": "<div class=\"ds-key\"><span>Lead strength: weak</span><i style=\"background:#C5CEEC\"></i><i style=\"background:#8798D3\"></i><i style=\"background:#4E66B4\"></i><i style=\"background:#2A4396\"></i><i style=\"background:#0B1430\"></i><span>strong</span></div>",
+      "css": ".ds-key{display:flex;align-items:center;gap:5px;font:400 12.5px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977}.ds-key span{margin-right:4px}.ds-key i{width:15px;height:11px;border-radius:2px}"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Ink toast with an inline undo link; the error variant uses danger.",
+      "html": "<div class=\"ds-toast\">Logged as contacted. <button>Undo</button></div>",
+      "css": ".ds-toast{display:inline-flex;gap:16px;align-items:center;background:#121A33;color:#fff;padding:11px 16px;border-radius:10px;font:400 14px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.08),0 12px 32px rgba(0,0,0,.12)}.ds-toast button{background:none;border:0;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.ds-toast button:focus-visible{outline:2px solid #8EA2E8;outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Adire Dye Depth",
+    "overview": "LeadFinder is a working tool dressed in adire eleko, the Yoruba starch-resist indigo cloth. A deep indigo rail holds the navigation; a pale undyed-cloth ground carries the work; white panels hold the selected lead. The one idea the cloth carries is lead strength: the deeper a lead's swatch is dyed, the stronger the lead. Everything else stays quiet so that dye depth reads at a glance.\n\nDensity is that of a focused desk tool used for hours. Rows are separated by hairlines, not boxed into cards. Type is a single grotesk at modest sizes with tabular figures. Status never relies on colour: each one is a shaped marker plus a word. The cloth's pattern shows up in exactly one place, the starch-resist band along the rail's edge, so the motif stays special and never turns into wallpaper.\n\nThe system rejects the CRM default (a full database table led by numeric scores) as the home view. Tables exist for history pages, not for deciding who to contact next.",
+    "keyCharacteristics": [
+      "Five dye steps encode lead strength and selection only; thresholds are server-supplied quintiles.",
+      "Ink, not dye, drives primary actions, pressed chips, badges and toasts.",
+      "Status = shape + word; rust is reserved for broken sites.",
+      "Hairline rows on an undyed ground; no cards, no floating containers in the flow.",
+      "One family (Hanken Grotesk), heavy weights for names, tabular numerals everywhere.",
+      "Light and dark themes share every rule; dark maps dye depth to chroma."
+    ],
+    "rules": [
+      {
+        "name": "The Dye Means Strength Rule",
+        "body": "A filled dye block (row swatch, detail swatch, dye key) means lead strength and nothing else. The selected row is shown by a focus outline around its swatch. Dye 2 and 3 may appear as a hairline or text accent (hover borders, links), never as a filled block for anything other than strength.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Acts Rule",
+        "body": "Primary buttons, pressed chips, badges and toasts use ink (`primary`), never a dye value, so an action can never be mistaken for a strong lead.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rust Is Broken Rule",
+        "body": "Rust appears only for broken sites and overdue follow-ups. Destructive actions use `danger`, a different red.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Hanken Grotesk everywhere, with no second display face and no monospace. Emphasis comes from weight.",
+        "section": "typography"
+      },
+      {
+        "name": "The Only Floaters Rule",
+        "body": "Shadow belongs to overlays. Nothing in the reading flow (rows, filters, sections) gets a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Starch-Resist Band",
+        "body": "The 10px band down the rail's right edge (an authored, repeating SVG of curved resist lines and dots on `resist-ground`) is the only place the cloth's pattern appears. It becomes a 6px strip along the bottom of the mobile top bar.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do fill a lead swatch with exactly one of the five dye steps, chosen by the server's `dye_cuts` quintiles; leave unscored leads as a dashed empty swatch.",
+      "Do use ink (`primary`) for primary buttons, pressed chips, badges and toasts.",
+      "Do pair every status colour with its shape and a plain-word label.",
+      "Do separate list items with 1px hairlines on the undyed-cloth ground.",
+      "Do show selection as a 2px focus-indigo outline offset around the swatch.",
+      "Do keep the starch-resist band on the rail edge (bottom of the top bar on mobile) and nowhere else.",
+      "Do keep Hanken Grotesk for every role, with tabular figures."
+    ],
+    "donts": [
+      "Don't use a dye step as a fill for buttons, chips, badges, toasts or any non-strength meaning.",
+      "Don't use rust for anything but broken sites and overdue follow-ups.",
+      "Don't show status by colour alone.",
+      "Don't wrap rows or sections in floating cards or give in-flow elements a shadow.",
+      "Don't mark selection with a coloured side stripe.",
+      "Don't repeat the cloth pattern on backgrounds, headers or empty states.",
+      "Don't lead the home view with a full table or numeric scores."
+    ]
+  }
+}
