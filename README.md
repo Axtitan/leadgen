@@ -4,7 +4,7 @@ Finds local businesses, checks their websites, and sorts them into:
 
 | Bucket | Meaning | Pitch |
 |---|---|---|
-| **No website** | Nothing on their listing | "People searching for you find competitors first" |
+| **No website** | Nothing on their listing, and LeadFinder couldn't find one either (see below) | "People searching for you find competitors first" |
 | **Social / listing only** | "Website" is a Facebook, Instagram, Linktree, WhatsApp, Yell, Checkatrade, Fresha… page | "A real site gets you found on Google" |
 | **Broken website** | Domain expired, parked, suspended, server error, "coming soon", dead Google `business.site` page | "Your site is down and you're losing customers right now" |
 | **Bad website** (score < 50) | Several serious problems | List the top 3 problems |
@@ -57,7 +57,8 @@ Open **Settings** and:
 
 1. Add your name, business name, website and phone, so the drafted messages are signed.
 2. Paste a **TomTom key**, the recommended free source. Get one at [developer.tomtom.com](https://developer.tomtom.com): sign up (no card needed), open your dashboard, and copy the key it creates for you. Each person should use their own key, since the free allowance is per account.
-3. A Google key is optional and needs a card on file with Google. OpenStreetMap needs no key at all.
+3. Optional but recommended: paste a free **Apify token** under *Find missing websites* ([apify.com](https://apify.com), no card; in the Apify Console it's under Settings → API & Integrations). LeadFinder uses it to check "No website" leads against their Google profile.
+4. A Google key is optional and needs a card on file with Google. OpenStreetMap needs no key at all.
 
 ### Updating
 
@@ -109,6 +110,22 @@ python app.py --grade URL        check one website in the terminal and exit
 
 You can also **import a CSV** (Outscraper, Apify Google Maps scraper, any sheet with a name column) or **check one website** by hand, both on the "Import & check" tab.
 
+## Finding websites the listing left out
+
+OpenStreetMap and TomTom often have no website for a business that does have one. So before a lead counts as **No website**, LeadFinder looks for it in the background:
+
+1. **By name (free, automatic).** It tries the obvious web addresses (for *CBW Plumbing and Heating* in the UK: cbwplumbingandheating.co.uk, cbwplumbing.co.uk and so on) and only keeps a site that shows the business's phone number, or its name together with its town or postcode.
+2. **On their Google profile (with an Apify token).** It looks the business up on Google Maps with Apify's Google Maps Scraper and takes the website from their Google Business Profile, plus their rating, review count and an exact link to the profile. Apify gives $5 of free credit a month with no card, which covers roughly 1,000 businesses (one Google listing each, checked 40 at a time, strongest leads first). When the credit runs out, checks pause until next month and nothing is charged. Each person on the team should use their own Apify account.
+
+What you'll see:
+
+- **No website listed**: not checked yet.
+- **No website found**: not on the listing and not found by name, but not confirmed on Google. The lead shows a warning and a **Look again** button. Check their Google profile before saying they have none.
+- **No website**: confirmed, since their Google profile has no website either (or the lead came from Google).
+- A website LeadFinder found itself says where it came from on the lead ("Found on their Google profile" or "found under their name").
+
+Settings → *Find missing websites* shows the progress, and **Look for missing websites** runs it again for any leads not yet checked.
+
 ## What the website check looks at
 
 Down / expired / parked / suspended / placeholder pages; padlock and certificate; mobile-friendly; load time; copyright year (abandoned sites); outdated tech (Flash, frames, old WordPress/Joomla/Drupal, 2000s builders); free builder address (`name.wixsite.com`); tap-to-call button; contact form or online booking (also checks the contact page); Google title and description; thin content; link previews for WhatsApp/Facebook; insecure content. It also picks up emails and social links from the site.
@@ -117,10 +134,13 @@ Optional: **Google speed test** (PageSpeed Insights, mobile) per lead, with a ph
 
 ## Working the leads
 
-- **Next up** (the home screen) shows follow-ups that are due, then the ten strongest leads you haven't contacted, for all areas or one area. The deeper a lead's indigo swatch, the stronger the lead.
-- Pick a lead to see why they're worth contacting, contact them (WhatsApp, call, email), and log it. Marking a lead Contacted or Demo sent sets a follow-up 3 days later, and the next lead moves up. "Skip for today" hides a lead until tomorrow. Every log, skip and delete can be undone from the message at the bottom.
+- **Next up** (the home screen) shows follow-ups that are due, then the ten strongest leads you haven't contacted, as cards, for all areas or one area. The bars on each card show lead strength.
+- Click a card and the list folds into a narrow column with the lead beside it: why they're worth contacting, contact buttons (WhatsApp, call, email), what to say, and a place to log it. Marking a lead Contacted or Demo sent sets a follow-up 3 days later, and the next lead opens. The clock button skips a lead until tomorrow. Every log, skip and delete can be undone from the message at the bottom.
+- **Where they're listed** links to the business's Google Business Profile (or a Google Maps search by name and address when LeadFinder didn't find them on Google), wherever it found them (OpenStreetMap listing, or the TomTom map pin), their website and social pages. "Show Google map here" loads a map inside the app. Every card also has a **Google** button.
 - **Follow-ups** lists everyone you need to chase, grouped Overdue, Today, This week and Later.
-- **All leads** is the full database with filters, website status, sorting and CSV export. New results are announced instead of reshuffling the list under you.
+- **All leads** has every lead, with pipeline tiles (click one to filter), website-status tabs with counts, search, sort, CSV export and a card or compact-list view. **Filters** adds area, country, type, where it was found, search, reviews, phone and email, plus **Cut the clutter**: hide leads you've already contacted and hide whole website statuses (for example Good website, or Couldn't check). Active filters show as chips you can remove one by one. New results are announced instead of reshuffling the list under you.
+- **Look and layout:** the sun/moon button switches light and dark mode, and the layout button moves the menu between the side and the top. Both are also in Settings, where the theme can follow your computer.
+- Links: `?lead=ID` opens a lead directly, and `?theme=dark` or `?layout=top` open the app that way without changing your saved choice.
 
 ## Writing to leads
 

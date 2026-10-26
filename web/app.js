@@ -1,4 +1,4 @@
-/* LeadFinder UI: vanilla JS over the local JSON API.
+/* LeadFinder UI: vanilla JS over the local JSON API, with GSAP + Flip for motion.
    Views: Next up (home), All leads, Follow-ups, Searches, Import & check, Settings.
    Rule: background work never moves what the user is looking at; new data is announced, then shown on request. */
 "use strict";
@@ -20,6 +20,55 @@ async function api(path, body, opts = {}) {
   return data;
 }
 
+/* ============================================================ motion
+   One authored moment (a card opening into its profile), plus reflow, entrance and feedback.
+   Content is always visible by default; with no GSAP or reduced motion, changes just happen. */
+const M = (() => {
+  const g = window.gsap, F = window.Flip;
+  if (g && F) g.registerPlugin(F);
+  if (g) g.ticker.lagSmoothing(0); // finish on time even when frames are slow, never freeze mid-move
+  const ok = () => !!(g && F) && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const inView = (els) => els.filter((el) => { const r = el.getBoundingClientRect(); return r.bottom > -40 && r.top < innerHeight + 40; });
+  return {
+    ok,
+    /* Record where things are, change the DOM, then glide them to where they ended up. */
+    flip(targets, change, opts = {}) {
+      if (!ok()) { change(); return null; }
+      const st = F.getState(inView(targets), { props: "borderRadius" });
+      change();
+      return F.from(st, { duration: 0.45, ease: "expo.out", scale: false, simple: true, nested: true, ...opts });
+    },
+    /* Re-render a list and let surviving cards move to their new spots; new ones fade in. */
+    reflow(container, change) {
+      if (!ok()) { change(); return; }
+      const st = F.getState(inView($$(".card", container)));
+      change();
+      const now = $$(".card", container);
+      F.from(st, {
+        targets: now, duration: 0.4, ease: "expo.out", scale: false, simple: true,
+        onEnter: (els) => g.fromTo(inView(els), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out", stagger: { amount: 0.12 }, clearProps: "opacity,transform" }),
+      });
+    },
+    enter(els, { y = 10, stagger = 0.04 } = {}) {
+      els = [...els].filter(Boolean);
+      if (!ok() || !els.length) return;
+      g.fromTo(els, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", stagger: { each: stagger, amount: Math.min(0.24, els.length * stagger) }, clearProps: "opacity,transform" });
+    },
+    leave(el) {
+      if (!ok() || !el) return Promise.resolve();
+      return new Promise((res) => g.to(el, { opacity: 0, scale: 0.96, duration: 0.2, ease: "power2.in", onComplete: res }));
+    },
+    pop(el) {
+      if (!ok() || !el) return;
+      g.fromTo(el, { opacity: 0, y: -6, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "power3.out", clearProps: "opacity,transform" });
+    },
+    nudge(el) {
+      if (!ok() || !el) return;
+      g.fromTo(el, { scale: 0.94 }, { scale: 1, duration: 0.3, ease: "expo.out", clearProps: "transform" });
+    },
+  };
+})();
+
 let toastTimer;
 function toast(msg, { err = false, action = null, onAction = null } = {}) {
   const t = $("#toast"), b = $("#toast-action");
@@ -27,7 +76,9 @@ function toast(msg, { err = false, action = null, onAction = null } = {}) {
   t.className = "toast" + (err ? " err" : "");
   b.hidden = !action;
   if (action) { b.textContent = action; b.onclick = () => { t.hidden = true; onAction && onAction(); }; }
+  const was = t.hidden;
   t.hidden = false;
+  if (was && M.ok()) gsap.fromTo(t, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out", clearProps: "opacity,transform" });
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (t.hidden = true), action ? 8000 : err ? 6000 : 3200);
 }
@@ -45,22 +96,33 @@ const BUCKETS = [
 ];
 const BLABEL = Object.fromEntries(BUCKETS.map((b) => [b.id, b.label]));
 const COUNTRY = { GB: "United Kingdom", NG: "Nigeria", US: "United States" };
+const SOURCE = { osm: "OpenStreetMap", tomtom: "TomTom", google: "Google Maps", csv: "Spreadsheet", manual: "Added by hand" };
 const STATUS_LABEL = { new: "New", shortlisted: "Shortlisted", contacted: "Contacted", demo_sent: "Demo sent", replied: "Replied", won: "Won", lost: "Lost", not_fit: "Not a fit" };
+const PIPE = [["new", "store"], ["shortlisted", "star"], ["contacted", "chat"], ["demo_sent", "ext"], ["replied", "mail"], ["won", "check"]];
+const LINEAR = PIPE.map(([k]) => k);
 const IN_QUEUE = new Set(["new", "shortlisted"]);
 
-// Steps come from the server: quintiles of the leads waiting to be contacted, so the queue always shows real spread.
-const dye = (opp) => {
+// Strength steps come from the server: quintiles of the leads waiting to be contacted, so the queue always shows real spread.
+const level = (opp) => {
   if (opp == null) return 0;
   const [c5, c4, c3, c2] = state.status?.dye_cuts || [70, 60, 48, 35];
   return opp >= c5 ? 5 : opp >= c4 ? 4 : opp >= c3 ? 3 : opp >= c2 ? 2 : 1;
 };
-const DYE_WORD = ["not rated", "weak", "fair", "good", "strong", "very strong"];
-const unverified = (L) => L.bucket === "none" && L.source === "osm";
-function marker(L, label) {
-  label = label || (unverified(L) ? "No website listed" : BLABEL[L.bucket] || L.bucket);
-  return `<span class="mk mk-${esc(L.bucket)}">${esc(label)}</span>`;
+const STRENGTH = ["Not rated", "Weak", "Fair", "Good", "Strong", "Very strong"];
+const strength = (L, { word = true } = {}) => { const n = level(L.opportunity); return `<span class="str s${n}${word ? "" : " bars"}" role="img" aria-label="Lead strength: ${STRENGTH[n].toLowerCase()}" title="Lead strength: ${STRENGTH[n].toLowerCase()}"><i></i><i></i><i></i><i></i><i></i>${word ? `<b>${STRENGTH[n]}</b>` : ""}</span>`; };
+// OpenStreetMap, TomTom and spreadsheets often leave the website out; only their Google profile settles "no website".
+const unverified = (L) => L.bucket === "none" && L.source !== "google" && L.google_check !== "no_site";
+const LISTED_ON = { osm: "OpenStreetMap", tomtom: "TomTom" };
+function noSiteNote(L) {
+  const where = LISTED_ON[L.source] || "their listing";
+  if (L.google_check === "no_site") return "Their Google profile has no website either.";
+  if (L.google_check === "not_listed") return `No website on ${where}, none found under their name, and LeadFinder couldn't find them on Google Maps. Check their Google profile before saying they have none.`;
+  if (L.guessed_at) return `No website on ${where}, and none found under their name. They may still have one: check their Google profile before saying they have none.`;
+  return `No website on ${where}. LeadFinder is looking for one under their name now.`;
 }
-/* The specific finding in a few words, so ten rows give ten different reasons to call. */
+const siteFound = (L) => L.site_via === "google" ? "Found on their Google profile" : L.site_via === "guess" ? "Found by LeadFinder under their name" : L.site_via === "manual" ? "Added by you" : "";
+
+/* The specific finding in a few words, so ten cards give ten different reasons to call. */
 const REASONS = [
   [/domain doesn't work/i, "Domain expired"], [/doesn't respond|connection drops|won't load/i, "Doesn't load"],
   [/refuses connections/i, "Server down"], [/secure connection fails/i, "Security error"], [/page not found/i, "Page not found"],
@@ -76,13 +138,13 @@ function reason(L) {
     const what = m[1].replace(/ (page|listing|profile|channel|link page)$/i, "").replace(/^X\/Twitter/, "X");
     return /forwards/i.test(h) ? `Forwards to ${what}` : `${what} only`;
   }
-  if (L.bucket === "none") return unverified(L) ? "No website listed" : "No website";
+  if (L.bucket === "none") return unverified(L) ? (L.guessed_at ? "No website found" : "No website listed") : "No website";
   if (L.bucket === "bad" || L.bucket === "weak") { const m = h.match(/^\d+ problems?: ([^,]+)/); return m ? m[1] : BLABEL[L.bucket]; }
   return BLABEL[L.bucket] || L.bucket;
 }
-function swatch(L, cls = "sw") {
-  const d = dye(L.opportunity);
-  return `<i class="${cls} ${d ? "d" + d : "d0"}" role="img" aria-label="Lead strength: ${DYE_WORD[d]}"></i>`;
+function pill(L, label) {
+  label = label || reason(L);
+  return `<span class="pill p-${esc(L.bucket)}${unverified(L) ? " unv" : ""}" title="${L.bucket === "none" ? esc(noSiteNote(L)) : esc(BLABEL[L.bucket] || "")}"><span>${esc(label)}</span></span>`;
 }
 const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u || ""; } };
 const fmtDay = (t) => new Date(t * 1000).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
@@ -96,24 +158,54 @@ function dueLabel(t) {
   return { text: `Due ${fmtDay(t)}`, late: false };
 }
 
+/* Where to see the business: its Google Business Profile first, then wherever LeadFinder found it. */
+function placeQuery(L) { return [L.name, L.address || L.city, L.address ? "" : COUNTRY[L.country]].filter(Boolean).join(", "); }
+function googleProfile(L) {
+  const u = L.gmaps_url || "";
+  const exact = !!u && !/\/maps\/search\//.test(u) && (L.source === "google" || L.source === "csv" || /[?&]cid=|place_id/.test(u));
+  return exact
+    ? { href: u, exact: true }
+    : { href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(placeQuery(L)), exact: false };
+}
+function listings(L, site) {
+  const out = [];
+  const gp = googleProfile(L);
+  out.push({ href: gp.href, ic: "store", gmb: true, title: gp.exact ? "Google Business Profile" : "Find their Google Business Profile",
+    sub: gp.exact ? "Their listing on Google Maps, with photos and reviews" : "Searches Google Maps for this name and address. Pick the matching listing." });
+  const pin = L.lat != null && L.lon != null ? `https://www.openstreetmap.org/?mlat=${L.lat}&mlon=${L.lon}#map=19/${L.lat}/${L.lon}` : "";
+  if (L.source === "osm" && L.osm_url) out.push({ href: L.osm_url, ic: "map", title: "OpenStreetMap listing", sub: "Where LeadFinder found them, with any details mappers added" });
+  if (L.source === "tomtom") out.push(pin
+    ? { href: pin, ic: "map", title: "Found on TomTom", sub: "TomTom has no public business page, so this opens the map pin it gave" }
+    : { ic: "map", title: "Found on TomTom", sub: "TomTom has no public business page" });
+  if (L.source === "csv") out.push({ ic: "upload", title: "Imported from a spreadsheet", sub: (L.searches || []).map((s) => s.location).join(", ") || "CSV import" });
+  if (L.source === "manual") out.push({ ic: "edit", title: "Added by hand", sub: "From Import & check" });
+  if (L.website) out.push({ href: L.website, ic: "globe", title: "Their website", sub: hostOf(site.final_url || L.website) + (siteFound(L) ? ` · ${siteFound(L)}` : "") });
+  for (const [k, v] of Object.entries(L.socials || {})) out.push({ href: v, ic: "chat", title: k[0].toUpperCase() + k.slice(1), sub: v.replace(/^https?:\/\/(www\.)?/, "") });
+  out.push({ href: "https://www.google.com/search?q=" + encodeURIComponent([L.name, L.city].filter(Boolean).join(" ")), ic: "search", title: "Search Google", sub: "Find other listings, social pages or a website" });
+  return out;
+}
+
 /* ============================================================ state & routing */
+const FILTER_DEFAULTS = { bucket: [], q: "", area: "", country: "", category: "", status: "", source: "", search: "", min_reviews: "", has_phone: false, has_email: false, show_closed: false, hide_worked: false, hide_bucket: [] };
 const state = {
   view: "next", area: store.get("area", ""), next: null, shownReady: null,
-  leads: { filters: Object.assign({ bucket: [], q: "", area: "", country: "", category: "", status: "", search: "", min_reviews: "", has_phone: false, has_email: false, show_closed: false }, store.get("filters", {})),
-    sort: store.get("sort", "opportunity"), rows: [], total: 0, sig: "" },
-  follow: [], selected: { next: null, leads: null, followups: null }, lead: null,
+  density: store.get("density", "cards"),
+  leads: { filters: Object.assign({}, FILTER_DEFAULTS, store.get("filters", {})), sort: store.get("sort", "opportunity"), rows: [], total: 0, sig: "", fx: null },
+  follow: [], selected: { next: null, leads: null, followups: null }, open: { next: false, leads: false, followups: false }, lead: null,
   cats: [], groups: [], settings: {}, searches: [], status: null,
 };
 const VIEWS = ["next", "leads", "followups", "searches", "import", "settings"];
 
 function show(view, { push = true } = {}) {
   if (!VIEWS.includes(view)) view = "next";
+  const changed = state.view !== view;
   state.view = view;
-  $$(".nav a").forEach((a) => { if (a.dataset.view === view) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  $$(".navlinks a").forEach((a) => { if (a.dataset.view === view) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   $$(".view").forEach((v) => (v.hidden = v.id !== "view-" + view));
-  $("#rail").classList.remove("open");
+  $("#nav").classList.remove("open");
   $("#menu-btn").setAttribute("aria-expanded", "false");
   if (push && location.hash !== "#" + view) history.replaceState(null, "", "#" + view);
+  if (changed) M.enter([$(`#view-${view} .pagehead`)], { y: 6 });
   if (view === "next") loadNext();
   if (view === "leads") loadLeads(true);
   if (view === "followups") loadFollowups();
@@ -121,64 +213,134 @@ function show(view, { push = true } = {}) {
   if (view === "settings") fillSettings();
 }
 window.addEventListener("hashchange", () => show(location.hash.slice(1), { push: false }));
-$$(".nav a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); show(a.dataset.view); }));
+$$("[data-view]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); show(a.dataset.view); }));
 $("#menu-btn").addEventListener("click", () => {
-  const open = $("#rail").classList.toggle("open");
+  const open = $("#nav").classList.toggle("open");
   $("#menu-btn").setAttribute("aria-expanded", String(open));
+  if (open) M.pop($("#navlinks"));
 });
 
-/* theme */
+/* theme: light / dark / follow the computer; the toggle sweeps the new theme in from the button */
+const isDark = () => document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
 function applyTheme(t) {
   if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
   else document.documentElement.removeAttribute("data-theme");
+  const d = isDark();
+  $("#theme-toggle use").setAttribute("href", d ? "#i-sun" : "#i-moon");
+  $("#theme-toggle").setAttribute("aria-label", d ? "Switch to light mode" : "Switch to dark mode");
+  if ($("#theme-select")) $("#theme-select").value = store.get("theme", "system");
 }
-applyTheme(store.get("theme", "system"));
+function setTheme(t, from) {
+  store.set("theme", t);
+  if (!document.startViewTransition || !M.ok() || !from) return applyTheme(t);
+  const r = from.getBoundingClientRect();
+  document.documentElement.style.setProperty("--vx", r.left + r.width / 2 + "px");
+  document.documentElement.style.setProperty("--vy", r.top + r.height / 2 + "px");
+  document.documentElement.classList.add("theme-sweep");
+  document.startViewTransition(() => applyTheme(t)).finished.finally(() => document.documentElement.classList.remove("theme-sweep"));
+}
+$("#theme-toggle").addEventListener("click", (e) => setTheme(isDark() ? "light" : "dark", e.currentTarget));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme(store.get("theme", "system")));
 
-/* ============================================================ list rows */
-function rowHTML(L, { due = false } = {}) {
-  const meta = [L.category, L.city].filter(Boolean).join(" · ");
-  let side = marker(L, reason(L));
+/* layout: navigation down the side or across the top; the page glides into its new frame */
+function applyLayout(l) {
+  l = l === "top" ? "top" : "side";
+  document.documentElement.setAttribute("data-layout", l);
+  $("#layout-toggle use").setAttribute("href", l === "top" ? "#i-layout-side" : "#i-layout-top");
+  $("#layout-toggle").setAttribute("aria-label", l === "top" ? "Move navigation to the side" : "Move navigation to the top");
+  if ($("#layout-select")) $("#layout-select").value = l;
+}
+function setLayout(l) {
+  store.set("layout", l);
+  const v = $(`#view-${state.view}`);
+  const parts = [$("#nav"), ...$$(":scope > *", v), ...$$(".card", v).slice(0, 24)];
+  M.flip(parts, () => applyLayout(l), { duration: 0.55, absolute: false });
+}
+$("#layout-toggle").addEventListener("click", () => setLayout(document.documentElement.dataset.layout === "top" ? "side" : "top"));
+
+/* density: roomy cards or a compact list */
+function applyDensity() {
+  $$(".cards").forEach((c) => c.classList.toggle("compact", state.density === "compact"));
+  $$(".density button").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.d === state.density)));
+}
+
+/* ============================================================ cards */
+function cardHTML(L, { due = false } = {}) {
+  const meta = [L.category, L.city, SOURCE[L.source] ? `via ${SOURCE[L.source]}` : ""].filter(Boolean).join(" · ");
+  const pills = [pill(L)];
   if (due && L.follow_up_at) {
     const d = dueLabel(L.follow_up_at);
-    side = `<span class="due-tag ${d.late ? "" : "ok"}">${icon("clock")}${esc(d.text)}</span><span class="tag">${esc(STATUS_LABEL[L.status])}</span>`;
-  } else if (!IN_QUEUE.has(L.status)) side += `<span class="tag">${esc(STATUS_LABEL[L.status])}</span>`;
-  else if (L.status === "shortlisted") side += `<span class="tag">Shortlisted</span>`;
-  return `<li><button class="row" type="button" data-id="${L.id}" aria-current="false">${swatch(L)}
-    <span><span class="rname">${esc(L.name)}</span><span class="rmeta">${esc(meta)}${L.closed ? " · Closed" : ""}</span></span>
-    <span class="rside">${side}</span></button></li>`;
+    pills.push(`<span class="tag ${d.late ? "late" : ""}">${icon("clock")}${esc(d.text)}</span>`);
+  } else if (L.status !== "new") pills.push(`<span class="tag">${esc(STATUS_LABEL[L.status])}</span>`);
+  if (L.closed) pills.push(`<span class="tag">Closed</span>`);
+  const gp = googleProfile(L);
+  return `<li class="card" data-id="${L.id}" data-flip-id="c${L.id}" aria-current="false">
+    <button class="card-open" type="button" data-id="${L.id}" aria-label="Open ${esc(L.name)}"></button>
+    <div class="c-top"><h3 class="c-name">${esc(L.name)}</h3>${strength(L, { word: false })}</div>
+    <p class="c-meta">${esc(meta)}</p>
+    <div class="c-pills">${pills.join("")}</div>
+    <div class="c-foot">
+      <span class="c-contact"><span class="${L.phone ? "" : "off"}" title="${L.phone ? "Has a phone number" : "No phone number"}">${icon("phone")}</span><span class="${L.email ? "" : "off"}" title="${L.email ? "Has an email" : "No email"}">${icon("mail")}</span></span>
+      <a class="gpill" href="${esc(gp.href)}" target="_blank" rel="noopener" title="${gp.exact ? "Open their Google Business Profile" : "Find their Google Business Profile on Google Maps"}" aria-label="Open Google profile for ${esc(L.name)}">${icon("store")}Google</a>
+    </div></li>`;
 }
 function markSelected(container, id) {
-  $$(".row", container).forEach((r) => r.setAttribute("aria-current", String(+r.dataset.id === id)));
+  $$(".card", container).forEach((r) => r.setAttribute("aria-current", String(+r.dataset.id === id)));
 }
-function bindRows(container, view) {
+function bindCards(container, view) {
   container.addEventListener("click", (e) => {
-    const b = e.target.closest(".row");
+    const b = e.target.closest(".card-open");
     if (b) select(view, +b.dataset.id);
   });
   container.addEventListener("keydown", (e) => {
-    if (!["ArrowDown", "ArrowUp"].includes(e.key)) return;
-    const rows = $$(".row", container);
-    const i = rows.indexOf(document.activeElement);
-    const n = rows[i + (e.key === "ArrowDown" ? 1 : -1)];
+    if (!["ArrowDown", "ArrowUp"].includes(e.key) || !e.target.closest(".card-open")) return;
+    const btns = $$(".card-open", container);
+    const n = btns[btns.indexOf(document.activeElement) + (e.key === "ArrowDown" ? 1 : -1)];
     if (n) { e.preventDefault(); n.focus(); select(view, +n.dataset.id); }
   });
 }
 const pane = (view) => $(`#view-${view} [data-detail]`);
+const board = (view) => $(`#view-${view} [data-board]`);
 
-async function select(view, id, { quiet = false } = {}) {
+/* Open or close the lead panel beside the list. This is the board's one big move. */
+function setOpen(view, open) {
+  if (state.open[view] === open) return;
+  state.open[view] = open;
+  const b = board(view), v = $(`#view-${view}`);
+  const targets = [...$$(".card", b), ...$$(".stats, .tabs, .toolbar, .activechips", v)];
+  M.flip(targets, () => {
+    b.classList.toggle("open", open);
+    v.classList.toggle("has-open", open);
+    pane(view).hidden = !open;
+  });
+  if (!open) { state.selected[view] = null; markSelected(b, -1); }
+}
+
+async function select(view, id) {
   state.selected[view] = id;
-  markSelected($(`#view-${view}`), id);
+  markSelected(board(view), id);
   try {
     const L = await api("/api/lead?id=" + id);
     if (state.selected[view] !== id) return;
     state.lead = L;
-    renderDetail(view, L, { quiet });
-    if (!quiet) pane(view).classList.add("open");
+    const opening = !state.open[view];
+    renderDetail(view, L);
+    setOpen(view, true);
+    pane(view).scrollTop = 0;
+    const say = $("#say-text", pane(view)); // size the draft now that the panel is visible
+    if (say) { say.style.height = "auto"; say.style.height = Math.max(120, say.scrollHeight + 2) + "px"; }
+    M.enter($$(".d-wrap > *, .d-col > *", pane(view)), { y: opening ? 18 : 10, stagger: 0.05 });
+    if (opening) $(`.card[data-id="${id}"]`, board(view))?.scrollIntoView({ block: "nearest" });
   } catch (e) { toast(e.message, { err: true }); }
+}
+function closeDetail(view) {
+  const id = state.selected[view];
+  setOpen(view, false);
+  $(`.card[data-id="${id}"] .card-open`, board(view))?.focus({ preventScroll: true });
 }
 
 /* ============================================================ next up */
-async function loadNext({ keepSelection = true } = {}) {
+async function loadNext({ animate = false } = {}) {
   let data, areas;
   try { [data, areas] = await Promise.all([api("/api/next?" + new URLSearchParams({ area: state.area })), api("/api/areas")]); }
   catch (e) { return toast(e.message, { err: true }); }
@@ -190,11 +352,15 @@ async function loadNext({ keepSelection = true } = {}) {
   $("#area-chips").innerHTML = chips.join("");
   $("#area-chips").hidden = areas.length < 2;
   $("#next-guide").textContent = data.queue.length
-    ? `${data.queue.length} of ${data.ready.toLocaleString()} ready to contact${state.area ? " in " + state.area : ""}. Strongest first.`
+    ? `${data.queue.length} of ${data.ready.toLocaleString()} ready to contact${state.area ? " in " + state.area : ""}, strongest first.`
     : "";
-  $("#next-follow").innerHTML = data.followups.length
-    ? `<p class="section-label">${icon("bell")}Follow-ups due</p><ol class="rows">${data.followups.map((L) => rowHTML(L, { due: true })).join("")}</ol><p class="section-label">${icon("arrow")}New leads</p>` : "";
-  $("#next-list").innerHTML = data.queue.map((L) => rowHTML(L)).join("");
+  const render = () => {
+    $("#next-follow").innerHTML = data.followups.length
+      ? `<div class="follow-block"><p class="section-label">${icon("bell")}Follow-ups due <span class="muted">${data.followups.length}</span></p><ol class="cards">${data.followups.map((L) => cardHTML(L, { due: true })).join("")}</ol></div><p class="section-label">${icon("arrow")}New leads</p>` : "";
+    $("#next-list").innerHTML = data.queue.map((L) => cardHTML(L)).join("");
+    applyDensity();
+  };
+  if (animate) M.reflow($("#next-scroll"), render); else render();
   $("#next-end").textContent = data.queue.length ? (data.ready > data.queue.length
     ? "That's today's ten. Log or skip them and the next ones move up."
     : "That's everyone ready to contact here. Find leads in another area for more.") : "";
@@ -203,44 +369,45 @@ async function loadNext({ keepSelection = true } = {}) {
   if (empty) {
     $("#next-empty").innerHTML = `<h2>No one to contact ${state.area ? "in " + esc(state.area) + " " : ""}right now</h2>
       <p>Every lead here has been contacted, skipped for today, or is still being checked. Find businesses in a new area to fill the queue.</p>
-      <button class="btn btn-primary" type="button" data-open-find>${icon("search")}Find leads</button>`;
+      <button class="btn btn-lemon" type="button" data-open-find>${icon("search")}Find leads</button>`;
     $("[data-open-find]", $("#next-empty")).addEventListener("click", () => openFind());
-    pane("next").innerHTML = "";
+    setOpen("next", false);
     return;
   }
-  const all = [...data.followups, ...data.queue];
+  if (!animate) M.enter($$("#view-next .card").slice(0, 14), { y: 12, stagger: 0.03 });
   const cur = state.selected.next;
-  const target = keepSelection && all.some((l) => l.id === cur) ? cur : all[0].id;
-  if (target !== cur || !pane("next").querySelector(".d-wrap")) select("next", target, { quiet: true });
-  else markSelected($("#view-next"), cur);
+  if (cur != null) markSelected(board("next"), cur);
 }
 $("#area-chips").addEventListener("click", (e) => {
   const c = e.target.closest("[data-area]");
   if (!c) return;
   state.area = c.dataset.area; store.set("area", state.area);
-  loadNext({ keepSelection: false });
+  setOpen("next", false);
+  loadNext({ animate: true });
 });
-$("#next-refresh").addEventListener("click", () => loadNext());
-bindRows($("#next-scroll"), "next");
+$("#next-refresh").addEventListener("click", () => loadNext({ animate: true }));
+bindCards($("#next-scroll"), "next");
 
-/* A lead left the queue (logged or skipped): lift it out, then bring up the next one. */
+/* A lead left the queue (logged or skipped): fold it away, let the rest close up, open the next one. */
 async function leaveQueue(id) {
-  const row = $(`#view-next .row[data-id="${id}"]`);
+  const card = $(`#view-next .card[data-id="${id}"]`);
   const all = [...(state.next?.followups || []), ...(state.next?.queue || [])];
   const i = all.findIndex((l) => l.id === id);
   const after = all[i + 1] || all[i - 1];
-  if (row) { row.classList.add("leaving"); await new Promise((r) => setTimeout(r, 200)); }
+  await M.leave(card);
   state.selected.next = after ? after.id : null;
-  await loadNext();
-  if (state.selected.next) select("next", state.selected.next, { quiet: true });
+  await loadNext({ animate: true });
+  if (state.selected.next && $(`#view-next .card[data-id="${state.selected.next}"]`)) select("next", state.selected.next);
+  else setOpen("next", false);
 }
 
 /* ============================================================ all leads */
 function leadParams(extra = {}) {
   const f = state.leads.filters, p = new URLSearchParams();
   if (f.bucket.length) p.set("bucket", f.bucket.join(","));
-  for (const k of ["q", "area", "country", "category", "status", "search", "min_reviews"]) if (f[k]) p.set(k, f[k]);
-  for (const k of ["has_phone", "has_email", "show_closed"]) if (f[k]) p.set(k, "1");
+  if (f.hide_bucket.length) p.set("hide_bucket", f.hide_bucket.join(","));
+  for (const k of ["q", "area", "country", "category", "status", "source", "search", "min_reviews"]) if (f[k]) p.set(k, f[k]);
+  for (const k of ["has_phone", "has_email", "show_closed", "hide_worked"]) if (f[k]) p.set(k, "1");
   p.set("sort", state.leads.sort);
   for (const [k, v] of Object.entries(extra)) p.set(k, v);
   return p;
@@ -255,31 +422,50 @@ function fillSelect(sel, items, current, allLabel, fmt = (v) => v) {
   if (!found) opts.push(`<option value="${esc(current)}" selected>${esc(fmt(current))}</option>`);
   sel.innerHTML = opts.join("");
 }
-async function loadLeads(reset, { keep = false } = {}) {
+async function loadLeads(reset, { keep = false, animate = false } = {}) {
   const L = state.leads;
   const limit = keep ? Math.max(100, L.rows.length) : 100;
   const offset = reset || keep ? 0 : L.rows.length;
   let res, fx, areas;
   try { [res, fx, areas] = await Promise.all([api("/api/leads?" + leadParams({ limit, offset })), api("/api/facets?" + leadParams()), api("/api/areas")]); }
   catch (e) { return toast(e.message, { err: true }); }
-  L.rows = reset || keep ? res.leads : L.rows.concat(res.leads);
-  L.total = res.total;
+  const appended = !(reset || keep);
+  L.rows = appended ? L.rows.concat(res.leads) : res.leads;
+  L.total = res.total; L.fx = fx;
   L.sig = statusSig();
   $("#leads-notice").hidden = true;
   const f = L.filters;
   fillSelect($("#f-area"), areas, f.area, "All areas");
   fillSelect($("#f-country"), fx.country, f.country, "All countries", (v) => COUNTRY[v] || v);
   fillSelect($("#f-category"), fx.category, f.category, "All types");
-  fillSelect($("#f-status"), fx.status, f.status, "Any status", (v) => STATUS_LABEL[v] || v);
+  fillSelect($("#f-source"), fx.source || [], f.source, "Anywhere", (v) => SOURCE[v] || v);
   const cur = f.search;
   $("#f-search").innerHTML = `<option value="">Any search</option>` + state.searches.filter((x) => x.status === "done" || String(x.id) === cur)
     .map((x) => `<option value="${x.id}"${String(x.id) === cur ? " selected" : ""}>${esc(x.category_label)}, ${esc(x.location)}</option>`).join("");
+
+  // pipeline tiles: each one is a filter
+  const sc = Object.fromEntries((fx.status || []).map((s) => [s.v, s.n]));
+  $("#pipeline").innerHTML = PIPE.map(([k, ic]) => `<button class="stat" type="button" data-status="${k}" aria-pressed="${f.status === k}">
+    <i class="ico">${icon(ic)}</i><span><small>${esc(STATUS_LABEL[k])}</small><b>${(sc[k] || 0).toLocaleString()}</b></span></button>`).join("");
+
+  // website-status tabs
   const counts = fx.buckets || {};
-  $("#buckets").innerHTML = BUCKETS.filter((b) => counts[b.id]).map((b) =>
-    `<button class="chip" type="button" data-b="${b.id}" aria-pressed="${f.bucket.includes(b.id)}"><span class="mk mk-${b.id}">${esc(b.id === "none" ? "No website listed" : b.label)}</span><small>${counts[b.id].toLocaleString()}</small></button>`).join("");
-  const nf = ["q", "area", "country", "category", "status", "search", "min_reviews"].filter((k) => f[k]).length + ["has_phone", "has_email", "show_closed"].filter((k) => f[k]).length;
-  $("#filter-count").hidden = !nf; $("#filter-count").textContent = nf;
-  $("#leads-list").innerHTML = L.rows.map((r) => rowHTML(r)).join("");
+  const all = Object.entries(counts).filter(([b]) => !f.hide_bucket.includes(b)).reduce((a, [, n]) => a + n, 0);
+  const tabs = [`<button class="tab" type="button" data-b="" aria-pressed="${!f.bucket.length}">All <small>${all.toLocaleString()}</small></button>`]
+    .concat(BUCKETS.filter((b) => counts[b.id]).map((b) => `<button class="tab${f.hide_bucket.includes(b.id) ? " hidden-status" : ""}" type="button" data-b="${b.id}" aria-pressed="${f.bucket.includes(b.id)}" style="--c: var(--p-${b.id === "pending" ? "unknown" : b.id})"${f.hide_bucket.includes(b.id) ? ' title="Hidden by your clutter filter"' : ""}><i class="pdot"></i>${esc(b.id === "none" ? "No website" : b.label)} <small>${counts[b.id].toLocaleString()}</small></button>`));
+  $("#buckets").innerHTML = tabs.join("");
+
+  // clutter switches
+  $("#hide-list").innerHTML = BUCKETS.filter((b) => b.id !== "pending").map((b) => `<label><input type="checkbox" data-hide="${b.id}"${f.hide_bucket.includes(b.id) ? " checked" : ""}> ${esc(b.label)}</label>`).join("");
+  renderActiveChips();
+
+  const render = () => {
+    if (appended) $("#leads-list").insertAdjacentHTML("beforeend", res.leads.map((r) => cardHTML(r)).join(""));
+    else $("#leads-list").innerHTML = L.rows.map((r) => cardHTML(r)).join("");
+    applyDensity();
+  };
+  if (animate) M.reflow($("#leads-scroll"), render); else render();
+  if (!animate && !appended && reset) M.enter($$("#leads-list .card").slice(0, 15), { y: 12, stagger: 0.025 });
   $("#count").textContent = L.total ? `${L.total.toLocaleString()} lead${L.total === 1 ? "" : "s"}${L.total !== fx.total_all ? ` of ${fx.total_all.toLocaleString()}` : ""}` : "";
   $("#more").hidden = L.rows.length >= L.total;
   $("#export").href = "/api/export.csv?" + leadParams();
@@ -287,45 +473,98 @@ async function loadLeads(reset, { keep = false } = {}) {
   $("#leads-empty").hidden = !empty;
   if (empty) $("#leads-empty").innerHTML = fx.total_all
     ? `<h2>No leads match</h2><p>Try fewer filters.</p><button class="btn btn-quiet" type="button" id="empty-clear">Clear filters</button>`
-    : `<h2>No leads yet</h2><p>Pick a business type and a place, and LeadFinder pulls every match and checks each website.</p><button class="btn btn-primary" type="button" id="empty-find">${icon("search")}Find leads</button>`;
+    : `<h2>No leads yet</h2><p>Pick a business type and a place, and LeadFinder pulls every match and checks each website.</p><button class="btn btn-lemon" type="button" id="empty-find">${icon("search")}Find leads</button>`;
   $("#empty-clear")?.addEventListener("click", clearFilters);
   $("#empty-find")?.addEventListener("click", () => openFind());
   if (state.selected.leads) markSelected($("#view-leads"), state.selected.leads);
-  else if (!pane("leads").innerHTML) pane("leads").innerHTML = detailEmpty();
+}
+function activeFilters() {
+  const f = state.leads.filters, out = [];
+  const add = (label, clear) => out.push({ label, clear });
+  if (f.q) add(`“${f.q}”`, () => { f.q = ""; $("#f-q").value = ""; });
+  if (f.status) add(STATUS_LABEL[f.status], () => (f.status = ""));
+  for (const b of f.bucket) add(b === "none" ? "No website" : BLABEL[b], () => (f.bucket = f.bucket.filter((x) => x !== b)));
+  if (f.area) add(f.area, () => (f.area = ""));
+  if (f.country) add(COUNTRY[f.country] || f.country, () => (f.country = ""));
+  if (f.category) add(f.category, () => (f.category = ""));
+  if (f.source) add(`Found on ${SOURCE[f.source] || f.source}`, () => (f.source = ""));
+  if (f.search) { const s = state.searches.find((x) => String(x.id) === f.search); add(s ? `${s.category_label}, ${s.location}` : "One search", () => (f.search = "")); }
+  if (f.min_reviews) add(`${f.min_reviews}+ reviews`, () => { f.min_reviews = ""; $("#f-min_reviews").value = ""; });
+  if (f.has_phone) add("Has phone", () => (f.has_phone = false));
+  if (f.has_email) add("Has email", () => (f.has_email = false));
+  if (f.show_closed) add("Including closed", () => (f.show_closed = false));
+  if (f.hide_worked) add("Hiding contacted", () => (f.hide_worked = false));
+  for (const b of f.hide_bucket) add(`Hiding ${BLABEL[b].toLowerCase()}`, () => (f.hide_bucket = f.hide_bucket.filter((x) => x !== b)));
+  return out;
+}
+function renderActiveChips() {
+  const list = activeFilters();
+  $("#active-chips").innerHTML = list.map((x, i) => `<button class="chip" type="button" data-i="${i}" aria-label="Remove filter: ${esc(x.label)}">${esc(x.label)}${icon("x")}</button>`).join("")
+    + (list.length > 1 ? `<button class="link" type="button" id="chips-clear" style="font-size:12.5px;margin-left:6px">Clear all</button>` : "");
+  const n = list.filter((x) => !/^“/.test(x.label)).length;
+  $("#filter-count").hidden = !n; $("#filter-count").textContent = n;
+  $("#chips-clear")?.addEventListener("click", clearFilters);
+  $$("#active-chips [data-i]").forEach((b) => b.addEventListener("click", () => { list[+b.dataset.i].clear(); refilter(); }));
+}
+function refilter() { saveFilters(); syncFilterInputs(); loadLeads(true, { animate: true }); }
+function syncFilterInputs() {
+  const f = state.leads.filters;
+  for (const k of ["has_phone", "has_email", "show_closed", "hide_worked"]) $("#f-" + k).checked = !!f[k];
+  $("#f-min_reviews").value = f.min_reviews;
 }
 function clearFilters() {
-  Object.assign(state.leads.filters, { bucket: [], q: "", area: "", country: "", category: "", status: "", search: "", min_reviews: "", has_phone: false, has_email: false, show_closed: false });
-  $("#f-q").value = ""; $("#f-min_reviews").value = "";
-  for (const k of ["has_phone", "has_email", "show_closed"]) $("#f-" + k).checked = false;
-  saveFilters(); loadLeads(true);
+  Object.assign(state.leads.filters, structuredClone(FILTER_DEFAULTS));
+  $("#f-q").value = "";
+  refilter();
+}
+function toggleFilters(open) {
+  const box = $("#filters");
+  open = open ?? box.hidden;
+  box.hidden = !open;
+  $("#filters-btn").setAttribute("aria-expanded", String(open));
+  if (open) M.pop(box);
 }
 function bindLeads() {
   const f = state.leads.filters;
   let qt;
   $("#f-q").value = f.q;
-  $("#f-q").addEventListener("input", (e) => { clearTimeout(qt); qt = setTimeout(() => { f.q = e.target.value.trim(); saveFilters(); loadLeads(true); }, 250); });
-  for (const k of ["area", "country", "category", "status", "search", "min_reviews"]) $("#f-" + k).addEventListener("change", (e) => { f[k] = e.target.value; saveFilters(); loadLeads(true); });
-  for (const k of ["has_phone", "has_email", "show_closed"]) {
-    $("#f-" + k).checked = !!f[k];
-    $("#f-" + k).addEventListener("change", (e) => { f[k] = e.target.checked; saveFilters(); loadLeads(true); });
-  }
-  $("#f-min_reviews").value = f.min_reviews;
+  $("#f-q").addEventListener("input", (e) => { clearTimeout(qt); qt = setTimeout(() => { f.q = e.target.value.trim(); saveFilters(); loadLeads(true, { animate: true }); }, 250); });
+  for (const k of ["area", "country", "category", "source", "search", "min_reviews"]) $("#f-" + k).addEventListener("change", (e) => { f[k] = e.target.value; refilter(); });
+  for (const k of ["has_phone", "has_email", "show_closed", "hide_worked"]) $("#f-" + k).addEventListener("change", (e) => { f[k] = e.target.checked; refilter(); });
+  $("#hide-list").addEventListener("change", (e) => {
+    const id = e.target.dataset.hide; if (!id) return;
+    f.hide_bucket = e.target.checked ? [...new Set([...f.hide_bucket, id])] : f.hide_bucket.filter((x) => x !== id);
+    f.bucket = f.bucket.filter((x) => !f.hide_bucket.includes(x));
+    refilter();
+  });
+  syncFilterInputs();
   $("#sort").value = state.leads.sort;
-  $("#sort").addEventListener("change", (e) => { state.leads.sort = e.target.value; saveFilters(); loadLeads(true); });
+  $("#sort").addEventListener("change", (e) => { state.leads.sort = e.target.value; saveFilters(); loadLeads(true, { animate: true }); });
   $("#clear-filters").addEventListener("click", clearFilters);
-  $("#filters-btn").addEventListener("click", () => {
-    const box = $("#filters"); box.hidden = !box.hidden;
-    $("#filters-btn").setAttribute("aria-expanded", String(!box.hidden));
+  $("#filters-btn").addEventListener("click", () => toggleFilters());
+  $("#filters-done").addEventListener("click", () => { toggleFilters(false); $("#filters-btn").focus(); });
+  document.addEventListener("click", (e) => { if (!$("#filters").hidden && !e.target.closest(".filterwrap")) toggleFilters(false); });
+  $("#pipeline").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-status]"); if (!t) return;
+    f.status = f.status === t.dataset.status ? "" : t.dataset.status;
+    M.nudge(t); refilter();
   });
   $("#buckets").addEventListener("click", (e) => {
     const c = e.target.closest("[data-b]"); if (!c) return;
     const id = c.dataset.b, cur = f.bucket;
-    f.bucket = e.ctrlKey || e.metaKey || e.shiftKey ? (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]) : (cur.length === 1 && cur[0] === id ? [] : [id]);
-    saveFilters(); loadLeads(true);
+    if (!id) f.bucket = [];
+    else f.bucket = e.ctrlKey || e.metaKey || e.shiftKey ? (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]) : (cur.length === 1 && cur[0] === id ? [] : [id]);
+    if (id) f.hide_bucket = f.hide_bucket.filter((x) => x !== id); // asking to see a status un-hides it
+    refilter();
   });
+  $$(".density button").forEach((b) => b.addEventListener("click", () => {
+    if (state.density === b.dataset.d) return;
+    state.density = b.dataset.d; store.set("density", state.density);
+    $$(".cards").forEach((c) => M.reflow(c.closest(".listcol") || c, applyDensity));
+  }));
   $("#more").addEventListener("click", () => loadLeads(false));
-  $("#leads-refresh").addEventListener("click", () => loadLeads(false, { keep: true }));
-  bindRows($("#view-leads .scroll"), "leads");
+  $("#leads-refresh").addEventListener("click", () => loadLeads(false, { keep: true, animate: true }));
+  bindCards($("#leads-scroll"), "leads");
 }
 
 /* ============================================================ follow-ups */
@@ -342,20 +581,19 @@ async function loadFollowups() {
     groups[days < 0 ? "Overdue" : days === 0 ? "Today" : days <= 7 ? "This week" : "Later"].push(L);
   }
   $("#follow-list").innerHTML = Object.entries(groups).filter(([, v]) => v.length)
-    .map(([k, v]) => `<p class="section-label">${esc(k)} <span class="muted">${v.length}</span></p><ol class="rows">${v.map((L) => rowHTML(L, { due: true })).join("")}</ol>`).join("");
+    .map(([k, v]) => `<div class="follow-block"><p class="section-label">${esc(k)} <span class="muted">${v.length}</span></p><ol class="cards">${v.map((L) => cardHTML(L, { due: true })).join("")}</ol></div>`).join("");
+  applyDensity();
+  M.enter($$("#follow-list .card").slice(0, 14), { y: 12, stagger: 0.03 });
   $("#follow-empty").hidden = !!res.leads.length;
   $("#follow-empty").innerHTML = `<h2>Nothing to chase</h2><p>When you mark a lead Contacted or Demo sent, it shows up here 3 days later so it doesn't go cold.</p>`;
+  if (!res.leads.length) { setOpen("followups", false); return; }
   const cur = state.selected.followups;
-  if (!res.leads.length) { state.selected.followups = null; pane("followups").innerHTML = ""; return; }
-  if (!res.leads.some((l) => l.id === cur)) select("followups", res.leads[0].id, { quiet: true });
-  else markSelected($("#view-followups"), cur);
+  if (cur != null && !res.leads.some((l) => l.id === cur)) setOpen("followups", false);
+  else if (cur != null) markSelected($("#view-followups"), cur);
 }
-bindRows($("#view-followups .scroll"), "followups");
+bindCards($("#follow-scroll"), "followups");
 
 /* ============================================================ detail */
-function detailEmpty() {
-  return `<div class="detail-empty"><i class="sw d4"></i><p>Pick a lead to see why they're worth contacting and what to say.</p></div>`;
-}
 function waNumber(phone, country) {
   const raw = (phone || "").trim();
   let d = raw.replace(/\D/g, "");
@@ -371,21 +609,22 @@ function waNumber(phone, country) {
 }
 const gauge = (label, v) => v == null ? "" : `<div class="gauge ${v >= 90 ? "good" : v >= 50 ? "mid" : "poor"}"><b>${v}</b><span>${esc(label)}</span></div>`;
 
-function renderDetail(view, L, { quiet = false } = {}) {
+function renderDetail(view, L) {
   const p = pane(view);
   const g = L.grade || {}, site = g.site || {}, psi = L.psi;
   const email = L.email || site.emails?.[0] || "";
   const wa = waNumber(L.phone, L.country);
-  const meta = [L.category, L.address || L.city, COUNTRY[L.country]].filter(Boolean).map(esc);
-  if (L.phone) meta.push(esc(L.phone));
-  if (L.reviews != null) meta.push(`<span class="star">${icon("star")}${esc(L.rating ?? "No rating")} from ${L.reviews} reviews</span>`);
-  if (L.closed) meta.push("<b>Permanently closed</b>");
-  const issues = (L.issues || []).filter((i) => i.pts >= 5 || i.pts === 0);
+  const sub = [L.category, L.address || L.city, COUNTRY[L.country]].filter(Boolean).map(esc).join(" · ");
+  const issues = (L.issues || []).filter((i) => (i.pts >= 5 || i.pts === 0) && !(i.title === "Very little content" && (site.words ?? 0) < 20));
   const pending = L.bucket === "pending";
   const kind = store.get("sayKind", wa && (L.country === "NG" || !email) ? "whatsapp" : email ? "email" : "whatsapp");
+  const gp = googleProfile(L);
+  const pinHref = L.lat != null && L.lon != null ? `https://www.openstreetmap.org/?mlat=${L.lat}&mlon=${L.lon}#map=19/${L.lat}/${L.lon}` : "";
+  const srcHref = L.source === "osm" ? L.osm_url : L.source === "tomtom" ? pinHref : L.source === "google" ? gp.href : "";
   const facts = [];
   const f = (k, v) => v != null && v !== "" && facts.push(`<dt>${esc(k)}</dt><dd>${v}</dd>`);
   if (L.website) f("Website", `<a href="${esc(L.website)}" target="_blank" rel="noopener">${esc(L.website)}</a>`);
+  if (L.website && L.site_via) f("Where the website came from", esc(L.site_via === "guess" ? `Not on their listing. LeadFinder found it under their name (matched by ${L.site_why || "name"})` : siteFound(L)));
   if (site.final_url && site.final_url !== site.input_url) f("Ends up at", esc(site.final_url));
   if (site.ms != null) f("Load time", `${(site.ms / 1000).toFixed(1)} seconds from this computer`);
   f("Built with", esc(site.builder || ""));
@@ -393,50 +632,78 @@ function renderDetail(view, L, { quiet = false } = {}) {
   f("Words on homepage", site.words != null ? esc(site.words) : "");
   if (site.error) f("Error", esc(site.error));
   if (L.score != null) f("Website score", `${L.score} out of 100`);
-  if (L.opportunity != null) f("Lead strength", `${DYE_WORD[dye(L.opportunity)]} (${L.opportunity} of 100: weak web presence × how busy they look × whether you can reach them)`);
+  if (L.opportunity != null) f("Lead strength", `${STRENGTH[level(L.opportunity)]} (${L.opportunity} of 100: weak web presence × how busy they look × whether you can reach them)`);
   if (L.graded_at) f("Checked", new Date(L.graded_at * 1000).toLocaleString());
   if (L.searches?.length) f("Found by", L.searches.map((s) => esc(`${s.category_label}, ${s.location}`)).join("; "));
-  for (const [k, v] of Object.entries(L.socials || {})) f(k[0].toUpperCase() + k.slice(1), `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/, ""))}</a>`);
-  if (email) f("Email", `<a href="mailto:${esc(email)}">${esc(email)}</a>`);
-  if (L.phone) f("Phone", esc(L.phone));
   const followDate = L.follow_up_at ? new Date(L.follow_up_at * 1000).toISOString().slice(0, 10) : "";
+  const headFacts = [
+    ["Phone", L.phone ? `<a href="tel:${esc(L.phone.replace(/[^\d+]/g, ""))}">${esc(L.phone)}</a>` : `<span class="muted">Not listed</span>`],
+    ["Email", email ? `<a href="mailto:${esc(email)}">${esc(email)}</a>` : `<span class="muted">Not listed</span>`],
+    ["Website", L.website ? `<a href="${esc(L.website)}" target="_blank" rel="noopener">${esc(hostOf(L.website))}</a>` : `<span class="muted">None found</span>`],
+  ];
+  if (L.reviews != null) headFacts.push(["Google reviews", `<span class="stars">${icon("star")}${esc(L.rating ?? "No rating")} from ${L.reviews}</span>`]);
+  const li = L.status in STATUS_LABEL ? LINEAR.indexOf(L.status) : -1;
+  const listed = listings(L, site);
 
-  p.innerHTML = `<div class="d-wrap">
-    <div class="d-head">${`<span class="bigsw"><i class="d${dye(L.opportunity) || 1}"></i></span>`}
-      <div><h2>${esc(L.name)}</h2><div class="d-meta">${meta.map((m) => `<span>${m}</span>`).join("")}</div>
-        <div class="d-meta">${pending ? `<span class="mk mk-pending">Checking their website…</span>` : marker(L, reason(L))}${L.status !== "new" ? `<span class="tag">${esc(STATUS_LABEL[L.status])}</span>` : ""}</div></div>
-      <button class="iconbtn d-close" type="button" aria-label="Close details">${icon("x")}</button></div>
-    <div class="acts">
-      ${wa ? `<a class="btn btn-primary" id="act-wa" target="_blank" rel="noopener">${icon("chat")}WhatsApp</a>` : ""}
-      ${L.phone ? `<a class="btn ${wa ? "btn-quiet" : "btn-primary"}" href="tel:${esc(L.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}
-      ${email ? `<a class="btn btn-quiet" id="act-mail">${icon("mail")}Email</a>` : ""}
-      ${L.website ? `<a class="btn btn-quiet" href="${esc(L.website)}" target="_blank" rel="noopener">${icon("ext")}Open their site</a>` : ""}
-      ${IN_QUEUE.has(L.status) ? `<button class="btn btn-text skip" type="button" id="act-skip">${icon("clock")}Skip for today</button>` : ""}
-      ${!L.phone && !email ? `<span class="guide">No phone or email on record. Try their Google listing or social page.</span>` : ""}
-    </div>
-    <section class="sec"><h3>Why them</h3>
-      ${pending ? `<p class="guide">Their website is being checked now. This updates by itself.</p>` : issues.length
-        ? `<ul class="why">${issues.slice(0, 5).map((i) => `<li class="${esc(i.sev)}"><b>${esc(i.title)}</b><p>${esc(i.pitch)}</p></li>`).join("")}</ul>`
-        : `<p class="guide">${L.bucket === "ok" ? "Their website is in good shape. Pitch automations instead: instant replies to missed calls, booking, review requests." : "No website on their listing. People searching for them find competitors first."}</p>`}
-      ${unverified(L) ? `<p class="caution" style="margin-top:12px">OpenStreetMap has no website for them, but they may still have one. <a href="https://www.google.com/search?q=${encodeURIComponent(L.name + " " + (L.city || ""))}" target="_blank" rel="noopener">Search Google first</a> before saying they have none.</p>` : ""}
-    </section>
-    <section class="sec"><h3>What to say</h3>
-      <div class="seg" role="tablist" aria-label="Message type">
-        <button type="button" role="tab" data-k="whatsapp">WhatsApp</button><button type="button" role="tab" data-k="email">Email</button><button type="button" role="tab" data-k="call">Call script</button></div>
-      <input type="text" class="say-subject" id="say-subject" aria-label="Email subject">
-      <textarea class="say-text" id="say-text" aria-label="Message"></textarea>
-      <div class="btnrow"><button class="btn btn-quiet btn-sm" type="button" id="copy-say">${icon("copy")}Copy</button><span class="guide">Edit before sending, and replace [DEMO LINK] with your mock-up.</span></div>
-      <p class="rule" id="say-rule" hidden></p>
-    </section>
-    <section class="sec"><h3>Log it <span class="saved" id="saved" hidden>Saved</span></h3>
-      <div class="statusrow" id="statusrow">${Object.entries(STATUS_LABEL).map(([k, v]) => `<button class="chip" type="button" data-s="${k}" aria-pressed="${L.status === k}">${esc(v)}</button>`).join("")}</div>
-      <div class="logrow">
-        <label>Follow up on<input type="date" id="follow-date" value="${followDate}"></label>
-        <label class="notes">Notes<textarea id="notes" placeholder="Who you spoke to, what they said, demo link">${esc(L.notes || "")}</textarea></label>
+  p.innerHTML = `<div class="d-wrap" data-flip-id="detail">
+    <div class="tile d-head">
+      <div class="d-top">
+        <button class="iconbtn d-close" type="button" aria-label="Close lead">${icon("x")}</button>
+        ${srcHref ? `<a class="src-pill" href="${esc(srcHref)}" target="_blank" rel="noopener" title="Open where LeadFinder found them">${icon(L.source === "google" ? "store" : "map")}Found on ${esc(SOURCE[L.source] || L.source)}<svg class="ic go" aria-hidden="true"><use href="#i-ext"/></svg></a>`
+          : `<span class="src-pill">${icon("upload")}${L.source === "manual" ? "Added by hand" : "From a spreadsheet"}</span>`}
+        <span class="spacer"></span>${strength(L)}
       </div>
-    </section>
-    <details class="more-info"><summary>Website details and tools</summary>
-      <dl class="facts">${facts.join("")}</dl>
+      <div><h2 class="d-name">${esc(L.name)}</h2></div>
+      <p class="d-sub">${sub}${L.closed ? " · <b>Permanently closed</b>" : ""}</p>
+      <div class="d-pills">${pending ? `<span class="pill p-pending"><span>Checking their website…</span></span>` : pill(L)}${L.status !== "new" ? `<span class="tag">${esc(STATUS_LABEL[L.status])}</span>` : ""}</div>
+      <dl class="d-facts">${headFacts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
+      <div class="acts">
+        ${wa ? `<a class="btn btn-lemon" id="act-wa" target="_blank" rel="noopener">${icon("chat")}WhatsApp</a>` : ""}
+        ${L.phone ? `<a class="btn ${wa ? "btn-quiet" : "btn-lemon"}" href="tel:${esc(L.phone.replace(/[^\d+]/g, ""))}">${icon("phone")}Call</a>` : ""}
+        ${email ? `<a class="btn ${wa || L.phone ? "btn-quiet" : "btn-lemon"}" id="act-mail">${icon("mail")}Email</a>` : ""}
+        <a class="btn btn-quiet" href="${esc(gp.href)}" target="_blank" rel="noopener">${icon("store")}${gp.exact ? "Google profile" : "Find on Google"}</a>
+        <span class="spacer"></span>
+        ${L.website ? `<a class="iconbtn" href="${esc(L.website)}" target="_blank" rel="noopener" title="Open their website" aria-label="Open their website">${icon("globe")}</a>` : ""}
+        ${IN_QUEUE.has(L.status) ? `<button class="iconbtn" type="button" id="act-skip" title="Skip for today" aria-label="Skip for today">${icon("clock")}</button>` : ""}
+      </div>
+      ${!L.phone && !email ? `<p class="guide">No phone or email on record. Their Google profile or social page usually has one.</p>` : ""}
+    </div>
+    <div class="d-cols">
+      <div class="d-col">
+        <section class="tile"><h3>Why them</h3>
+          ${pending ? `<p class="guide">Their website is being checked now. This updates by itself.</p>` : issues.length
+            ? `<ul class="why">${issues.slice(0, 5).map((i) => `<li class="${esc(i.sev)}"><b>${esc(i.title)}</b><p>${esc(i.pitch)}</p></li>`).join("")}</ul>`
+            : `<p class="guide">${L.bucket === "ok" ? "Their website is in good shape. Pitch automations instead: instant replies to missed calls, booking, review requests." : (unverified(L) ? "If they really have no website, people searching for them find competitors first." : "No website, not even on Google. People searching for them find competitors first.")}</p>`}
+          ${unverified(L) ? `<p class="caution">${esc(noSiteNote(L))} <button class="linkbtn" type="button" id="act-find">Look again</button></p>` : ""}
+        </section>
+        <section class="tile"><h3>Where they're listed</h3>
+          <div class="listed">${listed.map((x) => x.href
+            ? `<a href="${esc(x.href)}" target="_blank" rel="noopener"><i class="lic${x.gmb ? " gmb" : ""}">${icon(x.ic)}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span><svg class="ic go" aria-hidden="true"><use href="#i-ext"/></svg></a>`
+            : `<div class="row-static"><i class="lic">${icon(x.ic)}</i><span><b>${esc(x.title)}</b><small>${esc(x.sub)}</small></span></div>`).join("")}</div>
+          <div class="mapbox" id="mapbox"><button class="btn btn-quiet btn-sm" type="button" id="map-show">${icon("map")}Show Google map here</button></div>
+        </section>
+      </div>
+      <div class="d-col">
+        <section class="tile say"><h3>What to say</h3>
+          <div class="seg" role="tablist" aria-label="Message type">
+            <button type="button" role="tab" data-k="whatsapp">WhatsApp</button><button type="button" role="tab" data-k="email">Email</button><button type="button" role="tab" data-k="call">Call script</button></div>
+          <input type="text" class="say-subject" id="say-subject" aria-label="Email subject">
+          <textarea class="say-text" id="say-text" aria-label="Message"></textarea>
+          <div class="btnrow"><button class="btn btn-quiet btn-sm" type="button" id="copy-say">${icon("copy")}Copy</button><span class="hint">Edit before sending, and replace [DEMO LINK] with your mock-up.</span></div>
+          <p class="rule" id="say-rule" hidden></p>
+        </section>
+        <section class="tile"><h3>Log it <span class="saved" id="saved" hidden>Saved</span></h3>
+          <div class="track" id="statusrow" role="group" aria-label="Pipeline status">${LINEAR.map((k, i) => `<button type="button" data-s="${k}" aria-pressed="${L.status === k}" class="${li > i ? "past" : ""}">${L.status === k ? icon("check") : ""}${esc(STATUS_LABEL[k])}</button>`).join("")}</div>
+          <div class="track-alt"><span>Or close it:</span>${["lost", "not_fit"].map((k) => `<button class="chip" type="button" data-s="${k}" aria-pressed="${L.status === k}">${esc(STATUS_LABEL[k])}</button>`).join("")}</div>
+          <div class="logrow">
+            <label>Follow up on<input type="date" id="follow-date" value="${followDate}"></label>
+            <label>Notes<textarea id="notes" placeholder="Who you spoke to, what they said, demo link">${esc(L.notes || "")}</textarea></label>
+          </div>
+        </section>
+      </div>
+    </div>
+    <details class="tile more-info"><summary>Website details and tools</summary><div class="mi-body">
+      <dl class="facts">${facts.join("") || "<dt>Nothing yet</dt><dd>Their website hasn't been checked.</dd>"}</dl>
       ${psi && !psi.error ? `<div class="gauges">${gauge("Speed on phones", psi.performance)}${gauge("Search basics", psi.seo)}${gauge("Accessibility", psi.accessibility)}${gauge("Best practices", psi.best_practices)}</div>` : ""}
       ${psi && psi.error ? `<p class="guide" style="margin-top:12px">${esc(psi.error)}</p>` : ""}
       ${L.shot ? `<a href="/shots/${L.id}.jpg?${L.psi_at || ""}" target="_blank" rel="noopener"><img class="shot" src="/shots/${L.id}.jpg?${L.psi_at || ""}" alt="Their site on a phone"></a>` : ""}
@@ -446,35 +713,43 @@ function renderDetail(view, L, { quiet = false } = {}) {
         <button class="btn btn-quiet btn-sm" type="button" id="act-site">${icon("edit")}${L.website ? "Change website" : "Add a website"}</button>
         <button class="btn btn-quiet btn-sm" type="button" id="act-delete">${icon("trash")}Delete lead</button>
       </div>
-      <div class="inline-edit" id="site-edit" hidden><input type="text" id="site-input" value="${esc(L.website || "")}" placeholder="www.example.com" aria-label="Website address"><button class="btn btn-primary btn-sm" type="button" id="site-save">Save and check</button></div>
-    </details>
+      <div class="inline-edit" id="site-edit" hidden><input type="text" id="site-input" value="${esc(L.website || "")}" placeholder="www.example.com" aria-label="Website address"><button class="btn btn-lemon btn-sm" type="button" id="site-save">Save and check</button></div>
+    </div></details>
   </div>`;
 
   /* wire up */
-  $(".d-close", p).addEventListener("click", () => p.classList.remove("open"));
+  $(".d-close", p).addEventListener("click", () => closeDetail(view));
+  $("#map-show", p).addEventListener("click", () => {
+    const q = encodeURIComponent(placeQuery(L));
+    $("#mapbox", p).innerHTML = `<iframe title="Google map of ${esc(L.name)}" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${q}&z=16&output=embed"></iframe>
+      <p class="hint mapnote">Map from Google. Open the profile above for photos, hours and reviews.</p>`;
+    M.enter([$("#mapbox iframe", p)], { y: 6 });
+  });
   const setKind = (k) => {
     store.set("sayKind", k);
-    $$(".seg button", p).forEach((b) => b.setAttribute("aria-selected", String(b.dataset.k === k)));
+    $$(".say .seg button", p).forEach((b) => b.setAttribute("aria-selected", String(b.dataset.k === k)));
     renderSay(p, L, k, wa, email);
   };
-  $$(".seg button", p).forEach((b) => b.addEventListener("click", () => setKind(b.dataset.k)));
+  $$(".say .seg button", p).forEach((b) => b.addEventListener("click", () => setKind(b.dataset.k)));
   setKind(kind);
   $("#act-skip", p)?.addEventListener("click", async () => {
     try { await api("/api/lead/update", { id: L.id, skip: true }); } catch (e) { return toast(e.message, { err: true }); }
     toast(`${L.name} skipped until tomorrow.`, { action: "Undo", onAction: async () => { await api("/api/lead/update", { id: L.id, skip: false }); refreshAll(); } });
-    if (view === "next") leaveQueue(L.id); else select(view, L.id, { quiet: true });
+    if (view === "next") leaveQueue(L.id); else select(view, L.id);
   });
-  $$("#statusrow .chip", p).forEach((b) => b.addEventListener("click", async () => {
+  $$("[data-s]", p).forEach((b) => b.addEventListener("click", async () => {
     const prev = { status: L.status, follow_up_at: L.follow_up_at };
     const s = b.dataset.s;
+    if (s === prev.status) return;
+    M.nudge(b);
     let upd;
     try { upd = await api("/api/lead/update", { id: L.id, status: s }); } catch (e) { return toast(e.message, { err: true }); }
     const msg = upd.follow_up_at && !prev.follow_up_at ? `Logged as ${STATUS_LABEL[s].toLowerCase()}. Follow-up set for ${fmtDay(upd.follow_up_at)}.` : `Logged as ${STATUS_LABEL[s].toLowerCase()}.`;
     toast(msg, { action: "Undo", onAction: async () => { await api("/api/lead/update", { id: L.id, status: prev.status, follow_up_at: prev.follow_up_at }); refreshAll(); } });
     refreshCounts();
     if (view === "next" && IN_QUEUE.has(prev.status) !== IN_QUEUE.has(s) || (view === "next" && state.next?.followups.some((x) => x.id === L.id) && !upd.follow_up_at)) leaveQueue(L.id);
-    else if (view === "followups" && !upd.follow_up_at) { state.selected.followups = null; loadFollowups(); }
-    else { state.lead = upd; renderDetail(view, upd, { quiet: true }); patchRow(view, upd); }
+    else if (view === "followups" && !upd.follow_up_at) { setOpen("followups", false); loadFollowups(); }
+    else { state.lead = upd; patchDetailStatus(p, upd); patchCard(view, upd); }
   }));
   $("#follow-date", p).addEventListener("change", async (e) => {
     const v = e.target.value ? new Date(e.target.value + "T09:00:00").getTime() / 1000 : null;
@@ -485,33 +760,48 @@ function renderDetail(view, L, { quiet = false } = {}) {
     clearTimeout(nt);
     nt = setTimeout(async () => { try { await api("/api/lead/update", { id: L.id, notes: e.target.value }); flashSaved(p); } catch (err) { toast(err.message, { err: true }); } }, 600);
   });
-  $("#act-regrade", p).addEventListener("click", async () => { await api("/api/lead/regrade", { id: L.id }); toast("Checking their website again…"); select(view, L.id, { quiet: true }); });
+  $("#act-find", p)?.addEventListener("click", async () => { await api("/api/find-sites", { id: L.id }); toast("Looking for their website…"); poll(true); });
+  $("#act-regrade", p).addEventListener("click", async () => { await api("/api/lead/regrade", { id: L.id }); toast("Checking their website again…"); select(view, L.id); });
   $("#act-psi", p)?.addEventListener("click", async () => { await api("/api/lead/psi", { id: L.id }); toast("Google speed test started. It takes up to a minute."); });
   $("#act-site", p).addEventListener("click", () => { $("#site-edit", p).hidden = false; $("#site-input", p).focus(); });
   $("#site-save", p).addEventListener("click", async () => {
-    try { const upd = await api("/api/lead/update", { id: L.id, website: $("#site-input", p).value }); renderDetail(view, upd, { quiet: true }); toast("Saved. Checking the website…"); }
+    try { await api("/api/lead/update", { id: L.id, website: $("#site-input", p).value }); toast("Saved. Checking the website…"); select(view, L.id); }
     catch (e) { toast(e.message, { err: true }); }
   });
   $("#act-delete", p).addEventListener("click", async () => {
     try { await api("/api/lead/delete", { id: L.id }); } catch (e) { return toast(e.message, { err: true }); }
     toast(`${L.name} deleted.`, { action: "Undo", onAction: async () => { await api("/api/lead/restore", { id: L.id }); refreshAll(); } });
-    p.innerHTML = detailEmpty(); p.classList.remove("open"); state.selected[view] = null;
+    setOpen(view, false);
     refreshAll();
   });
 }
+/* Status changed but the lead stays here: update the track and pills in place, keeping notes and the draft as typed. */
+function patchDetailStatus(p, L) {
+  const li = LINEAR.indexOf(L.status);
+  $$("#statusrow button", p).forEach((b, i) => {
+    const on = b.dataset.s === L.status;
+    b.setAttribute("aria-pressed", String(on));
+    b.className = li > i ? "past" : "";
+    b.innerHTML = (on ? icon("check") : "") + esc(STATUS_LABEL[b.dataset.s]);
+  });
+  $$(".track-alt [data-s]", p).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.s === L.status)));
+  const pills = $(".d-pills", p);
+  if (pills) pills.innerHTML = (L.bucket === "pending" ? `<span class="pill p-pending"><span>Checking their website…</span></span>` : pill(L)) + (L.status !== "new" ? `<span class="tag">${esc(STATUS_LABEL[L.status])}</span>` : "");
+  if (L.follow_up_at) $("#follow-date", p).value = new Date(L.follow_up_at * 1000).toISOString().slice(0, 10);
+}
 function flashSaved(p) { const s = $("#saved", p); if (s) { s.hidden = false; setTimeout(() => (s.hidden = true), 1400); } }
-function patchRow(view, L) {
-  const old = $(`#view-${view} .row[data-id="${L.id}"]`);
+function patchCard(view, L) {
+  const old = $(`#view-${view} .card[data-id="${L.id}"]`);
   if (!old) return;
   const tmp = document.createElement("div");
-  tmp.innerHTML = rowHTML(L, { due: view === "followups" });
-  old.parentElement.replaceWith(tmp.firstElementChild);
+  tmp.innerHTML = cardHTML(L, { due: view === "followups" });
+  old.replaceWith(tmp.firstElementChild);
   markSelected($(`#view-${view}`), L.id);
 }
 function refreshAll() {
   refreshCounts();
-  if (state.view === "next") loadNext();
-  if (state.view === "leads") loadLeads(false, { keep: true });
+  if (state.view === "next") loadNext({ animate: true });
+  if (state.view === "leads") loadLeads(false, { keep: true, animate: true });
   if (state.view === "followups") loadFollowups();
 }
 
@@ -528,7 +818,8 @@ function pitchParts(L) {
   const praise = L.reviews >= 10 && L.rating
     ? `I came across ${L.name} on Google. ${L.rating} stars from ${L.reviews} reviews is impressive; your customers clearly rate you.`
     : `I came across ${L.name} while looking at ${cat} in ${place}.`;
-  const top = (L.issues || []).filter((i) => i.pts >= 5).slice(0, 3);
+  const real = (L.issues || []).filter((i) => !(i.title === "Very little content" && (L.grade?.site?.words ?? 0) < 20));
+  const top = real.filter((i) => i.pts >= 5).slice(0, 3);
   let problem, subject, short;
   switch (L.bucket) {
     case "none":
@@ -548,7 +839,7 @@ function pitchParts(L) {
       break;
     case "bad": case "weak":
       subject = `A few things on ${domain || "your website"}`;
-      problem = `I had a look at ${domain || "your website"} and spotted a few things that are probably costing you enquiries:\n\n` + (top.length ? top : (L.issues || []).slice(0, 3)).map((i) => `• ${i.pitch}`).join("\n");
+      problem = `I had a look at ${domain || "your website"} and spotted a few things that are probably costing you enquiries:\n\n` + (top.length ? top : real.slice(0, 3)).map((i) => `• ${i.pitch}`).join("\n");
       short = `I had a look at ${domain || "your website"} and noticed: ${(top[0]?.pitch || "a few things that could bring you more enquiries.").replace(/^Your /, "your ")}`;
       break;
     case "ok":
@@ -564,7 +855,7 @@ function pitchParts(L) {
   const offer = L.bucket === "ok"
     ? "Would a 10-minute call this week be useful? I can show you exactly how it would work for you."
     : "I've put together a quick mock-up of what a new site could look like for you: [DEMO LINK]\n\nIf you like it, I can have it live within a week. No obligation either way.";
-  return { me, sign, praise, problem, subject, short, offer, top, place, cat };
+  return { me, sign, praise, problem, subject, short, offer, top, real, place, cat };
 }
 function renderSay(p, L, kind, wa, email) {
   const x = pitchParts(L), subj = $("#say-subject", p), text = $("#say-text", p), rule = $("#say-rule", p);
@@ -573,9 +864,9 @@ function renderSay(p, L, kind, wa, email) {
     subj.value = x.subject;
     text.value = `Hi there,\n\n${x.praise}\n\n${x.problem}\n\n${x.offer}\n\nBest,\n${x.sign}\n\nP.S. If this isn't useful, just reply "no thanks" and I won't contact you again.`;
   } else if (kind === "whatsapp") {
-    text.value = `Hi! I'm ${x.me}${state.settings.agency ? ` from ${state.settings.agency}` : ""}. ${x.short} ${L.bucket === "ok" ? "Can I send you a quick example?" : "I made a quick mock-up of a new site for you. Can I send it over?"}`;
+    text.value = pitchWhatsApp(L);
   } else {
-    const points = (x.top.length ? x.top : (L.issues || []).slice(0, 3)).map((i) => `   • ${i.pitch}`).join("\n");
+    const points = (x.top.length ? x.top : x.real.slice(0, 3)).map((i) => `   • ${i.pitch}`).join("\n");
     text.value = `OPENER\n"Hi, is that the owner? My name's ${x.me}${state.settings.agency ? `, I run ${state.settings.agency}` : ""}. I help ${x.cat} in ${x.place} get more customers online. Have you got two minutes?"\n\n` +
       `WHY YOU'RE CALLING\n"${x.problem.split("\n")[0]}"\n` + (points ? `\nPOINTS TO MENTION\n${points}\n` : "") +
       `\nTHE ASK\n"I've already mocked up what a new site could look like for you. Can I send it on WhatsApp or email? It's free to look at."\n\n` +
@@ -586,7 +877,7 @@ function renderSay(p, L, kind, wa, email) {
     const a = $("#act-wa", p); if (a && wa) a.href = `https://wa.me/${wa}?text=${encodeURIComponent(kind === "whatsapp" ? text.value : pitchWhatsApp(L))}`;
     const m = $("#act-mail", p); if (m && email) m.href = `mailto:${email}?subject=${encodeURIComponent(kind === "email" ? subj.value : x.subject)}&body=${encodeURIComponent(kind === "email" ? text.value : `Hi there,\n\n${x.praise}\n\n${x.problem}\n\n${x.offer}\n\nBest,\n${x.sign}`)}`;
   };
-  const fit = () => { text.style.height = "auto"; text.style.height = Math.max(96, text.scrollHeight + 2) + "px"; };
+  const fit = () => { text.style.height = "auto"; text.style.height = Math.max(120, text.scrollHeight + 2) + "px"; };
   fit();
   links(); text.oninput = () => { links(); fit(); }; subj.oninput = links;
   $("#copy-say", p).onclick = async () => {
@@ -646,6 +937,7 @@ function openFind(preset) {
   if (preset?.cat) find.picked = new Set([preset.cat]);
   renderCatList(); updateFindSummary();
   d.showModal();
+  if (M.ok()) gsap.fromTo($(".dialog-inner", d), { opacity: 0, y: 14, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.32, ease: "power3.out", clearProps: "opacity,transform" });
 }
 function bindFind() {
   $$("[data-open-find]").forEach((b) => b.addEventListener("click", () => openFind()));
@@ -695,7 +987,7 @@ async function loadSearches() {
   $("#searches-table tbody").innerHTML = state.searches.map((s) => `<tr>
     <td>${esc(ago(s.created_at))}</td><td>${esc(s.category_label)}</td>
     <td>${esc(s.location)}${s.place && s.place !== s.location ? `<div class="sub" title="${esc(s.place)}">${esc(s.place.split(",").slice(0, 2).join(","))}</div>` : ""}</td>
-    <td>${esc({ osm: "OpenStreetMap", google: "Google", tomtom: "TomTom", csv: "Spreadsheet" }[s.source] || s.source)}</td>
+    <td>${esc(SOURCE[s.source] || s.source)}</td>
     <td><span class="st ${esc(s.status)}">${esc(STATUS_WORD[s.status] || s.status)}</span>${s.message ? `<div class="sub">${esc(s.message)}</div>` : ""}</td>
     <td class="num">${s.found ?? ""}</td><td class="num">${s.added ?? ""}</td>
     <td class="acts-cell">${s.status === "done" ? `<button class="link" data-view-s="${s.id}">View leads</button>` : ""}${s.source !== "csv" ? `<button class="link" data-rerun="${s.id}">Run again</button>` : ""}<button class="link" data-del="${s.id}">Delete</button></td></tr>`).join("");
@@ -766,7 +1058,11 @@ function fillSettings() {
   $("#key-state").textContent = s.google_key_set ? `(saved, ends ${s.google_key_hint})` : "(not set)";
   $("#tomtom-form").elements.tomtom_key.value = "";
   $("#tomtom-state").textContent = s.tomtom_key_set ? `(saved, ends ${s.tomtom_key_hint})` : "(not set)";
+  $("#apify-form").elements.apify_token.value = "";
+  $("#apify-state").textContent = s.apify_token_set ? `(saved, ends ${s.apify_token_hint})` : "(not set)";
+  if (s.apify_token_set) api("/api/apify-usage", {}).then((u) => { state.apifyUsd = u; renderStatus(state.status || {}); }).catch(() => {});
   $("#theme-select").value = store.get("theme", "system");
+  $("#layout-select").value = document.documentElement.dataset.layout;
 }
 function bindSettings() {
   const save = async (body, msg = "Saved") => { try { state.settings = await api("/api/settings", body); fillSettings(); toast(msg); } catch (e) { toast(e.message, { err: true }); } };
@@ -779,8 +1075,18 @@ function bindSettings() {
     save({ tomtom_key: k }, "TomTom key saved. Choose TomTom when you find leads.");
   });
   $("#clear-tomtom").addEventListener("click", () => confirm("Remove the saved TomTom key from this computer?") && save({ clear_tomtom_key: true }, "Key removed"));
+  $("#apify-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const k = e.target.elements.apify_token.value.trim();
+    if (!k) return toast("Paste your Apify token first.", { err: true });
+    save({ apify_token: k }, "Apify token saved. Checking your No website leads against Google now.");
+    poll(true);
+  });
+  $("#clear-apify").addEventListener("click", () => confirm("Remove the saved Apify token from this computer?") && save({ clear_apify_token: true }, "Token removed"));
+  $("#find-sites").addEventListener("click", async () => { const r = await api("/api/find-sites", {}); toast(r.queued ? `Looking for websites for ${r.queued.toLocaleString()} leads` : "Every No website lead has already been checked"); poll(true); });
   $("#clear-key").addEventListener("click", () => confirm("Remove the saved Google key from this computer?") && save({ clear_google_key: true }, "Key removed"));
-  $("#theme-select").addEventListener("change", (e) => { store.set("theme", e.target.value); applyTheme(e.target.value); });
+  $("#theme-select").addEventListener("change", (e) => setTheme(e.target.value, e.target));
+  $("#layout-select").addEventListener("change", (e) => setLayout(e.target.value));
   $("#regrade-all").addEventListener("click", async () => {
     if (!confirm("Check every website again? This runs in the background and can take a while for big lists.")) return;
     const r = await api("/api/lead/regrade", { all: true }); toast(`${r.queued} websites queued`); poll(true);
@@ -788,7 +1094,7 @@ function bindSettings() {
 }
 
 /* ============================================================ live status */
-const statusSig = () => { const s = state.status || {}; return [s.graded_total, s.leads].join("|"); };
+const statusSig = () => { const s = state.status || {}; const k = s.lookup || {}; return [s.graded_total, s.leads, k.to_guess, k.to_google].join("|"); };
 async function refreshCounts() {
   try { const s = await api("/api/status"); renderStatus(s); } catch { /* next poll retries */ }
 }
@@ -797,17 +1103,28 @@ function renderStatus(s) {
   $("#n-leads").textContent = s.leads ? s.leads.toLocaleString() : "";
   $("#n-follow").textContent = s.followups_due || "";
   $("#n-next").textContent = s.ready ? s.ready.toLocaleString() : "";
-  const busy = !!(s.searching || s.queued_searches || s.grading || s.psi || s.pending);
+  const busy = !!(s.searching || s.queued_searches || s.grading || s.psi || s.pending || s.finding);
   $("#work-dot").className = "dot" + (busy ? " live" : "");
   let txt;
   if (s.searching) txt = `${s.searching.label}: ${s.searching.step}` + (s.queued_searches ? ` (${s.queued_searches} more waiting)` : "");
   else if (s.queued_searches) txt = `${s.queued_searches} searches waiting`;
   else if (s.grading || s.pending) txt = `Checking websites, ${s.pending} to go`;
   else if (s.psi) txt = "Running Google speed tests";
+  else if (s.apify_batch && !s.lookup?.to_guess) txt = `Checking ${s.apify_batch} Google profiles, ${(s.lookup?.to_google || 0).toLocaleString()} to go`;
+  else if (s.finding) txt = `Looking for missing websites, ${(s.lookup?.to_guess || 0).toLocaleString()} to go`;
   else txt = s.leads ? "Up to date" : "Ready";
   $("#work-text").textContent = txt;
   $("#work").title = (s.log || []).map((l) => `${new Date(l.at * 1000).toLocaleTimeString()}  ${l.msg}`).join("\n");
   const tu = $("#tomtom-usage"); if (tu && s.tomtom) tu.textContent = `TomTom searches used this month: ${s.tomtom.used.toLocaleString()} of about ${s.tomtom.free.toLocaleString()} free.`;
+  const su = $("#apify-usage");
+  if (su && s.apify && s.lookup) {
+    const k = s.lookup, found = k.found_guess + k.found_google;
+    su.textContent = [found ? `Websites found so far: ${found.toLocaleString()} (${k.found_guess.toLocaleString()} by name, ${k.found_google.toLocaleString()} from Google profiles).` : "",
+      k.google_no_site ? `${k.google_no_site.toLocaleString()} confirmed with no website on Google.` : "",
+      s.apify.set && s.apify.checked ? `Google profiles checked this month: ${s.apify.checked.toLocaleString()}.` : "",
+      s.apify.set && state.apifyUsd?.used != null ? `Apify credit used this month: $${(+state.apifyUsd.used).toFixed(2)} of $${(+(state.apifyUsd.limit || 5)).toFixed(2)}.` : "",
+      s.apify_error ? `Paused: ${s.apify_error}` : ""].filter(Boolean).join(" ");
+  }
   const gu = $("#google-usage"); if (gu && s.google) gu.textContent = `Google requests used this month: ${s.google.used} of ${s.google.free} free.`;
   return busy;
 }
@@ -834,19 +1151,29 @@ async function poll(soon = false) {
   // The open lead was still being checked: update just its panel.
   if (state.lead && state.lead.bucket === "pending" && s.graded_total !== prevGraded) {
     const v = state.view;
-    if (state.selected[v] === state.lead.id) select(v, state.lead.id, { quiet: true });
+    if (state.selected[v] === state.lead.id && state.open[v]) select(v, state.lead.id);
   }
   pollTimer = setTimeout(poll, busy ? 2500 : 8000);
 }
 
 /* ============================================================ boot */
 (async function boot() {
+  const qp = new URLSearchParams(location.search); // ?theme= and ?layout= open the app that way without saving
+  applyTheme(qp.get("theme") || store.get("theme", "system"));
+  applyLayout(qp.get("layout") || store.get("layout", "side"));
   bindLeads(); bindFind(); bindImport(); bindSettings();
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") $$(".detail.open").forEach((d) => d.classList.remove("open")); });
+  applyDensity();
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || document.querySelector("dialog[open]")) return;
+    if (!$("#filters").hidden) { toggleFilters(false); $("#filters-btn").focus(); return; }
+    if (state.open[state.view]) closeDetail(state.view);
+  });
   try { const c = await api("/api/categories"); state.cats = c.categories; state.groups = c.groups; } catch { toast("Can't reach LeadFinder. Is it running?", { err: true }); }
   const qa = new URLSearchParams(location.search).get("area");
   if (qa !== null) { state.area = qa; store.set("area", qa); }
   await Promise.all([loadSettings(), refreshCounts(), loadSearches()]);
   show(location.hash.slice(1) || "next", { push: false });
+  if (qp.get("lead") && ["next", "leads", "followups"].includes(state.view)) select(state.view, +qp.get("lead")); // ?lead=ID opens that lead
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove("booting")));
   poll();
 })();

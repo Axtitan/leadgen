@@ -155,7 +155,7 @@ def _to_lead(el):
     for k, v in list(socials.items()):  # OSM sometimes stores just a handle
         if not v.startswith("http"):
             socials[k] = {"facebook": "https://facebook.com/", "instagram": "https://instagram.com/", "tiktok": "https://tiktok.com/@"}[k] + v.lstrip("@")
-    gq = urllib.parse.quote_plus(f"{nm} {addr or city or ''}".strip())
+    gq = urllib.parse.quote_plus(" ".join(x for x in (nm, addr, city) if x))
     return {
         "key": f"o:{el['type']}/{el['id']}", "source": "osm", "name": nm.strip(), "address": addr, "city": city,
         "lat": lat, "lon": lon,

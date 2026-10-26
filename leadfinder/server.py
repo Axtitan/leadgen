@@ -8,7 +8,7 @@ import time
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from . import categories, db, grader, urls
+from . import categories, db, finder, grader, urls
 from .engine import load_settings, save_settings
 from .sources import csvimport, google, tomtom
 
@@ -23,7 +23,7 @@ def _params(qs):
 
 def _public_settings():
     s = load_settings()
-    for name in ("google_key", "tomtom_key"):
+    for name in ("google_key", "tomtom_key", "apify_token"):
         k = s.get(name) or ""
         s[name] = ""
         s[name + "_set"] = bool(k)
@@ -92,6 +92,8 @@ class Handler(BaseHTTPRequestHandler):
                 s["dye_cuts"] = db.dye_cuts(conn)
                 s["ready"] = conn.execute(f"SELECT COUNT(*) FROM leads WHERE {db.QUEUE_WHERE}", (time.time(),)).fetchone()[0]
                 s["tomtom"] = {"used": db.calls_this_month(conn, "tomtom"), "free": tomtom.FREE_PER_MONTH}
+                s["apify"] = {"checked": db.calls_this_month(conn, "apify"), "set": bool(load_settings().get("apify_token"))}
+                s["lookup"] = db.lookup_counts(conn)
                 return self._send(200, s)
             if u.path == "/api/searches":
                 return self._send(200, db.list_searches(conn))
@@ -166,7 +168,8 @@ class Handler(BaseHTTPRequestHandler):
                 if "notes" in b:
                     kw["notes"] = str(b["notes"])[:10000]
                 if "website" in b:
-                    kw.update(website=urls.normalize(b["website"]), domain=db.site_key(b["website"]), grade_status="pending")
+                    kw.update(website=urls.normalize(b["website"]), domain=db.site_key(b["website"]), grade_status="pending",
+                              site_via="manual" if b["website"] else None, site_why=None)
                 if kw:
                     db.set_fields(conn, int(b["id"]), **kw)
                 if "website" in b:
@@ -177,6 +180,16 @@ class Handler(BaseHTTPRequestHandler):
                 if b.get("all"):
                     ids = [r[0] for r in conn.execute("SELECT id FROM leads")]
                 return self._send(200, {"queued": ENGINE.enqueue([int(i) for i in ids], force=True)})
+            if u.path == "/api/find-sites":  # look again for websites the listings left out
+                if b.get("id"):
+                    db.set_fields(conn, int(b["id"]), guessed_at=None, google_check=None)
+                    return self._send(200, {"queued": ENGINE.find([int(b["id"])])})
+                ENGINE.apify_error = None
+                return self._send(200, {"queued": ENGINE.enqueue_lookups()})
+            if u.path == "/api/apify-usage":
+                tok = load_settings().get("apify_token")
+                u2 = finder.apify_usage(tok) if tok else None
+                return self._send(200, {"used": u2[0], "limit": u2[1]} if u2 else {})
             if u.path == "/api/lead/psi":
                 ids = b.get("ids") or [b["id"]]
                 return self._send(200, {"queued": ENGINE.run_psi([int(i) for i in ids])})
@@ -201,13 +214,16 @@ class Handler(BaseHTTPRequestHandler):
                 for k in ("auto_psi", "my_name", "agency", "my_site", "my_phone", "workers"):
                     if k in b:
                         s[k] = b[k]
-                for name in ("google_key", "tomtom_key"):
+                for name in ("google_key", "tomtom_key", "apify_token"):
                     if b.get(name):
                         s[name] = b[name].strip()
                     if b.get("clear_" + name):
                         s[name] = ""
                 s["workers"] = max(2, min(24, int(s.get("workers") or 8)))
                 save_settings(s)
+                if b.get("apify_token"):
+                    ENGINE.apify_error = None
+                    ENGINE.enqueue_lookups()  # check the "No website" leads against Google
                 return self._send(200, _public_settings())
             return self._send(404, {"error": "Unknown endpoint"})
         except KeyError as e:

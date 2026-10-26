@@ -1,299 +1,360 @@
 ---
 name: LeadFinder
-description: Adire Dye Depth. A ranked lead queue where indigo dye depth shows how strong each lead is.
+description: Bento board. A lead list laid out as tidy tiles, the reason to call first on top and everything else one click deeper.
 colors:
-  dye-1: "#C5CEEC"
-  dye-2: "#8798D3"
-  dye-3: "#4E66B4"
-  dye-4: "#2A4396"
-  dye-5: "#0B1430"
-  primary: "#121A33"
-  primary-ink: "#FFFFFF"
-  undyed-cloth: "#EEF0F5"
-  panel-white: "#FBFCFE"
-  well: "#F4F6FA"
-  ink: "#121A33"
-  muted-ink: "#4E5977"
-  faint-ink: "#6A7491"
-  hairline: "#D5DAE8"
-  hairline-soft: "#E4E8F1"
-  focus-indigo: "#4A5FA0"
-  selection-wash: "#DDE3F4"
-  rail-indigo: "#0E1838"
-  rail-ink: "#DCE3F7"
-  rail-muted: "#9AA8D4"
-  rail-active: "#2A3E7A"
-  resist-ground: "#1B2A5C"
-  status-broken-rust: "#B93A0B"
-  status-no-website: "#7E3B8A"
-  status-social: "#0E6F72"
-  status-weak-site: "#A34D07"
-  status-needs-work: "#876A0B"
-  status-good: "#2F7A4B"
-  status-unknown: "#6A7491"
-  danger: "#B42318"
+  ground: "#F1F1EC"
+  tile: "#FFFFFF"
+  tile-well: "#F6F6F1"
+  tile-deep: "#ECECE5"
+  hairline: "#E3E3DB"
+  hairline-strong: "#D3D3CA"
+  ink: "#1A1B1D"
+  ink-soft: "#3A3B3E"
+  muted: "#6A6B66"
+  lemon: "#EDE65A"
+  lemon-hover: "#E4DC3E"
+  lemon-wash: "#F8F4BE"
+  lemon-ink: "#1F1E0A"
+  selected: "#1F2023"
+  selected-ink: "#F4F4EF"
+  bar-charcoal: "#232322"
+  bar-raised: "#31312F"
+  bar-ink: "#F1F0EA"
+  bar-muted: "#B3B2A9"
+  dark-ground: "#161615"
+  dark-tile: "#262624"
+  dark-tile-well: "#2E2E2C"
+  dark-tile-deep: "#383835"
+  dark-hairline: "#353532"
+  dark-hairline-strong: "#4A4A46"
+  dark-ink: "#F1F0EA"
+  dark-ink-soft: "#D9D8D1"
+  dark-muted: "#A6A59C"
+  dark-lemon-wash: "#48461F"
+  dark-bar-charcoal: "#31312F"
+  dark-bar-raised: "#3E3E3B"
+  status-broken: "#B42318"
+  status-broken-bg: "#FDECEA"
+  status-social: "#6D28D9"
+  status-social-bg: "#F1EAFE"
+  status-no-website: "#8F5300"
+  status-no-website-bg: "#FBEFD6"
+  status-bad: "#B93C0B"
+  status-bad-bg: "#FDECE2"
+  status-weak: "#1D5FA8"
+  status-weak-bg: "#E6EFFA"
+  status-ok: "#157339"
+  status-ok-bg: "#E3F4E8"
+  status-unknown: "#57585A"
+  status-unknown-bg: "#EBEBE5"
+  dark-status-broken: "#FF9E94"
+  dark-status-social: "#C9B0FF"
+  dark-status-no-website: "#F2C76A"
+  dark-status-bad: "#FFB287"
+  dark-status-weak: "#97C3F5"
+  dark-status-ok: "#8CDBA6"
+  dark-status-unknown: "#BBBAB1"
 typography:
   display:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "27px"
-    fontWeight: 800
-    lineHeight: 1.12
-    letterSpacing: "-0.02em"
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "clamp(26px, 5cqi, 42px)"
+    fontWeight: 400
+    lineHeight: 1.08
+    letterSpacing: "-0.03em"
   headline:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "23px"
-    fontWeight: 800
-    letterSpacing: "-0.012em"
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "32px"
+    fontWeight: 500
+    lineHeight: 1.15
+    letterSpacing: "-0.025em"
   title:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "17px"
-    fontWeight: 750
-    letterSpacing: "-0.012em"
-  row-name:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "15px"
-    fontWeight: 700
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "16px"
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: "-0.01em"
+  figure:
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "22px"
+    fontWeight: 500
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+    fontFeature: "tnum"
   body:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "15px"
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "14px"
     fontWeight: 400
     lineHeight: 1.5
-    fontFeature: "tnum"
-  guide:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "13.5px"
-    fontWeight: 400
   label:
-    fontFamily: "Hanken Grotesk, Segoe UI, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 650
+    fontFamily: "Host Grotesk, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "12.5px"
+    fontWeight: 500
+    lineHeight: 1.4
 rounded:
-  swatch: "3px"
-  sm: "6px"
-  md: "10px"
-  dialog: "14px"
+  tile: "28px"
+  card: "22px"
+  compact-card: "18px"
+  inset: "14px"
   pill: "999px"
+  circle: "50%"
 spacing:
-  hairline-row: "12px 28px"
-  pane-head: "26px 28px 12px"
-  page: "30px 40px 48px"
-  gap-sm: "8px"
-  gap-md: "14px"
-  section: "26px"
+  xs: "6px"
+  sm: "8px"
+  md: "12px"
+  lg: "16px"
+  xl: "24px"
+  xxl: "28px"
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-ink}"
-    rounded: "{rounded.sm}"
-    padding: "8px 15px"
+    backgroundColor: "{colors.lemon}"
+    textColor: "{colors.lemon-ink}"
+    rounded: "{rounded.pill}"
+    height: "40px"
+    padding: "0 18px"
+    typography: "{typography.body}"
+  button-primary-hover:
+    backgroundColor: "{colors.lemon-hover}"
   button-quiet:
-    backgroundColor: "{colors.panel-white}"
+    backgroundColor: "{colors.tile}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.sm}"
-    padding: "8px 15px"
-  button-cloth:
-    backgroundColor: "{colors.undyed-cloth}"
-    textColor: "{colors.rail-indigo}"
-    rounded: "{rounded.sm}"
-    padding: "8px 15px"
-  button-danger:
-    backgroundColor: "{colors.danger}"
-    textColor: "{colors.primary-ink}"
-    rounded: "{rounded.sm}"
-    padding: "8px 15px"
-  chip:
-    backgroundColor: "{colors.panel-white}"
-    textColor: "{colors.muted-ink}"
     rounded: "{rounded.pill}"
-    padding: "5px 13px"
-  chip-pressed:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-ink}"
+    height: "40px"
+    padding: "0 18px"
+  button-quiet-hover:
+    backgroundColor: "{colors.tile-well}"
+  button-dark:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.selected-ink}"
     rounded: "{rounded.pill}"
-  input:
-    backgroundColor: "{colors.panel-white}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.sm}"
-    padding: "8px 11px"
-    height: "38px"
-  lead-swatch:
-    backgroundColor: "{colors.dye-3}"
-    rounded: "{rounded.swatch}"
-    width: "26px"
+    height: "40px"
+    padding: "0 18px"
+  button-small:
     height: "34px"
-  nav-item-active:
-    backgroundColor: "{colors.rail-active}"
-    textColor: "{colors.primary-ink}"
-    rounded: "8px"
-    padding: "9px 10px"
-  toast:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-ink}"
-    rounded: "{rounded.md}"
-    padding: "11px 16px"
+    padding: "0 14px"
+    rounded: "{rounded.pill}"
+  icon-button:
+    backgroundColor: "{colors.tile}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.circle}"
+    size: "40px"
+  chip:
+    backgroundColor: "{colors.tile}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    height: "34px"
+    padding: "0 14px"
+  chip-selected:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.selected-ink}"
+  status-pill:
+    rounded: "{rounded.pill}"
+    height: "26px"
+    padding: "0 11px 0 9px"
+    typography: "{typography.label}"
+  input-field:
+    backgroundColor: "{colors.tile-well}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    height: "42px"
+    padding: "0 16px"
+  lead-card:
+    backgroundColor: "{colors.tile}"
+    rounded: "{rounded.card}"
+    padding: "18px 18px 14px 20px"
+  bento-tile:
+    backgroundColor: "{colors.tile}"
+    rounded: "{rounded.tile}"
+    padding: "22px 24px"
+  stat-tile:
+    backgroundColor: "{colors.tile}"
+    rounded: "{rounded.card}"
+    padding: "14px 16px"
+  stat-tile-selected:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.selected-ink}"
+  nav-link-active:
+    backgroundColor: "{colors.lemon}"
+    textColor: "{colors.lemon-ink}"
+    rounded: "{rounded.pill}"
+    height: "44px"
+  top-bar:
+    backgroundColor: "{colors.bar-charcoal}"
+    textColor: "{colors.bar-ink}"
+    rounded: "{rounded.pill}"
+    height: "68px"
 ---
 
 # Design System: LeadFinder
 
 ## Overview
 
-**Creative North Star: "Adire Dye Depth"**
+**Creative North Star: "The Bento Board"**
 
-LeadFinder is a working tool dressed in adire eleko, the Yoruba starch-resist indigo cloth. A deep indigo rail holds the navigation; a pale undyed-cloth ground carries the work; white panels hold the selected lead. The one idea the cloth carries is lead strength: the deeper a lead's swatch is dyed, the stronger the lead. Everything else stays quiet so that dye depth reads at a glance.
+LeadFinder is a board of soft, rounded tiles on a warm grey ground. Each lead is a small card that carries only its name, a website-status pill, an ink strength meter and a Google button. Everything else lives one click deeper, in a bento of tiles that opens beside a narrowed list. At rest the board is calm and low in contrast. Charcoal ink does the structural work, and a single lemon yellow marks where the seller should act next.
 
-Density is that of a focused desk tool used for hours. Rows are separated by hairlines, not boxed into cards. Type is a single grotesk at modest sizes with tabular figures. Status never relies on colour: each one is a shaped marker plus a word. The cloth's pattern shows up in exactly one place, the starch-resist band along the rail's edge, so the motif stays special and never turns into wallpaper.
+Both themes share one geometry. Light mode puts clean white tiles with hairline borders on warm grey. Dark mode puts charcoal tiles on a near-black ground with warm off-white ink. Lemon looks the same in both themes. Selection is always inverted ink: charcoal on light, off-white on charcoal. Navigation has two layouts that use the same tokens: a 256px side rail tile, or a charcoal top bar shaped like a pill.
 
-The system rejects the CRM default (a full database table led by numeric scores) as the home view. Tables exist for history pages, not for deciding who to contact next.
+Motion has one authored moment: a card opening into its profile. The grid collapses to a single column and the bento tiles stagger in. All other motion supports that moment: the reflow when a card is logged away, entrances, and the theme sweep. All of it turns off cleanly under reduced motion.
 
 **Key Characteristics:**
-- Five dye steps encode lead strength and selection only; thresholds are server-supplied quintiles.
-- Ink, not dye, drives primary actions, pressed chips, badges and toasts.
-- Status = shape + word; rust is reserved for broken sites.
-- Hairline rows on an undyed ground; no cards, no floating containers in the flow.
-- One family (Hanken Grotesk), heavy weights for names, tabular numerals everywhere.
-- Light and dark themes share every rule; dark maps dye depth to chroma.
+- Warm grey ground with white (light) or charcoal (dark) tiles; hairline borders, no heavy chrome.
+- Three nested radii: tiles 28px, cards 22px, and every control is a full pill or a circle.
+- Lemon is a rare signal for what to do next; selection is inverted ink.
+- Website status is a dot plus a word; an unverified status gets a diagonal hatch.
+- Host Grotesk only, at medium weights, with tabular numbers wherever a count appears.
+- GSAP Flip carries the card-to-profile opening; content stays visible without it.
 
 ## Colors
 
-An indigo-on-undyed-cloth palette: one blue family whose depth carries meaning, cool neutrals, and a small set of status hues that only ever appear beside a shape and a word.
+The palette is a near-neutral warm grey with charcoal ink, one lemon accent, and seven tinted status pairs that carry website health.
 
 ### Primary
-- **Ink** (`primary`): the action colour. Primary buttons (WhatsApp, Find leads in dialogs), pressed filter chips, count badges and toasts. Inverts to pale ink on navy in dark mode, so it always reads as the strongest contrast on the screen.
-
-### Secondary: the dye steps
-- **Dye 1, Faint Wash** (`dye-1`): weakest ready lead; also the text-selection wash and the pending-check marker.
-- **Dye 2, Light Indigo** (`dye-2`): second quintile; hover hairline on quiet buttons, chips and icon buttons.
-- **Dye 3, Mid Indigo** (`dye-3`): middle quintile; the indigo for links, caret, checkbox accent, running-job state and the checked-source border.
-- **Dye 4, Deep Indigo** (`dye-4`): fourth quintile.
-- **Dye 5, Night Indigo** (`dye-5`): strongest leads, the deepest dip.
-
-In dark mode the steps become chroma, not darkness: `#2C3350`, `#313F7E`, `#3549AE`, `#3F58DA`, `#5C77FF`. The strongest lead is the most saturated, brightest blue. An unscored lead has an empty swatch with a dashed hairline border.
-
-### Tertiary: status hues
-- **Broken Rust** (`status-broken-rust`): broken sites (expired domain, doesn't load, page not found) and overdue follow-ups. Nothing else is rust.
-- **Plum** (`status-no-website`): no website listed.
-- **Teal** (`status-social`): social or listing page only.
-- **Burnt Amber** (`status-weak-site`) and **Ochre** (`status-needs-work`): weak website and needs work.
-- **Leaf** (`status-good`): decent site; also "Saved" confirmations.
-- **Slate** (`status-unknown`): couldn't check.
-- **Danger Red** (`danger`): destructive buttons and error toasts only, never a website status.
+- **Signal Lemon** (lemon): the primary action button (Find leads, and the lead's main contact button such as WhatsApp). It also marks the active navigation item in both layouts, the Google-profile row icon in "Where they're listed", the brandmark's first square, the live-search pulse dot, and text selection. On hover it deepens to Lemon Press (lemon-hover). Text on lemon is always Lemon Ink, never white.
+- **Lemon Wash** (lemon-wash / dark-lemon-wash): a pale tint for gentle notices, for the file drop zone while a file is dragged over it, and for the "Very strong" strength pill in the open lead's header.
 
 ### Neutral
-- **Undyed Cloth** (`undyed-cloth`): the app ground and the queue column.
-- **Panel White** (`panel-white`): the detail panel, inputs, quiet buttons, the current row.
-- **Well** (`well`): row hover, segmented-control track, caution and rule notes, dialog footers.
-- **Ink / Muted Ink / Faint Ink** (`ink`, `muted-ink`, `faint-ink`): text, guide lines and metadata, placeholders and counts.
-- **Hairline / Soft Hairline** (`hairline`, `hairline-soft`): row rules, input strokes, table rules.
-- **Selection Wash** (`selection-wash`): notices and a checked source card.
-- **Rail Indigo, Rail Ink, Rail Muted, Rail Active** (`rail-*`): the rail is dark in both themes; its active nav item sits on `rail-active`.
+- **Warm Grey Ground** (ground / dark-ground): the page behind every tile.
+- **Tile White** (tile) / **Charcoal Tile** (dark-tile): every card, tile, rail, popover and dialog surface.
+- **Tile Well** (tile-well) and **Tile Deep** (tile-deep): fields, segmented tracks, icon wells, hover fills and nested panels inside a tile.
+- **Hairline** (hairline) and **Hairline Strong** (hairline-strong): 1px tile borders and dividers. The stronger step is the hover border and the colour of an unlit strength bar.
+- **Charcoal Ink** (ink), **Soft Ink** (ink-soft), **Muted** (muted): primary text, form labels, and secondary or meta text. Dark mode swaps these for the warm off-white family.
+- **Inverted Ink** (selected / selected-ink): the fill of every selected state: filter chips, the selected stat tile, the current pipeline step, count badges and the dark button. In dark mode it flips to off-white with charcoal text.
+- **Bar Charcoal** (bar-charcoal / dark-bar-charcoal): the top bar and the mobile header. It stays charcoal in both themes, with Bar Ink and Bar Muted for its text.
+
+### Tertiary: status pairs
+Seven text-and-fill pairs carry website health on pills, on tabs, and on the "Why them" dots: Broken (red), Social page only (violet), No website (amber), Bad (orange), Weak or could be better (blue), Good (green), and Unknown or pending (grey). Light mode uses deep text on a pale tint. Dark mode uses light text on a translucent tint of the same hue, for example rgb(255 110 95 / .14) behind dark-status-broken.
 
 ### Named Rules
-**The Dye Means Strength Rule.** A filled dye block (row swatch, detail swatch, dye key) means lead strength and nothing else. The selected row is shown by a focus outline around its swatch. Dye 2 and 3 may appear as a hairline or text accent (hover borders, links), never as a filled block for anything other than strength.
+**The Lemon Means Act Rule.** Full-strength lemon appears only where the seller acts next or where the app is live: the primary button, the active nav item, the Google-profile row and the live dot. Cards on the board never carry lemon; their strength shows as ink bars only.
 
-**The Ink Acts Rule.** Primary buttons, pressed chips, badges and toasts use ink (`primary`), never a dye value, so an action can never be mistaken for a strong lead.
-
-**The Rust Is Broken Rule.** Rust appears only for broken sites and overdue follow-ups. Destructive actions use `danger`, a different red.
+**The Inverted Ink Rule.** A selected state always uses the ink colour as its fill and the ground colour as its text, in both themes. Never show selection with lemon or with a status colour.
 
 ## Typography
 
-**Display Font:** Hanken Grotesk (with Segoe UI, system-ui, sans-serif)
-**Body Font:** Hanken Grotesk
-**Label/Mono Font:** none; labels use the same family at weight 650
+**Display Font:** Host Grotesk (with ui-sans-serif, system-ui, Segoe UI fallback), loaded from Google Fonts at weights 300–700.
 
-**Character:** A single warm grotesk used throughout. Hierarchy comes from weight (400 to 800) more than size, with tight negative tracking on headings and tabular figures in the body, so counts and dates line up in columns.
+**Character:** One grotesk at medium weights does every job. Large type gets lighter and tighter (400 at -0.03em). Small type gets heavier (600) so names stay legible on a busy board. Every count uses tabular numerals.
 
 ### Hierarchy
-- **Display** (800, 27px, 1.12, -0.02em): the selected lead's name in the detail panel; 23px on mobile.
-- **Headline** (800, 23px): view titles ("Next up today", "All leads").
-- **Title** (750, 17px): section headings; 15px for in-panel sections ("Why them", "What to say"); 20px dialog titles.
-- **Row Name** (700, 15px): the business name in each queue row, truncated with an ellipsis.
-- **Body** (400, 15px, 1.5): running text and form values.
-- **Guide** (400, 13.5px, muted ink): one-line guides under titles ("10 of 182 ready... Strongest first."). Body measure on pages is capped at 62 to 70ch.
-- **Label** (650, 13px, muted ink): form labels, chips, status markers, section labels in the queue. Sentence case, never uppercase-tracked.
+- **Display** (400, clamp(26px, 5cqi, 42px), 1.08, -0.03em): the open lead's name, sized to its tile by container width.
+- **Headline** (500, 32px, 1.15, -0.025em; 26px under 860px): page titles. Dialog titles use the same voice at 22px.
+- **Title** (600, 16px, -0.01em): tile headings ("Why them", "What to say"). Card names use 600 at 16.5px (15px in the compact list).
+- **Figure** (500, 22px, -0.02em, tabular): stat-tile counts and audit gauges.
+- **Body** (400, 14px, 1.5): default text. Guide copy is 13.5px, and page subtitles are capped at 70ch.
+- **Label** (500, 12.5–13px): pills, chips, tabs, field labels and card meta. Count suffixes and badges are 11.5–12px at weight 600.
 
 ### Named Rules
-**The One Family Rule.** Hanken Grotesk everywhere, with no second display face and no monospace. Emphasis comes from weight.
+**The Tabular Count Rule.** Any number that can change (tab counts, nav counts, stats, table numerals) uses tabular figures, so the board doesn't jitter as counts update.
+
+**The No Shouting Rule.** No uppercase, no letter-spaced labels. Hierarchy comes from size and weight only.
 
 ## Layout
 
-The app is a fixed-height three-zone shell. A 232px indigo rail on the left; a queue column from 380 to 520px on undyed cloth; a white detail panel filling the rest (content capped at 860px). Each zone scrolls on its own; the page itself never scrolls.
+The shell is a CSS grid that switches on the root `data-layout` attribute.
 
-Rhythm: rows pad 12px vertically and 28px horizontally; pane heads 26px 28px 12px; full pages 30px 40px 48px; detail sections are 26px apart. Settings and import pages use auto-fit columns (min 420px, 40px gutter, max 1100px) of hairline-topped blocks.
+- **Side:** a 256px column (228px under 1100px) holds a full-height, sticky rail tile inset 12px from the edges. The lemon Find leads button sits at the bottom of the rail.
+- **Top:** a 68px charcoal pill bar, sticky at 12px, holds the nav links in a row. The work-status line hides under 1100px.
+- **Mobile:** under 860px both layouts become one 60px charcoal header with a 22px bottom radius. A menu button opens the links as a floating tile.
 
-Responsive:
-- **1180px and below:** the split collapses to the queue alone; the detail panel becomes a fixed right sheet (up to 640px) that slides in over 220ms.
-- **820px and below:** the rail becomes a top bar (brand, Find leads, menu button); nav drops down as an overlay; the resist band moves to the bar's bottom edge as a horizontal strip; horizontal padding tightens to 16px.
+Views stack with a 16px gap and are padded 24px 28px. The top padding drops to 14px in the top layout, and mobile uses 18px 16px. Stat tiles run six across, three under 1280px, and two under 860px. The card grid is auto-fill at minmax(290px, 1fr) with 12px gaps. Compact density stacks cards in a list with 6px gaps, and from 1100px up each compact card becomes a three-column row.
+
+Opening a lead splits the board into a 340px list column (300px under 1280px) and a detail column. Both columns are sticky and scroll independently, and the stat row hides. On mobile the detail becomes a full-screen sheet on the ground colour. Inside the detail, tiles stack with 12px gaps and split into two columns once the container is 740px or wider. Pages like Settings use a bento grid of minmax(380px, 1fr) tiles, up to 1240px wide.
+
+Spacing follows a rhythm based on 2px and 4px steps, mostly 6, 8, 12, 16, 24 and 28px. Tile padding is 22px 24px (18px under 480px).
 
 ## Elevation & Depth
 
-Flat by default. Depth comes from tone (rail, cloth, panel), not shadows. One shadow token exists and is used only for things that truly float above the page: dialogs, toasts, the slide-in detail sheet, and the mobile nav dropdown. The segmented control's selected tab has a tiny 1px lift to read as pressed-out.
+The board is mostly flat. Depth comes from tone (a tile on the ground, a well inside a tile) and from 1px hairlines. Shadows appear only on hover and on anything floating above the board.
 
 ### Shadow Vocabulary
-- **Float** (`box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.12)`; dark: `.4` / `.45`): dialogs, toasts, the overlaid detail sheet, the mobile menu.
-- **Tab Lift** (`box-shadow: 0 1px 2px rgba(0,0,0,.1)`): selected segment only.
+- **Lift** (`box-shadow: 0 1px 2px rgb(30 30 20 / .04), 0 10px 28px -14px rgb(30 30 20 / .16)`; dark: `0 1px 2px rgb(0 0 0 / .3), 0 12px 30px -14px rgb(0 0 0 / .6)`): a card on hover.
+- **Pop** (`box-shadow: 0 2px 6px rgb(30 30 20 / .06), 0 24px 48px -16px rgb(30 30 20 / .28)`; dark: `0 2px 8px rgb(0 0 0 / .4), 0 28px 56px -18px rgb(0 0 0 / .75)`): popovers, dialogs, the mobile menu and toasts.
+- **Ring** (`box-shadow: 0 0 0 1px` ink, with an ink border): the current card and a checked source option. It reads as a 2px ink outline, not as elevation.
 
 ### Named Rules
-**The Only Floaters Rule.** Shadow belongs to overlays. Nothing in the reading flow (rows, filters, sections) gets a shadow.
+**The Flat Until Touched Rule.** Tiles and cards sit flat with a hairline at rest. A card lifts only on hover, and only floating layers carry Pop.
 
 ## Shapes
 
-Small, quiet radii. Controls use 6px; containers that group controls (filters panel, segmented track, source cards, drop zone) use 10px; dialogs 14px; chips and badges are full pills. Swatches keep near-square corners (3px rows, 4px detail) so they read as cut cloth. Borders are 1px hairlines; dashed 1.5px borders mean "empty or waiting" (unscored swatch, file drop zone).
+The shape language is nested roundness:
 
-Status markers are 10px geometric shapes: square, circle, diamond, triangle, short bar, ring, or thin ring.
+- **Large containers** (rail, bento tiles, empty states, dialogs): 28px.
+- **Cards and stat tiles:** 22px, or 18px when compacted.
+- **Inner panels and wells:** 14–20px.
+- **Interactive controls:** always a full pill. This covers buttons, fields, chips, segmented controls, nav links and the top bar itself.
+- **Icon buttons, icon wells and status dots:** perfect circles.
 
-**The Starch-Resist Band.** The 10px band down the rail's right edge (an authored, repeating SVG of curved resist lines and dots on `resist-ground`) is the only place the cloth's pattern appears. It becomes a 6px strip along the bottom of the mobile top bar.
+Textareas relax to 20px so multi-line text doesn't sit in a capsule. Drop zones and empty states have dashed 1.5px borders.
 
 ## Components
 
 ### Buttons
-- **Shape:** gently rounded (6px), 8px 15px padding, weight 650 at 14px, icon gap 7px; small variant 5px 11px at 13px.
-- **Primary:** ink fill, white text. Hover blends 14% toward the cloth.
-- **Quiet:** white panel, hairline border; hover turns the border to dye 2.
-- **Cloth:** undyed-cloth fill with rail-indigo text; the one button that sits on the rail (Find leads).
-- **Text:** no fill, muted ink, darkens on hover (Skip for today).
-- **Danger:** danger red, only for destructive confirmations.
-- **Focus:** 2px focus-indigo outline, 2px offset, on every interactive element.
+Soft, capsule-shaped and confident.
+- **Shape:** full pill (999px), 40px tall (34px small), 18px side padding, weight 500.
+- **Primary (lemon):** Signal Lemon fill with Lemon Ink text; hover goes to Lemon Press. Use one per region: Find leads in the nav, and the main contact action in the lead header.
+- **Quiet:** tile fill, hairline border and ink text. Hover goes to Tile Well with the strong hairline. Used for Call, Find on Google, Export and Filters.
+- **Dark:** Inverted Ink fill, for a strong secondary action.
+- **Text / link:** a muted text button, or an underlined ink link (3px offset) whose underline thickens on hover.
+- **Press:** every button scales to 0.97 on press (icon buttons to 0.94) with the expo-out ease.
+- **Icon button:** a 40px circle (32px small, 30px on cards) with a hairline border and an 18px stroke icon. On the charcoal bar it turns transparent with a 14% white border.
 
 ### Chips
-- **Style:** pill, white panel, hairline border, muted 13px/650 text, optional count in `<small>` at 75% opacity.
-- **State:** pressed = ink fill and ink border with white text. Hover = dye-2 border. In the status bar, chips lose their border and lead with a status marker.
+- **Style:** 34px pill, tile fill, hairline border, 13px label.
+- **State:** a selected chip is Inverted Ink. Active-filter chips are 30px, on Tile Well, with a small × icon.
+
+### Status pills (signature)
+- **Style:** a 26px pill holding a 7px dot in the current colour followed by the word. Text and fill come from the status pair.
+- **Unverified:** an unchecked "No website listed" pill keeps its fill and adds a 135° hatch: 1.5px stripes every 6px, in the status colour at 16%. Its dot becomes a hollow ring.
+- **Pending:** the dot blinks while a check runs.
+- Tabs reuse the same dot in front of the label, and the active tab gets a 2px ink underline.
+
+### Strength meter (signature)
+Five rising 3px bars, 5px to 13px tall. Lit bars are ink and unlit bars are the strong hairline. On cards the meter is bars only, inside a 26px pill with a hairline border. In the open lead's header it adds the word. At the top level ("Very strong") the header pill takes Lemon Wash, and in dark mode its bars turn lemon.
 
 ### Cards / Containers
-- No cards in the reading flow. Grouping is done with hairline rules and the well tone. Bordered containers (filters panel, source options, category list, gauges) appear only around form controls. A checked source card takes the selection wash and a dye-3 border.
+- **Lead card:** 22px corners, tile fill, hairline border, padding 18px 18px 14px 20px. The whole card is one button, with links raised above it. Hover adds Lift, and the open lead's card gets an ink ring.
+- **Bento tile:** 28px corners, tile fill, hairline border, 22px 24px padding and a 16px/600 heading.
+- **Stat tile:** 22px corners, a 38px circular icon well, and a label above a 22px figure. It works as a filter and inverts to ink when pressed.
 
 ### Inputs / Fields
-- **Style:** white panel, 1px hairline, 6px radius, 38px min height, 8px 11px padding; labels stack above at 13px/650 muted.
-- **Focus:** border becomes focus indigo with a 3px 25% focus-indigo halo.
-- **Placeholder:** faint ink. Checkboxes and radios use the dye-3 accent.
+- **Style:** 42px pill, Tile Well fill, hairline border and 16px padding. Search and sort sit on tile fill with a 17px leading icon. Selects use a custom chevron.
+- **Focus:** the border turns ink and the fill lifts to tile. Keyboard focus adds a 2px outline (ink in light, lemon in dark).
+- **Segmented control:** a pill track on Tile Well. The chosen option is a raised tile pill with a soft 1px shadow.
+- **Pipeline track:** a well with 22px corners holding pill-shaped steps. The current step is Inverted Ink.
 
 ### Navigation
-- Rail nav: 14.5px/600 rail ink, 9px 10px padding, 8px radius, muted icon, count right-aligned in rail muted. Hover is a 60% rail-active wash; the current page has a solid rail-active background with white text and icon. The follow-ups count becomes a cloth-coloured pill when items are due. A live-work line at the bottom of the rail shows a status dot that pulses between two indigos while work runs.
+- **Side rail:** a full-height tile with 28px corners. Links are 44px pills with an 18px icon, a label and a count. Hover is Tile Well, and the active link is Signal Lemon.
+- **Top bar:** a 68px charcoal pill. Links drop their icons and hover to Bar Raised. The active link is Signal Lemon with Lemon Ink.
+- **Mobile:** a charcoal header with a 22px bottom radius. The links open as a floating tile with 24px corners and Pop.
 
-### Lead Row (signature)
-- A three-column grid (26px swatch, name and meta, right-side status) on a hairline top border. Hover = well; current row = panel white plus a focus-indigo outline around its swatch. Logging a lead slides its row out (fades and shifts 16px right over 200ms) and the next one moves up.
+### Toast
+A charcoal pill at the bottom centre with a lemon action link. It inverts to off-white in dark mode, and errors are deep red.
 
-### Dye Swatch (signature)
-- 26 by 34px in rows, 52 by 68px in the detail head. On selection the detail swatch "dips": the dye scales up from the bottom over 220ms `cubic-bezier(.16,1,.3,1)`. The dye key ("Lead strength: weak to strong") shows all five steps as 15 by 11px chips.
+### Motion
+Motion lives in one module that does nothing when GSAP is missing or reduced motion is on.
 
-### Status Marker
-- 10px shape plus a 13px/650 word: square = broken, circle = no website, diamond = social only, triangle = weak site, short bar = could be better, ring = good, thin slate ring = couldn't check, pulsing dye-1 dot = checking. The word is always present.
+- **Opening and layout changes:** the card-to-profile opening and every layout change use GSAP Flip (0.45s, expo.out; 0.55s for the layout switch).
+- **Reflow:** lists reflow with Flip (0.4s), and new cards fade up 8px with a 0.12s stagger.
+- **Entrance:** tiles and cards rise 10–18px over 0.42s (power3.out), staggered 0.025–0.05s and capped at 0.24s in total.
+- **Logging a lead:** its card folds away, fading and scaling to 0.96 over 0.2s.
+- **Theme toggle:** a View Transition sweeps the new theme in as a circle from the button (0.55s).
+- **CSS transitions:** 0.15s colour fades with `cubic-bezier(.16, 1, .3, 1)`.
+- **First paint:** a `booting` class blocks all transitions until the first view has rendered.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** fill a lead swatch with exactly one of the five dye steps, chosen by the server's `dye_cuts` quintiles; leave unscored leads as a dashed empty swatch.
-- **Do** use ink (`primary`) for primary buttons, pressed chips, badges and toasts.
-- **Do** pair every status colour with its shape and a plain-word label.
-- **Do** separate list items with 1px hairlines on the undyed-cloth ground.
-- **Do** show selection as a 2px focus-indigo outline offset around the swatch.
-- **Do** keep the starch-resist band on the rail edge (bottom of the top bar on mobile) and nowhere else.
-- **Do** keep Hanken Grotesk for every role, with tabular figures.
+- **Do** keep every control a full pill and every icon button a 40px circle; keep tiles at 28px and cards at 22px.
+- **Do** show selection as Inverted Ink (selected / selected-ink) in both themes.
+- **Do** write website status as dot + word, and hatch it when the status is unverified.
+- **Do** keep cards sparse: name, one or two status pills, ink strength bars, the Google button.
+- **Do** set every changing count in tabular figures.
+- **Do** route new motion through the motion module so it respects reduced motion and the boot guard.
 
 ### Don't:
-- **Don't** use a dye step as a fill for buttons, chips, badges, toasts or any non-strength meaning.
-- **Don't** use rust for anything but broken sites and overdue follow-ups.
-- **Don't** show status by colour alone.
-- **Don't** wrap rows or sections in floating cards or give in-flow elements a shadow.
-- **Don't** mark selection with a coloured side stripe.
-- **Don't** repeat the cloth pattern on backgrounds, headers or empty states.
-- **Don't** lead the home view with a full table or numeric scores.
+- **Don't** put lemon on board cards or use it for a selected state; it marks the next action, the active nav item and live state only.
+- **Don't** set white text on lemon; use Lemon Ink.
+- **Don't** convey status by colour alone; the word is always there.
+- **Don't** give tiles or cards a resting shadow; Lift is for hover, Pop for floating layers.
+- **Don't** add uppercase or letter-spaced labels above headings.
+- **Don't** hide content behind animation; with no GSAP, changes just happen.

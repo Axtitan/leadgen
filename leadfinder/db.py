@@ -52,7 +52,11 @@ def init():
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(SCHEMA)
     have = {r[1] for r in conn.execute("PRAGMA table_info(leads)")}
-    for col, decl in (("follow_up_at", "REAL"), ("skip_until", "REAL"), ("hidden_at", "REAL")):
+    # site_via: where LeadFinder found a website the listing didn't have ('guess' or 'google'); site_why: the proof.
+    # guessed_at: when we tried their likely domains. google_check: what their Google profile showed
+    # ('site', 'no_site', or 'not_listed'), checked at google_checked_at.
+    for col, decl in (("follow_up_at", "REAL"), ("skip_until", "REAL"), ("hidden_at", "REAL"), ("site_via", "TEXT"),
+                      ("site_why", "TEXT"), ("guessed_at", "REAL"), ("google_check", "TEXT"), ("google_checked_at", "REAL")):
         if col not in have:
             conn.execute(f"ALTER TABLE leads ADD COLUMN {col} {decl}")
     # Deleted leads can be restored for a day, then they go for good.
@@ -201,10 +205,16 @@ def _where(p, skip=None):
         bs = [b for b in p["bucket"].split(",") if b]
         w.append(f"{BUCKET_SQL} IN ({','.join('?' * len(bs))})")
         a += bs
-    for f in ("country", "category", "status"):
+    for f in ("country", "category", "status", "source"):
         if skip != f and p.get(f):
             w.append(f"{f}=?")
             a.append(p[f])
+    if skip != "bucket" and p.get("hide_bucket"):  # statuses the user switched off to cut clutter
+        hs = [b for b in p["hide_bucket"].split(",") if b]
+        w.append(f"{BUCKET_SQL} NOT IN ({','.join('?' * len(hs))})")
+        a += hs
+    if skip != "status" and p.get("hide_worked") == "1":  # only leads nobody has contacted yet
+        w.append("status IN ('new','shortlisted')")
     if p.get("q"):
         like = f"%{p['q'].strip()}%"
         w.append("(name LIKE ? OR address LIKE ? OR website LIKE ? OR notes LIKE ? OR city LIKE ? OR phone LIKE ?)")
@@ -231,7 +241,8 @@ def _where(p, skip=None):
 
 
 LIST_COLS = f"""id, name, category, city, country, address, phone, email, website, rating, reviews, {BUCKET_SQL} AS bucket,
-    score, opportunity, headline, status, closed, source, follow_up_at, skip_until"""
+    score, opportunity, headline, status, closed, source, follow_up_at, skip_until, gmaps_url, osm_url, lat, lon,
+    site_via, google_check, guessed_at"""
 
 
 def query_leads(conn, p, limit=100, offset=0):
@@ -246,7 +257,7 @@ def facets(conn, p):
     out = {}
     w, a = _where(p, skip="bucket")
     out["buckets"] = {r[0]: r[1] for r in conn.execute(f"SELECT {BUCKET_SQL}, COUNT(*) FROM leads WHERE {w} GROUP BY 1", a)}
-    for f in ("country", "category", "status"):
+    for f in ("country", "category", "status", "source"):
         w, a = _where(p, skip=f)
         out[f] = [{"v": r[0], "n": r[1]} for r in conn.execute(
             f"SELECT {f}, COUNT(*) FROM leads WHERE {w} AND COALESCE({f},'')<>'' GROUP BY 1 ORDER BY 2 DESC", a)]
@@ -347,3 +358,31 @@ def areas(conn):
     return [{"v": r[0], "n": r[1]} for r in conn.execute("""SELECT s.location, COUNT(DISTINCT ls.lead_id) FROM searches s
         JOIN lead_searches ls ON ls.search_id=s.id JOIN leads l ON l.id=ls.lead_id
         WHERE s.source<>'csv' AND l.hidden_at IS NULL GROUP BY s.location ORDER BY 2 DESC""")]
+
+
+# ------------------------------------------------------------------ website finder
+NEEDS_GUESS = "hidden_at IS NULL AND bucket='none' AND COALESCE(website,'')='' AND guessed_at IS NULL AND source<>'google'"
+NEEDS_GOOGLE = "hidden_at IS NULL AND bucket='none' AND COALESCE(website,'')='' AND google_check IS NULL AND source<>'google'"
+
+
+def lookup_ids(conn):
+    """Leads still marked 'No website' that haven't had their likely web addresses tried yet."""
+    return [r[0] for r in conn.execute(f"SELECT id FROM leads WHERE {NEEDS_GUESS} ORDER BY opportunity DESC, id")]
+
+
+def google_queue(conn, limit):
+    """The next batch for the Google profile check: name already tried, strongest first, one country per batch."""
+    w = f"{NEEDS_GOOGLE} AND guessed_at IS NOT NULL AND closed=0"
+    top = conn.execute(f"SELECT country FROM leads WHERE {w} ORDER BY opportunity DESC LIMIT 1").fetchone()
+    if not top:
+        return []
+    rows = conn.execute(f"SELECT id FROM leads WHERE {w} AND COALESCE(country,'')=? ORDER BY opportunity DESC, id LIMIT ?",
+                        (top[0] or "", limit)).fetchall()
+    return [get_lead(conn, r[0]) for r in rows]
+
+
+def lookup_counts(conn):
+    r = conn.execute(f"""SELECT SUM({NEEDS_GUESS}), SUM({NEEDS_GOOGLE}),
+        SUM(site_via='guess'), SUM(site_via='google'), SUM(google_check='no_site') FROM leads""").fetchone()
+    return {"to_guess": r[0] or 0, "to_google": r[1] or 0, "found_guess": r[2] or 0, "found_google": r[3] or 0,
+            "google_no_site": r[4] or 0}
