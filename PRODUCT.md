@@ -31,7 +31,8 @@ The mechanism is the website check turned into a sales argument. Every lead arri
 - "No website" from OpenStreetMap is unverified and must never be presented as fact.
 - Pipeline statuses: new, shortlisted, contacted, demo sent, replied, won, lost, not a fit; free-text notes.
 - Background searches and website checks run continuously; results arrive while the user works.
-- Stack: Python standard library server, SQLite, vanilla HTML/CSS/JS, no build step, no external JS. Web fonts from Google Fonts are acceptable.
+- Stack: Python standard library server, SQLite, vanilla HTML/CSS/JS, no build step. GSAP and its Flip plugin are vendored in web/vendor (the owner asked for GSAP motion); no other JS libraries. Web fonts from Google Fonts are acceptable.
+- Appearance options the owner asked for: light and dark themes (or follow the computer), and navigation down the side or across the top.
 - Must not lose existing features: filters, search history, CSV import/export, manual check, PageSpeed, outreach drafts, settings.
 
 ## Evidence on Hand

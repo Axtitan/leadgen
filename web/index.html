@@ -4,115 +4,142 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LeadFinder</title>
+<script>
+  /* Apply saved theme and layout before first paint, so nothing flashes. */
+  document.documentElement.classList.add("booting"); /* no transitions until the first view has rendered */
+  try {
+    var q = new URLSearchParams(location.search);
+    var t = q.get("theme") || JSON.parse(localStorage.getItem("lf:theme") || '"system"'), l = q.get("layout") || JSON.parse(localStorage.getItem("lf:layout") || '"side"');
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    document.documentElement.setAttribute("data-layout", l === "top" ? "top" : "side");
+  } catch (e) { document.documentElement.setAttribute("data-layout", "side"); }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..700&display=swap">
 <link rel="stylesheet" href="/app.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E1838'/%3E%3Crect x='9' y='7' width='6' height='18' rx='1' fill='%236B7FBF'/%3E%3Crect x='17' y='7' width='6' height='18' rx='1' fill='%23EEF0F5'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='10' fill='%23232322'/%3E%3Crect x='7' y='7' width='8' height='8' rx='3' fill='%23EDE65A'/%3E%3Crect x='17' y='7' width='8' height='8' rx='3' fill='%23F1F0EA'/%3E%3Crect x='7' y='17' width='18' height='8' rx='3' fill='%23F1F0EA'/%3E%3C/svg%3E">
 </head>
 <body>
 <div class="app">
-  <!-- ================================ RAIL ================================ -->
-  <aside class="rail" id="rail">
-    <div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i></span>LeadFinder</div>
-    <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
-    <nav class="nav" aria-label="Main">
+  <!-- ================================ NAV (side rail or top bar) ================================ -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#next" data-view="next"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-word">LeadFinder</span></a>
+    <button class="iconbtn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <nav class="navlinks" id="navlinks" aria-label="Main">
       <a href="#next" data-view="next"><svg class="ic"><use href="#i-arrow"/></svg><span>Next up</span><b id="n-next"></b></a>
-      <a href="#leads" data-view="leads"><svg class="ic"><use href="#i-list"/></svg><span>All leads</span><b id="n-leads"></b></a>
+      <a href="#leads" data-view="leads"><svg class="ic"><use href="#i-grid"/></svg><span>All leads</span><b id="n-leads"></b></a>
       <a href="#followups" data-view="followups"><svg class="ic"><use href="#i-bell"/></svg><span>Follow-ups</span><b id="n-follow" class="due"></b></a>
       <a href="#searches" data-view="searches"><svg class="ic"><use href="#i-pin"/></svg><span>Searches</span></a>
       <a href="#import" data-view="import"><svg class="ic"><use href="#i-upload"/></svg><span>Import &amp; check</span></a>
       <a href="#settings" data-view="settings"><svg class="ic"><use href="#i-sliders"/></svg><span>Settings</span></a>
     </nav>
-    <button class="btn btn-cloth find-btn" type="button" data-open-find><svg class="ic"><use href="#i-search"/></svg>Find leads</button>
+    <div class="navtools">
+      <button class="iconbtn" type="button" id="layout-toggle" aria-label="Switch to top navigation" title="Switch layout"><svg class="ic"><use href="#i-layout-top"/></svg></button>
+      <button class="iconbtn" type="button" id="theme-toggle" aria-label="Switch to dark mode" title="Switch theme"><svg class="ic"><use href="#i-moon"/></svg></button>
+      <button class="btn btn-lemon find-btn" type="button" data-open-find><svg class="ic"><use href="#i-search"/></svg><span>Find leads</span></button>
+    </div>
     <p class="work" id="work" aria-live="polite"><span class="dot" id="work-dot"></span><span id="work-text">Connecting…</span></p>
-  </aside>
+  </header>
 
-  <main class="main">
+  <main class="main" id="main">
     <!-- ================================ NEXT UP ================================ -->
-    <section class="view split" id="view-next" aria-label="Next up">
-      <div class="pane queue">
-        <header class="phead">
-          <h1>Next up today</h1>
-          <p class="guide" id="next-guide"></p>
-          <div class="chips" id="area-chips" role="group" aria-label="Area"></div>
-          <div class="dyekey" aria-hidden="true"><span>Lead strength: weak</span><i class="d1"></i><i class="d2"></i><i class="d3"></i><i class="d4"></i><i class="d5"></i><span>strong</span></div>
-          <div class="notice" id="next-notice" hidden><span>New leads are ready.</span><button class="link" type="button" id="next-refresh">Refresh the queue</button></div>
-        </header>
-        <div class="scroll" id="next-scroll">
+    <section class="view" id="view-next" aria-labelledby="h-next">
+      <div class="pagehead">
+        <div><h1 id="h-next">Next up</h1><p class="sub" id="next-guide"></p></div>
+        <div class="chips" id="area-chips" role="group" aria-label="Area"></div>
+      </div>
+      <div class="notice" id="next-notice" hidden><span>New leads are ready.</span><button class="link" type="button" id="next-refresh">Refresh the queue</button></div>
+      <div class="board" data-board>
+        <div class="listcol" id="next-scroll">
           <div id="next-follow"></div>
-          <ol class="rows" id="next-list"></ol>
+          <ol class="cards" id="next-list"></ol>
           <p class="endnote" id="next-end"></p>
           <div class="empty" id="next-empty" hidden></div>
         </div>
+        <section class="detail" data-detail aria-label="Lead details" hidden></section>
       </div>
-      <section class="pane detail" data-detail aria-label="Lead details"></section>
     </section>
 
     <!-- ================================ ALL LEADS ================================ -->
-    <section class="view split" id="view-leads" aria-label="All leads" hidden>
-      <div class="pane queue">
-        <header class="phead">
-          <h1>All leads</h1>
-          <div class="toolbar">
-            <label class="searchbox"><svg class="ic"><use href="#i-search"/></svg><input id="f-q" type="search" placeholder="Name, street, phone, notes" autocomplete="off" aria-label="Search leads"></label>
-            <button class="btn btn-quiet" type="button" id="filters-btn" aria-expanded="false" aria-controls="filters"><svg class="ic"><use href="#i-sliders"/></svg>Filters<b class="count-badge" id="filter-count" hidden></b></button>
+    <section class="view" id="view-leads" aria-labelledby="h-leads" hidden>
+      <div class="pagehead">
+        <div><h1 id="h-leads">All leads</h1><p class="sub" id="count" aria-live="polite"></p></div>
+        <a class="btn btn-quiet" id="export" href="/api/export.csv" download><svg class="ic"><use href="#i-download"/></svg>Export CSV</a>
+      </div>
+      <div class="stats" id="pipeline" role="group" aria-label="Pipeline"></div>
+      <div class="tabs" id="buckets" role="group" aria-label="Website status"></div>
+      <div class="toolbar">
+        <label class="searchbox"><svg class="ic"><use href="#i-search"/></svg><input id="f-q" type="search" placeholder="Search name, street, phone, notes" autocomplete="off" aria-label="Search leads"></label>
+        <div class="filterwrap">
+          <button class="btn btn-quiet" type="button" id="filters-btn" aria-expanded="false" aria-controls="filters"><svg class="ic"><use href="#i-filter"/></svg>Filters<b class="count-badge" id="filter-count" hidden></b></button>
+          <div class="popover" id="filters" hidden>
+            <div class="pop-grid">
+              <label>Area<select id="f-area"></select></label>
+              <label>Country<select id="f-country"></select></label>
+              <label>Business type<select id="f-category"></select></label>
+              <label>Found on<select id="f-source"></select></label>
+              <label>Found by search<select id="f-search"></select></label>
+              <label>Google reviews<select id="f-min_reviews"><option value="">Any</option><option value="5">5 or more</option><option value="20">20 or more</option><option value="50">50 or more</option><option value="100">100 or more</option></select></label>
+            </div>
+            <div class="pop-checks">
+              <label class="check"><input type="checkbox" id="f-has_phone"> Has a phone number</label>
+              <label class="check"><input type="checkbox" id="f-has_email"> Has an email</label>
+              <label class="check"><input type="checkbox" id="f-show_closed"> Include closed businesses</label>
+            </div>
+            <fieldset class="declutter">
+              <legend>Cut the clutter</legend>
+              <label class="check"><input type="checkbox" id="f-hide_worked"> Hide leads you've already contacted</label>
+              <p class="hint">Hide these website statuses:</p>
+              <div class="hide-list" id="hide-list"></div>
+            </fieldset>
+            <div class="pop-foot"><button class="link" type="button" id="clear-filters">Clear all filters</button><button class="btn btn-dark btn-sm" type="button" id="filters-done">Done</button></div>
           </div>
-          <div class="filters" id="filters" hidden>
-            <label>Area<select id="f-area"></select></label>
-            <label>Country<select id="f-country"></select></label>
-            <label>Business type<select id="f-category"></select></label>
-            <label>Pipeline<select id="f-status"></select></label>
-            <label>Found by search<select id="f-search"></select></label>
-            <label>Google reviews<select id="f-min_reviews"><option value="">Any</option><option value="5">5 or more</option><option value="20">20 or more</option><option value="50">50 or more</option><option value="100">100 or more</option></select></label>
-            <label class="check"><input type="checkbox" id="f-has_phone"> Has a phone number</label>
-            <label class="check"><input type="checkbox" id="f-has_email"> Has an email</label>
-            <label class="check"><input type="checkbox" id="f-show_closed"> Include closed businesses</label>
-            <button class="link" type="button" id="clear-filters">Clear filters</button>
-          </div>
-          <div class="statusbar" id="buckets" role="group" aria-label="Website status"></div>
-          <div class="listhead">
-            <p class="guide" id="count" aria-live="polite"></p>
-            <label class="sort"><span class="vh">Sort by</span><select id="sort">
-              <option value="opportunity">Strongest first</option><option value="reviews">Most reviews</option><option value="score">Weakest website</option>
-              <option value="newest">Newest found</option><option value="updated">Recently worked on</option><option value="name">Name A to Z</option></select></label>
-            <a class="btn btn-quiet btn-sm" id="export" href="/api/export.csv" download><svg class="ic"><use href="#i-download"/></svg>Export</a>
-          </div>
-          <div class="notice" id="leads-notice" hidden><span>New results have come in.</span><button class="link" type="button" id="leads-refresh">Show them</button></div>
-        </header>
-        <div class="scroll">
-          <ol class="rows" id="leads-list"></ol>
+        </div>
+        <label class="sort"><span class="vh">Sort by</span><select id="sort">
+          <option value="opportunity">Strongest first</option><option value="reviews">Most reviews</option><option value="score">Weakest website</option>
+          <option value="newest">Newest found</option><option value="updated">Recently worked on</option><option value="name">Name A to Z</option></select></label>
+        <div class="seg density" role="radiogroup" aria-label="Card size">
+          <button type="button" role="radio" data-d="cards" aria-label="Cards" title="Cards"><svg class="ic"><use href="#i-grid"/></svg></button>
+          <button type="button" role="radio" data-d="compact" aria-label="Compact list" title="Compact list"><svg class="ic"><use href="#i-rows"/></svg></button>
+        </div>
+      </div>
+      <div class="activechips" id="active-chips"></div>
+      <div class="notice" id="leads-notice" hidden><span>New results have come in.</span><button class="link" type="button" id="leads-refresh">Show them</button></div>
+      <div class="board" data-board>
+        <div class="listcol" id="leads-scroll">
+          <ol class="cards" id="leads-list"></ol>
           <button class="btn btn-quiet more" id="more" type="button" hidden>Show more</button>
           <div class="empty" id="leads-empty" hidden></div>
         </div>
+        <section class="detail" data-detail aria-label="Lead details" hidden></section>
       </div>
-      <section class="pane detail" data-detail aria-label="Lead details"></section>
     </section>
 
     <!-- ================================ FOLLOW-UPS ================================ -->
-    <section class="view split" id="view-followups" aria-label="Follow-ups" hidden>
-      <div class="pane queue">
-        <header class="phead"><h1>Follow-ups</h1><p class="guide">Leads you've contacted, in the order they need chasing. Marking a lead Contacted or Demo sent sets a follow-up 3 days later.</p></header>
-        <div class="scroll"><div id="follow-list"></div><div class="empty" id="follow-empty" hidden></div></div>
+    <section class="view" id="view-followups" aria-labelledby="h-follow" hidden>
+      <div class="pagehead"><div><h1 id="h-follow">Follow-ups</h1><p class="sub">Leads you've contacted, in the order they need chasing. Marking a lead Contacted or Demo sent sets a follow-up 3 days later.</p></div></div>
+      <div class="board" data-board>
+        <div class="listcol" id="follow-scroll"><div id="follow-list"></div><div class="empty" id="follow-empty" hidden></div></div>
+        <section class="detail" data-detail aria-label="Lead details" hidden></section>
       </div>
-      <section class="pane detail" data-detail aria-label="Lead details"></section>
     </section>
 
     <!-- ================================ SEARCHES ================================ -->
-    <section class="view page" id="view-searches" aria-label="Searches" hidden>
-      <div class="pagehead"><h1>Searches</h1><button class="btn btn-primary" type="button" data-open-find><svg class="ic"><use href="#i-search"/></svg>New search</button></div>
-      <p class="guide">Every search you've run. Run one again to pick up new businesses; leads you've worked on keep their notes and status.</p>
-      <div class="tablewrap"><table class="table" id="searches-table">
-        <thead><tr><th>When</th><th>Business type</th><th>Place</th><th>Source</th><th>Result</th><th class="num">Found</th><th class="num">New</th><th><span class="vh">Actions</span></th></tr></thead>
-        <tbody></tbody></table></div>
-      <p class="empty-row" id="searches-empty" hidden>No searches yet. Use Find leads to run your first one.</p>
+    <section class="view" id="view-searches" aria-labelledby="h-searches" hidden>
+      <div class="pagehead"><div><h1 id="h-searches">Searches</h1><p class="sub">Every search you've run. Run one again to pick up new businesses; leads you've worked on keep their notes and status.</p></div>
+        <button class="btn btn-lemon" type="button" data-open-find><svg class="ic"><use href="#i-search"/></svg>New search</button></div>
+      <div class="tile tablewrap"><table class="table" id="searches-table">
+        <thead><tr><th>When</th><th>Business type</th><th>Place</th><th>Found on</th><th>Result</th><th class="num">Found</th><th class="num">New</th><th><span class="vh">Actions</span></th></tr></thead>
+        <tbody></tbody></table>
+        <p class="empty-row" id="searches-empty" hidden>No searches yet. Use Find leads to run your first one.</p></div>
     </section>
 
     <!-- ================================ IMPORT ================================ -->
-    <section class="view page" id="view-import" aria-label="Import and check" hidden>
-      <div class="pagehead"><h1>Import &amp; check</h1></div>
-      <div class="cols">
-        <section class="block">
+    <section class="view" id="view-import" aria-labelledby="h-import" hidden>
+      <div class="pagehead"><div><h1 id="h-import">Import &amp; check</h1></div></div>
+      <div class="bento">
+        <section class="tile">
           <h2>Check one website</h2>
           <p class="guide">Found a business on Instagram, on the street, or from your partner? Add it here and it's checked like the rest. Leave the website blank if it has none.</p>
           <form id="check-form" class="form">
@@ -121,17 +148,17 @@
             <div class="row2"><label>Type<input name="category" type="text" placeholder="e.g. Barbers"></label>
               <label>Country<select name="country"><option value="">Not set</option><option value="NG">Nigeria</option><option value="GB">United Kingdom</option><option value="US">United States</option></select></label></div>
             <div class="row2"><label>Phone<input name="phone" type="tel" placeholder="Optional"></label><label>City<input name="city" type="text" placeholder="Optional"></label></div>
-            <button class="btn btn-primary" type="submit">Check and add</button>
+            <div><button class="btn btn-lemon" type="submit">Check and add</button></div>
           </form>
         </section>
-        <section class="block">
+        <section class="tile">
           <h2>Import a spreadsheet</h2>
-          <p class="guide">A CSV from Outscraper, Apify's Google Maps scraper, or any sheet with a name column. Website, phone, email, address, rating and review columns are picked up automatically, and duplicates merge with leads you already have.</p>
+          <p class="guide">A CSV from Outscraper, Apify's Google Maps scraper, a LeadFinder export, or any sheet with a name column. Website, phone, email, address, rating and review columns are picked up automatically, and duplicates merge with leads you already have.</p>
           <form id="import-form" class="form">
             <label class="drop" id="drop"><input type="file" id="import-file" accept=".csv,text/csv"><svg class="ic"><use href="#i-upload"/></svg><span id="drop-text"><b>Choose a CSV file</b> or drop it here</span></label>
             <div class="row2"><label>Type, if the file has none<input name="category" type="text" placeholder="Imported"></label>
               <label>Country, if the file has none<select name="country"><option value="">Not set</option><option value="NG">Nigeria</option><option value="GB">United Kingdom</option><option value="US">United States</option></select></label></div>
-            <button class="btn btn-primary" type="submit" id="import-go" disabled>Import</button>
+            <div><button class="btn btn-lemon" type="submit" id="import-go" disabled>Import</button></div>
             <p class="guide" id="import-result" aria-live="polite"></p>
           </form>
         </section>
@@ -139,46 +166,60 @@
     </section>
 
     <!-- ================================ SETTINGS ================================ -->
-    <section class="view page" id="view-settings" aria-label="Settings" hidden>
-      <div class="pagehead"><h1>Settings</h1></div>
-      <div class="cols">
-        <section class="block">
+    <section class="view" id="view-settings" aria-labelledby="h-settings" hidden>
+      <div class="pagehead"><div><h1 id="h-settings">Settings</h1></div></div>
+      <div class="bento">
+        <section class="tile">
           <h2>Your details</h2>
           <p class="guide">Used to sign the messages LeadFinder drafts for you.</p>
           <form id="me-form" class="form">
             <div class="row2"><label>Your name<input name="my_name" type="text"></label><label>Business name<input name="agency" type="text"></label></div>
             <div class="row2"><label>Your website or portfolio<input name="my_site" type="text" placeholder="https://"></label><label>Your phone or WhatsApp<input name="my_phone" type="text"></label></div>
-            <button class="btn btn-primary" type="submit">Save</button>
+            <div><button class="btn btn-lemon" type="submit">Save</button></div>
           </form>
         </section>
-        <section class="block">
+        <section class="tile">
+          <h2>Look and layout</h2>
+          <form class="form" onsubmit="return false">
+            <div class="row2">
+              <label>Theme<select id="theme-select"><option value="system">Match my computer</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+              <label>Navigation<select id="layout-select"><option value="side">Down the side</option><option value="top">Across the top</option></select></label>
+            </div>
+          </form>
+          <p class="guide">Re-check every website, for example a few weeks after a sweep, to catch sites that have gone down since.</p>
+          <div><button class="btn btn-quiet" type="button" id="regrade-all"><svg class="ic"><use href="#i-refresh"/></svg>Re-check all websites</button></div>
+        </section>
+        <section class="tile">
           <h2>TomTom key (free)</h2>
           <p class="guide">Finds far more businesses than OpenStreetMap, with phones and websites, and needs no card. About 2,500 searches a month free; when they run out, searches stop until next month and nothing is charged.</p>
           <ol class="steps"><li>Create a free account at <a href="https://developer.tomtom.com/user/register" target="_blank" rel="noopener">developer.tomtom.com</a>.</li><li>In your Dashboard, open the key and make sure Search API is ticked.</li><li>Paste the key below.</li></ol>
           <form id="tomtom-form" class="form">
             <label>TomTom API key <span class="muted" id="tomtom-state"></span><input name="tomtom_key" type="password" autocomplete="off" placeholder="Paste key"></label>
-            <div class="btnrow"><button class="btn btn-primary" type="submit">Save key</button><button class="btn btn-quiet" type="button" id="clear-tomtom">Remove key</button></div>
+            <div class="btnrow"><button class="btn btn-lemon" type="submit">Save key</button><button class="btn btn-quiet" type="button" id="clear-tomtom">Remove key</button></div>
             <p class="guide" id="tomtom-usage"></p>
           </form>
         </section>
-        <section class="block">
+        <section class="tile">
+          <h2>Find missing websites</h2>
+          <p class="guide">OpenStreetMap and TomTom often leave a business's website out. For every lead with no website listed, LeadFinder tries the obvious web addresses for their name, and only keeps one that shows their phone number, or their name and town.</p>
+          <p class="guide">For the most reliable check, add a free Apify token. LeadFinder then looks the rest up on Google Maps and takes the website, rating and review count from their Google profile. Apify gives $5 of free credit every month with no card, which covers roughly 1,000 businesses; the strongest leads are checked first. When the credit runs out, checks pause until next month and nothing is charged.</p>
+          <ol class="steps"><li>Sign up at <a href="https://console.apify.com/sign-up" target="_blank" rel="noopener">apify.com</a> (no card needed).</li><li>In the Apify Console, open <b>Settings → API &amp; Integrations</b> and copy your personal API token.</li><li>Paste it below. Your No website leads are checked straight away, about 40 at a time.</li></ol>
+          <form id="apify-form" class="form">
+            <label>Apify API token <span class="muted" id="apify-state"></span><input name="apify_token" type="password" autocomplete="off" placeholder="Paste token"></label>
+            <div class="btnrow"><button class="btn btn-lemon" type="submit">Save token</button><button class="btn btn-quiet" type="button" id="clear-apify">Remove token</button><button class="btn btn-quiet" type="button" id="find-sites"><svg class="ic"><use href="#i-search"/></svg>Look for missing websites</button></div>
+            <p class="guide" id="apify-usage"></p>
+          </form>
+        </section>
+        <section class="tile">
           <h2>Google key (optional, paid past the free amount)</h2>
           <p class="guide">Google adds ratings and review counts, which helps pick the busiest businesses. It needs a billing account. Enable Places API (New), plus PageSpeed Insights API for speed tests.</p>
           <form id="key-form" class="form">
             <label>Google API key <span class="muted" id="key-state"></span><input name="google_key" type="password" autocomplete="off" placeholder="Paste key"></label>
             <label class="check"><input type="checkbox" name="auto_psi"> Run Google's mobile speed test on every website automatically (slower)</label>
             <label class="narrow">Websites checked at once<input name="workers" type="number" min="2" max="24"></label>
-            <div class="btnrow"><button class="btn btn-primary" type="submit">Save</button><button class="btn btn-quiet" type="button" id="clear-key">Remove key</button></div>
+            <div class="btnrow"><button class="btn btn-lemon" type="submit">Save</button><button class="btn btn-quiet" type="button" id="clear-key">Remove key</button></div>
             <p class="guide" id="google-usage"></p>
           </form>
-        </section>
-        <section class="block">
-          <h2>Appearance and upkeep</h2>
-          <form class="form" onsubmit="return false">
-            <label class="narrow">Theme<select id="theme-select"><option value="system">Match my computer</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
-          </form>
-          <p class="guide">Re-check every website, for example a few weeks after a sweep, to catch sites that have gone down since.</p>
-          <button class="btn btn-quiet" type="button" id="regrade-all"><svg class="ic"><use href="#i-refresh"/></svg>Re-check all websites</button>
         </section>
       </div>
     </section>
@@ -220,7 +261,7 @@
       </section>
     </div>
     <div class="dialog-foot"><p class="summary" id="find-summary">Pick at least one business type.</p>
-      <button class="btn btn-quiet" value="cancel" formnovalidate>Cancel</button><button class="btn btn-primary" id="find-go" type="button" disabled>Start</button></div>
+      <button class="btn btn-quiet" value="cancel" formnovalidate>Cancel</button><button class="btn btn-lemon" id="find-go" type="button" disabled>Start</button></div>
   </form>
 </dialog>
 
@@ -239,12 +280,18 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
-    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-rows" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.1 5.6 9.9 3.4a2 2 0 0 0-1.8 0L3.6 5.7A1 1 0 0 0 3 6.6v12.8a1 1 0 0 0 1.4.9l3.7-1.9a2 2 0 0 1 1.8 0l4.2 2.2a2 2 0 0 0 1.8 0l4.5-2.3a1 1 0 0 0 .6-.9V4.6a1 1 0 0 0-1.4-.9l-3.7 1.9a2 2 0 0 1-1.8 0Z"/><path d="M15 5.8v15M9 3.2v15"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="m2 7 4.4-4.4A2 2 0 0 1 7.8 2h8.4a2 2 0 0 1 1.4.6L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.6-.6.8.8 0 0 0-.9 0 2.7 2.7 0 0 1-3.3 0 .8.8 0 0 0-.9 0 2.7 2.7 0 0 1-3.3 0 .8.8 0 0 0-.9 0 2.7 2.7 0 0 1-3.3 0 .8.8 0 0 0-.9 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
     <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
     <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 6h18M7 12h10M10 18h4"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
@@ -260,9 +307,15 @@
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
-    <symbol id="i-google" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-layout-top" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></symbol>
+    <symbol id="i-layout-side" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></symbol>
   </defs>
 </svg>
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/Flip.min.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>

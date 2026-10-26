@@ -1,587 +1,948 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-22T13:36:47+00:00",
+  "generatedAt": "2026-10-26T00:00:00+00:00",
   "title": "Design System: LeadFinder",
   "extensions": {
     "colorMeta": {
-      "dye-1": {
-        "role": "secondary",
-        "displayName": "Dye 1, Faint Wash",
-        "canonical": "#C5CEEC",
-        "oklch": "oklch(85.4% 0.043 272.3)",
-        "tonalRamp": [
-          "#0B1430",
-          "#2A4396",
-          "#4E66B4",
-          "#8798D3",
-          "#C5CEEC"
-        ],
-        "dark": "#2C3350"
-      },
-      "dye-2": {
-        "role": "secondary",
-        "displayName": "Dye 2, Light Indigo",
-        "canonical": "#8798D3",
-        "oklch": "oklch(68.9% 0.089 271.5)",
-        "tonalRamp": [
-          "#0B1430",
-          "#2A4396",
-          "#4E66B4",
-          "#8798D3",
-          "#C5CEEC"
-        ],
-        "dark": "#313F7E"
-      },
-      "dye-3": {
-        "role": "secondary",
-        "displayName": "Dye 3, Mid Indigo",
-        "canonical": "#4E66B4",
-        "oklch": "oklch(53.0% 0.126 268.9)",
-        "tonalRamp": [
-          "#0B1430",
-          "#2A4396",
-          "#4E66B4",
-          "#8798D3",
-          "#C5CEEC"
-        ],
-        "dark": "#3549AE"
-      },
-      "dye-4": {
-        "role": "secondary",
-        "displayName": "Dye 4, Deep Indigo",
-        "canonical": "#2A4396",
-        "oklch": "oklch(41.4% 0.140 267.3)",
-        "tonalRamp": [
-          "#0B1430",
-          "#2A4396",
-          "#4E66B4",
-          "#8798D3",
-          "#C5CEEC"
-        ],
-        "dark": "#3F58DA"
-      },
-      "dye-5": {
-        "role": "secondary",
-        "displayName": "Dye 5, Night Indigo",
-        "canonical": "#0B1430",
-        "oklch": "oklch(20.1% 0.057 267.6)",
-        "tonalRamp": [
-          "#0B1430",
-          "#2A4396",
-          "#4E66B4",
-          "#8798D3",
-          "#C5CEEC"
-        ],
-        "dark": "#5C77FF"
-      },
-      "primary": {
-        "role": "primary",
-        "displayName": "Ink (action)",
-        "canonical": "#121A33",
-        "oklch": "oklch(22.5% 0.050 268.8)",
-        "tonalRamp": [
-          "#040920",
-          "#1A233C",
-          "#353F5B",
-          "#525D7B",
-          "#717D9C",
-          "#919EBF",
-          "#B6C4E6",
-          "#E0EEFF"
-        ],
-        "dark": "#E6EAF5"
-      },
-      "primary-ink": {
+      "ground": {
         "role": "neutral",
-        "displayName": "Ink on Ink",
+        "displayName": "Warm Grey Ground",
+        "canonical": "#F1F1EC",
+        "tonalRamp": [
+          "#0B0B08",
+          "#252522",
+          "#42423E",
+          "#61615D",
+          "#83837E",
+          "#A5A5A1",
+          "#C9C9C5",
+          "#EFEFEA"
+        ]
+      },
+      "tile": {
+        "role": "neutral",
+        "displayName": "Tile White",
         "canonical": "#FFFFFF",
-        "oklch": "oklch(100.0% 0.000 89.9)",
         "tonalRamp": [
           "#0B0B0B",
-          "#242424",
-          "#404040",
-          "#5D5D5D",
-          "#7D7D7D",
-          "#9E9E9E",
-          "#C4C4C4",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
           "#EEEEEE"
-        ],
-        "dark": "#0B1124"
+        ]
       },
-      "undyed-cloth": {
+      "tile-well": {
         "role": "neutral",
-        "displayName": "Undyed Cloth",
-        "canonical": "#EEF0F5",
-        "oklch": "oklch(95.5% 0.007 268.5)",
+        "displayName": "Tile Well",
+        "canonical": "#F6F6F1",
         "tonalRamp": [
-          "#0A0B0E",
-          "#222428",
-          "#3E4044",
-          "#5C5D62",
-          "#7B7D82",
-          "#9C9EA3",
-          "#C2C4C9",
-          "#ECEEF3"
-        ],
-        "dark": "#0B1124"
+          "#0B0B08",
+          "#252522",
+          "#42423E",
+          "#61615D",
+          "#83837E",
+          "#A5A5A1",
+          "#C9C9C5",
+          "#EFEFEA"
+        ]
       },
-      "panel-white": {
+      "tile-deep": {
         "role": "neutral",
-        "displayName": "Panel White",
-        "canonical": "#FBFCFE",
-        "oklch": "oklch(99.1% 0.003 264.5)",
+        "displayName": "Tile Deep",
+        "canonical": "#ECECE5",
         "tonalRamp": [
-          "#0B0B0C",
-          "#232425",
-          "#3F4041",
-          "#5D5E5F",
-          "#7C7D7F",
-          "#9D9EA0",
-          "#C3C4C6",
-          "#EDEEF0"
-        ],
-        "dark": "#111A33"
-      },
-      "well": {
-        "role": "neutral",
-        "displayName": "Well",
-        "canonical": "#F4F6FA",
-        "oklch": "oklch(97.3% 0.006 264.5)",
-        "tonalRamp": [
-          "#0A0B0E",
-          "#232427",
-          "#3E4043",
-          "#5C5E61",
-          "#7B7D81",
-          "#9D9EA2",
-          "#C2C4C8",
-          "#ECEEF2"
-        ],
-        "dark": "#0E1630"
-      },
-      "ink": {
-        "role": "neutral",
-        "displayName": "Ink",
-        "canonical": "#121A33",
-        "oklch": "oklch(22.5% 0.050 268.8)",
-        "tonalRamp": [
-          "#040920",
-          "#1A233C",
-          "#353F5B",
-          "#525D7B",
-          "#717D9C",
-          "#919EBF",
-          "#B6C4E6",
-          "#E0EEFF"
-        ],
-        "dark": "#E6EAF5"
-      },
-      "muted-ink": {
-        "role": "neutral",
-        "displayName": "Muted Ink",
-        "canonical": "#4E5977",
-        "oklch": "oklch(46.7% 0.051 268.8)",
-        "tonalRamp": [
-          "#040920",
-          "#1A223D",
-          "#343F5B",
-          "#525D7B",
-          "#717C9C",
-          "#919EBF",
-          "#B6C4E6",
-          "#E0EEFF"
-        ],
-        "dark": "#A9B3CF"
-      },
-      "faint-ink": {
-        "role": "neutral",
-        "displayName": "Faint Ink",
-        "canonical": "#6A7491",
-        "oklch": "oklch(56.1% 0.047 270.0)",
-        "tonalRamp": [
-          "#05091E",
-          "#1B233B",
-          "#363F59",
-          "#535D79",
-          "#727C9A",
-          "#939EBC",
-          "#B8C3E3",
-          "#E2EEFF"
-        ],
-        "dark": "#8893B2"
+          "#0C0B07",
+          "#252520",
+          "#42423D",
+          "#62625C",
+          "#83837C",
+          "#A5A59F",
+          "#CACAC3",
+          "#EFEFE8"
+        ]
       },
       "hairline": {
         "role": "neutral",
         "displayName": "Hairline",
-        "canonical": "#D5DAE8",
-        "oklch": "oklch(88.9% 0.020 270.2)",
+        "canonical": "#E3E3DB",
         "tonalRamp": [
-          "#080B14",
-          "#20242E",
-          "#3C3F4B",
-          "#595D69",
-          "#787D8A",
-          "#999EAB",
-          "#BFC4D1",
-          "#E9EEFC"
-        ],
-        "dark": "#26325C"
-      },
-      "hairline-soft": {
-        "role": "neutral",
-        "displayName": "Soft Hairline",
-        "canonical": "#E4E8F1",
-        "oklch": "oklch(93.1% 0.013 266.7)",
-        "tonalRamp": [
-          "#090B11",
-          "#21242A",
-          "#3D4047",
-          "#5A5E65",
-          "#7A7D85",
-          "#9B9EA7",
-          "#C0C4CD",
-          "#EAEEF7"
-        ],
-        "dark": "#1D2850"
-      },
-      "focus-indigo": {
-        "role": "neutral",
-        "displayName": "Focus Indigo",
-        "canonical": "#4A5FA0",
-        "oklch": "oklch(50.0% 0.107 268.8)",
-        "tonalRamp": [
-          "#030037",
-          "#101C57",
-          "#293A78",
-          "#45599A",
-          "#637ABD",
-          "#839BE1",
-          "#A7C1FF",
-          "#DEEEFF"
-        ],
-        "dark": "#8EA2E8"
-      },
-      "selection-wash": {
-        "role": "neutral",
-        "displayName": "Selection Wash",
-        "canonical": "#DDE3F4",
-        "oklch": "oklch(91.6% 0.024 270.3)",
-        "tonalRamp": [
-          "#070B15",
-          "#1F2430",
-          "#3B3F4D",
-          "#585D6C",
-          "#787D8C",
-          "#989EAE",
-          "#BEC4D4",
-          "#E8EEFF"
-        ],
-        "dark": "#1C2850"
-      },
-      "rail-indigo": {
-        "role": "neutral",
-        "displayName": "Rail Indigo",
-        "canonical": "#0E1838",
-        "oklch": "oklch(22.1% 0.064 267.9)",
-        "tonalRamp": [
-          "#030725",
-          "#172243",
-          "#313E62",
-          "#4E5C82",
-          "#6D7CA4",
-          "#8D9EC7",
-          "#B2C3EE",
-          "#DDEEFF"
-        ],
-        "dark": "#070C1B"
-      },
-      "rail-ink": {
-        "role": "neutral",
-        "displayName": "Rail Ink",
-        "canonical": "#DCE3F7",
-        "oklch": "oklch(91.7% 0.028 270.4)",
-        "tonalRamp": [
-          "#070A17",
-          "#1F2332",
-          "#3A3F4F",
-          "#575D6E",
-          "#777D8F",
-          "#979EB1",
-          "#BDC4D7",
-          "#E7EEFF"
+          "#0C0B07",
+          "#262520",
+          "#42423C",
+          "#62625B",
+          "#83837C",
+          "#A6A69E",
+          "#CACAC2",
+          "#EFEFE7"
         ]
       },
-      "rail-muted": {
+      "hairline-strong": {
         "role": "neutral",
-        "displayName": "Rail Muted",
-        "canonical": "#9AA8D4",
-        "oklch": "oklch(73.6% 0.066 271.0)",
+        "displayName": "Hairline Strong",
+        "canonical": "#D3D3CA",
         "tonalRamp": [
-          "#040626",
-          "#182144",
-          "#333D63",
-          "#505C83",
-          "#6F7BA5",
-          "#8F9DC8",
-          "#B4C3F0",
-          "#DFEDFF"
+          "#0C0C06",
+          "#26261F",
+          "#43423B",
+          "#62625A",
+          "#83837B",
+          "#A6A69D",
+          "#CACAC1",
+          "#EFEFE6"
         ]
       },
-      "rail-active": {
+      "ink": {
         "role": "neutral",
-        "displayName": "Rail Active",
-        "canonical": "#2A3E7A",
-        "oklch": "oklch(38.1% 0.105 267.4)",
+        "displayName": "Charcoal Ink",
+        "canonical": "#1A1B1D",
         "tonalRamp": [
-          "#020036",
-          "#0E1D56",
-          "#273B77",
-          "#435A99",
-          "#627ABC",
-          "#829CE0",
-          "#A6C2FF",
-          "#DDEEFF"
+          "#0A0B0D",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#A4A5A8",
+          "#C8C9CC",
+          "#EDEEF1"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#3A3B3E",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#242528",
+          "#414245",
+          "#606164",
+          "#818286",
+          "#A4A5A8",
+          "#C8C9CD",
+          "#EDEEF2"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#6A6B66",
+        "tonalRamp": [
+          "#0B0C08",
+          "#252621",
+          "#42433E",
+          "#61625D",
+          "#82837E",
+          "#A5A6A0",
+          "#C9CAC4",
+          "#EEEFE9"
+        ]
+      },
+      "lemon": {
+        "role": "primary",
+        "displayName": "Signal Lemon",
+        "canonical": "#EDE65A",
+        "tonalRamp": [
+          "#140900",
+          "#2E2600",
+          "#4B4400",
+          "#6A6400",
+          "#8C861D",
+          "#AEAA48",
+          "#D3CE6D",
+          "#F8F492"
         ],
-        "dark": "#1F2D5C"
+        "note": "Same value in light and dark."
       },
-      "resist-ground": {
-        "role": "neutral",
-        "displayName": "Resist Ground",
-        "canonical": "#1B2A5C",
-        "oklch": "oklch(30.3% 0.092 268.0)",
+      "lemon-hover": {
+        "role": "primary",
+        "displayName": "Lemon Press",
+        "canonical": "#E4DC3E",
         "tonalRamp": [
-          "#020231",
-          "#111F50",
-          "#2B3C70",
-          "#475B91",
-          "#667BB4",
-          "#869DD8",
-          "#ABC3FF",
-          "#DDEEFF"
+          "#140900",
+          "#2E2600",
+          "#4B4400",
+          "#6A6400",
+          "#8C861D",
+          "#AEAA48",
+          "#D3CE6D",
+          "#F8F492"
         ]
       },
-      "status-broken-rust": {
+      "lemon-wash": {
+        "role": "primary",
+        "displayName": "Lemon Wash",
+        "canonical": "#F8F4BE",
+        "tonalRamp": [
+          "#110B00",
+          "#2B2600",
+          "#484410",
+          "#686332",
+          "#898553",
+          "#ACA874",
+          "#D0CC97",
+          "#F6F2BC"
+        ]
+      },
+      "lemon-ink": {
+        "role": "primary",
+        "displayName": "Lemon Ink",
+        "canonical": "#1F1E0A",
+        "tonalRamp": [
+          "#0D0C00",
+          "#272612",
+          "#44432E",
+          "#63634C",
+          "#85846D",
+          "#A7A78F",
+          "#CBCBB2",
+          "#F1F0D7"
+        ]
+      },
+      "selected": {
+        "role": "neutral",
+        "displayName": "Inverted Ink",
+        "canonical": "#1F2023",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#242528",
+          "#414245",
+          "#606165",
+          "#818286",
+          "#A3A5A9",
+          "#C8C9CD",
+          "#EDEEF2"
+        ]
+      },
+      "selected-ink": {
+        "role": "neutral",
+        "displayName": "Inverted Ink Text",
+        "canonical": "#F4F4EF",
+        "tonalRamp": [
+          "#0B0B08",
+          "#252522",
+          "#42423E",
+          "#61615D",
+          "#83837E",
+          "#A5A5A1",
+          "#C9C9C5",
+          "#EFEFEA"
+        ]
+      },
+      "bar-charcoal": {
+        "role": "neutral",
+        "displayName": "Bar Charcoal",
+        "canonical": "#232322",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#A5A5A4",
+          "#C9C9C8",
+          "#EEEEED"
+        ]
+      },
+      "bar-raised": {
+        "role": "neutral",
+        "displayName": "Bar Raised",
+        "canonical": "#31312F",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252523",
+          "#424240",
+          "#61615F",
+          "#828280",
+          "#A5A5A3",
+          "#C9C9C7",
+          "#EFEFEC"
+        ]
+      },
+      "bar-ink": {
+        "role": "neutral",
+        "displayName": "Bar Ink",
+        "canonical": "#F1F0EA",
+        "tonalRamp": [
+          "#0C0B08",
+          "#262521",
+          "#43423D",
+          "#62615C",
+          "#83827D",
+          "#A6A5A0",
+          "#CAC9C3",
+          "#F0EFE9"
+        ]
+      },
+      "bar-muted": {
+        "role": "neutral",
+        "displayName": "Bar Muted",
+        "canonical": "#B3B2A9",
+        "tonalRamp": [
+          "#0C0B06",
+          "#26251E",
+          "#43423B",
+          "#626259",
+          "#84837A",
+          "#A6A59D",
+          "#CBCAC0",
+          "#F0EFE5"
+        ]
+      },
+      "dark-ground": {
+        "role": "neutral",
+        "displayName": "Warm Grey Ground (dark)",
+        "canonical": "#161615",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#A5A5A4",
+          "#C9C9C8",
+          "#EEEEED"
+        ]
+      },
+      "dark-tile": {
+        "role": "neutral",
+        "displayName": "Tile White (dark)",
+        "canonical": "#262624",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252523",
+          "#424240",
+          "#61615F",
+          "#828280",
+          "#A5A5A3",
+          "#C9C9C7",
+          "#EFEFEC"
+        ]
+      },
+      "dark-tile-well": {
+        "role": "neutral",
+        "displayName": "Tile Well (dark)",
+        "canonical": "#2E2E2C",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252523",
+          "#424240",
+          "#61615F",
+          "#828280",
+          "#A5A5A3",
+          "#C9C9C7",
+          "#EFEFEC"
+        ]
+      },
+      "dark-tile-deep": {
+        "role": "neutral",
+        "displayName": "Tile Deep (dark)",
+        "canonical": "#383835",
+        "tonalRamp": [
+          "#0B0B09",
+          "#252522",
+          "#42423F",
+          "#61615E",
+          "#82827F",
+          "#A5A5A2",
+          "#C9C9C6",
+          "#EFEFEB"
+        ]
+      },
+      "dark-hairline": {
+        "role": "neutral",
+        "displayName": "Hairline (dark)",
+        "canonical": "#353532",
+        "tonalRamp": [
+          "#0B0B09",
+          "#252522",
+          "#42423F",
+          "#61615E",
+          "#82827F",
+          "#A5A5A2",
+          "#C9C9C6",
+          "#EFEFEB"
+        ]
+      },
+      "dark-hairline-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong (dark)",
+        "canonical": "#4A4A46",
+        "tonalRamp": [
+          "#0B0B08",
+          "#252522",
+          "#42423E",
+          "#61615D",
+          "#83837E",
+          "#A5A5A1",
+          "#C9C9C5",
+          "#EFEFEA"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Charcoal Ink (dark)",
+        "canonical": "#F1F0EA",
+        "tonalRamp": [
+          "#0C0B08",
+          "#262521",
+          "#43423D",
+          "#62615C",
+          "#83827D",
+          "#A6A5A0",
+          "#CAC9C3",
+          "#F0EFE9"
+        ]
+      },
+      "dark-ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink (dark)",
+        "canonical": "#D9D8D1",
+        "tonalRamp": [
+          "#0C0B07",
+          "#262520",
+          "#43423C",
+          "#62615B",
+          "#83827C",
+          "#A6A59F",
+          "#CAC9C2",
+          "#F0EFE8"
+        ]
+      },
+      "dark-muted": {
+        "role": "neutral",
+        "displayName": "Muted (dark)",
+        "canonical": "#A6A59C",
+        "tonalRamp": [
+          "#0C0B06",
+          "#26251E",
+          "#43423B",
+          "#626259",
+          "#84837A",
+          "#A6A59C",
+          "#CBCAC0",
+          "#F0EFE5"
+        ]
+      },
+      "dark-lemon-wash": {
+        "role": "primary",
+        "displayName": "Lemon Wash (dark)",
+        "canonical": "#48461F",
+        "tonalRamp": [
+          "#0F0C00",
+          "#292600",
+          "#46441D",
+          "#65633C",
+          "#86855C",
+          "#A9A87E",
+          "#CDCCA1",
+          "#F3F2C5"
+        ]
+      },
+      "dark-bar-charcoal": {
+        "role": "neutral",
+        "displayName": "Bar Charcoal (dark)",
+        "canonical": "#31312F",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252523",
+          "#424240",
+          "#61615F",
+          "#828280",
+          "#A5A5A3",
+          "#C9C9C7",
+          "#EFEFEC"
+        ]
+      },
+      "dark-bar-raised": {
+        "role": "neutral",
+        "displayName": "Bar Raised (dark)",
+        "canonical": "#3E3E3B",
+        "tonalRamp": [
+          "#0B0B09",
+          "#252522",
+          "#42423F",
+          "#61615E",
+          "#82827F",
+          "#A5A5A2",
+          "#C9C9C6",
+          "#EFEFEB"
+        ]
+      },
+      "status-broken": {
         "role": "tertiary",
-        "displayName": "Broken Rust",
-        "canonical": "#B93A0B",
-        "oklch": "oklch(53.0% 0.171 37.2)",
+        "displayName": "Status: Broken",
+        "canonical": "#B42318",
         "tonalRamp": [
-          "#380000",
-          "#5D0000",
-          "#820000",
-          "#A82800",
-          "#CE4E26",
-          "#F5714A",
-          "#FF9870",
-          "#FFE1D2"
-        ],
-        "dark": "#FF8A5C"
+          "#2D0000",
+          "#510000",
+          "#752017",
+          "#9A4237",
+          "#C06457",
+          "#E68778",
+          "#FFAB9B",
+          "#FFD0BF"
+        ]
       },
-      "status-no-website": {
+      "status-broken-bg": {
         "role": "tertiary",
-        "displayName": "Plum",
-        "canonical": "#7E3B8A",
-        "oklch": "oklch(47.2% 0.141 321.3)",
+        "displayName": "Status: Broken Fill",
+        "canonical": "#FDECEA",
         "tonalRamp": [
-          "#21002D",
-          "#40004B",
-          "#5F1C6B",
-          "#803D8C",
-          "#A35EAF",
-          "#C67FD3",
-          "#EEA5FB",
-          "#FFE2FF"
-        ],
-        "dark": "#D58BE0"
+          "#120807",
+          "#2E2220",
+          "#4C3E3D",
+          "#6C5D5C",
+          "#8D7E7D",
+          "#B1A19F",
+          "#D5C5C3",
+          "#FBEAE8"
+        ]
       },
       "status-social": {
         "role": "tertiary",
-        "displayName": "Teal",
-        "canonical": "#0E6F72",
-        "oklch": "oklch(49.3% 0.081 198.3)",
+        "displayName": "Status: Social",
+        "canonical": "#6D28D9",
         "tonalRamp": [
-          "#001317",
-          "#002E32",
-          "#004C4F",
-          "#046B6E",
-          "#378C8F",
-          "#5BAEB1",
-          "#82D5D7",
-          "#C0FCFD"
-        ],
-        "dark": "#4FC6C6"
+          "#120037",
+          "#2A1058",
+          "#46317B",
+          "#64529F",
+          "#8573C4",
+          "#A796EA",
+          "#CBBAFF",
+          "#F1E0FF"
+        ]
       },
-      "status-weak-site": {
+      "status-social-bg": {
         "role": "tertiary",
-        "displayName": "Burnt Amber",
-        "canonical": "#A34D07",
-        "oklch": "oklch(52.0% 0.133 50.5)",
+        "displayName": "Status: Social Fill",
+        "canonical": "#F1EAFE",
         "tonalRamp": [
-          "#2E0000",
+          "#0D0815",
+          "#272230",
+          "#443F4F",
+          "#645E6F",
+          "#857F91",
+          "#A8A1B4",
+          "#CCC5D9",
+          "#F2EBFF"
+        ]
+      },
+      "status-no-website": {
+        "role": "tertiary",
+        "displayName": "Status: No Website",
+        "canonical": "#8F5300",
+        "tonalRamp": [
+          "#270000",
+          "#471000",
+          "#693000",
+          "#8C5100",
+          "#B17230",
+          "#D69554",
+          "#FDB978",
+          "#FFDF9D"
+        ]
+      },
+      "status-no-website-bg": {
+        "role": "tertiary",
+        "displayName": "Status: No Website Fill",
+        "canonical": "#FBEFD6",
+        "tonalRamp": [
+          "#120A00",
+          "#2D2410",
+          "#4B412C",
+          "#6A604A",
+          "#8C816B",
+          "#AFA48C",
+          "#D4C8B0",
+          "#F9EDD4"
+        ]
+      },
+      "status-bad": {
+        "role": "tertiary",
+        "displayName": "Status: Bad",
+        "canonical": "#B93C0B",
+        "tonalRamp": [
+          "#2D0000",
           "#500000",
-          "#732000",
-          "#964100",
-          "#BA6227",
-          "#DF844C",
-          "#FFAA71",
-          "#FFE4CB"
-        ],
-        "dark": "#F2A65A"
+          "#742204",
+          "#99442A",
+          "#BE664B",
+          "#E5896D",
+          "#FFAD90",
+          "#FFD2B4"
+        ]
       },
-      "status-needs-work": {
+      "status-bad-bg": {
         "role": "tertiary",
-        "displayName": "Ochre",
-        "canonical": "#876A0B",
-        "oklch": "oklch(53.8% 0.107 89.0)",
+        "displayName": "Status: Bad Fill",
+        "canonical": "#FDECE2",
         "tonalRamp": [
-          "#1C0300",
-          "#381E00",
-          "#563B00",
-          "#765900",
-          "#977924",
-          "#B99B4A",
-          "#E0C170",
-          "#FFEDC1"
-        ],
-        "dark": "#E3C45A"
+          "#130804",
+          "#2E221B",
+          "#4C3F37",
+          "#6C5E55",
+          "#8E7F76",
+          "#B1A198",
+          "#D6C5BC",
+          "#FCEBE1"
+        ]
       },
-      "status-good": {
+      "status-weak": {
         "role": "tertiary",
-        "displayName": "Leaf",
-        "canonical": "#2F7A4B",
-        "oklch": "oklch(52.0% 0.105 153.1)",
+        "displayName": "Status: Weak",
+        "canonical": "#1D5FA8",
+        "tonalRamp": [
+          "#00003B",
+          "#00215D",
+          "#01417F",
+          "#2A62A3",
+          "#4C84C8",
+          "#6EA8EF",
+          "#92CDFF",
+          "#B6F3FF"
+        ]
+      },
+      "status-weak-bg": {
+        "role": "tertiary",
+        "displayName": "Status: Weak Fill",
+        "canonical": "#E6EFFA",
+        "tonalRamp": [
+          "#060C12",
+          "#1F262E",
+          "#3C434B",
+          "#5A626B",
+          "#7B838D",
+          "#9EA6B0",
+          "#C1CAD5",
+          "#E6EFFA"
+        ]
+      },
+      "status-ok": {
+        "role": "tertiary",
+        "displayName": "Status: Ok",
+        "canonical": "#157339",
         "tonalRamp": [
           "#001500",
-          "#003106",
-          "#004F23",
-          "#216E40",
-          "#458F5F",
-          "#68B27F",
-          "#8DD8A4",
-          "#D1FBDC"
-        ],
-        "dark": "#6FCB90"
+          "#003300",
+          "#00521C",
+          "#1B743B",
+          "#44965C",
+          "#68BA7D",
+          "#8DE0A1",
+          "#B2FFC5"
+        ]
+      },
+      "status-ok-bg": {
+        "role": "tertiary",
+        "displayName": "Status: Ok Fill",
+        "canonical": "#E3F4E8",
+        "tonalRamp": [
+          "#040E07",
+          "#1C2920",
+          "#38463C",
+          "#57655B",
+          "#78877C",
+          "#9AAA9F",
+          "#BECEC2",
+          "#E3F4E8"
+        ]
       },
       "status-unknown": {
         "role": "tertiary",
-        "displayName": "Slate",
-        "canonical": "#6A7491",
-        "oklch": "oklch(56.1% 0.047 270.0)",
+        "displayName": "Status: Unknown",
+        "canonical": "#57585A",
         "tonalRamp": [
-          "#05091E",
-          "#1B233B",
-          "#363F59",
-          "#535D79",
-          "#727C9A",
-          "#939EBC",
-          "#B8C3E3",
-          "#E2EEFF"
-        ],
-        "dark": "#8893B2"
+          "#0A0B0D",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#A4A5A7",
+          "#C8C9CB",
+          "#EDEEF1"
+        ]
       },
-      "danger": {
+      "status-unknown-bg": {
         "role": "tertiary",
-        "displayName": "Danger Red",
-        "canonical": "#B42318",
-        "oklch": "oklch(50.0% 0.182 29.5)",
+        "displayName": "Status: Unknown Fill",
+        "canonical": "#EBEBE5",
         "tonalRamp": [
-          "#3B0000",
-          "#610000",
-          "#870000",
-          "#AD1A10",
-          "#D44536",
-          "#FB6957",
-          "#FF907C",
-          "#FFE0D7"
+          "#0B0B08",
+          "#252521",
+          "#42423D",
+          "#62625C",
+          "#83837D",
+          "#A5A5A0",
+          "#C9C9C4",
+          "#EFEFE9"
+        ]
+      },
+      "dark-status-broken": {
+        "role": "tertiary",
+        "displayName": "Status: Broken (dark)",
+        "canonical": "#FF9E94",
+        "tonalRamp": [
+          "#2D0000",
+          "#500000",
+          "#74201D",
+          "#99423C",
+          "#BF645C",
+          "#E5877E",
+          "#FFABA0",
+          "#FFD0C5"
         ],
-        "dark": "#FF7B72"
+        "darkFill": "rgb(255 110 95 / .14)"
+      },
+      "dark-status-social": {
+        "role": "tertiary",
+        "displayName": "Status: Social (dark)",
+        "canonical": "#C9B0FF",
+        "tonalRamp": [
+          "#140032",
+          "#2E1053",
+          "#4B3175",
+          "#6A5198",
+          "#8B72BC",
+          "#AE95E2",
+          "#D2B9FF",
+          "#F8DEFF"
+        ],
+        "darkFill": "rgb(170 130 255 / .15)"
+      },
+      "dark-status-no-website": {
+        "role": "tertiary",
+        "displayName": "Status: No Website (dark)",
+        "canonical": "#F2C76A",
+        "tonalRamp": [
+          "#200000",
+          "#3F1B00",
+          "#5F3A00",
+          "#805A00",
+          "#A37B11",
+          "#C89F41",
+          "#EDC368",
+          "#FFE88D"
+        ],
+        "darkFill": "rgb(242 190 80 / .14)"
+      },
+      "dark-status-bad": {
+        "role": "tertiary",
+        "displayName": "Status: Bad (dark)",
+        "canonical": "#FFB287",
+        "tonalRamp": [
+          "#280000",
+          "#4A0A00",
+          "#6D2C00",
+          "#904C22",
+          "#B56E44",
+          "#DB9167",
+          "#FFB58A",
+          "#FFDAAE"
+        ],
+        "darkFill": "rgb(255 150 100 / .14)"
+      },
+      "dark-status-weak": {
+        "role": "tertiary",
+        "displayName": "Status: Weak (dark)",
+        "canonical": "#97C3F5",
+        "tonalRamp": [
+          "#00072D",
+          "#00254D",
+          "#1B436E",
+          "#3B6490",
+          "#5C85B4",
+          "#7EA9D9",
+          "#A1CDFF",
+          "#C5F3FF"
+        ],
+        "darkFill": "rgb(120 175 240 / .14)"
+      },
+      "dark-status-ok": {
+        "role": "tertiary",
+        "displayName": "Status: Ok (dark)",
+        "canonical": "#8CDBA6",
+        "tonalRamp": [
+          "#001500",
+          "#003207",
+          "#005225",
+          "#207344",
+          "#479564",
+          "#6BB986",
+          "#8FDEA9",
+          "#B4FFCE"
+        ],
+        "darkFill": "rgb(110 210 140 / .13)"
+      },
+      "dark-status-unknown": {
+        "role": "tertiary",
+        "displayName": "Status: Unknown (dark)",
+        "canonical": "#BBBAB1",
+        "tonalRamp": [
+          "#0C0B06",
+          "#26251E",
+          "#43423B",
+          "#62625A",
+          "#84837A",
+          "#A6A59D",
+          "#CBCAC0",
+          "#F0EFE5"
+        ],
+        "darkFill": "rgb(255 255 255 / .07)"
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Selected lead's name in the detail panel; 23px on mobile."
+        "purpose": "The open lead's name, sized to its tile by container width."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "View titles."
+        "purpose": "Page titles (26px under 860px); dialog titles at 22px in the same voice."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Section headings; 15px in-panel, 20px in dialogs."
+        "purpose": "Tile headings; card names at 16.5px/600."
       },
-      "row-name": {
-        "displayName": "Row Name",
-        "purpose": "Business name in queue rows, ellipsis-truncated."
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Stat-tile counts and audit gauges, tabular."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Running text and form values; tabular figures."
-      },
-      "guide": {
-        "displayName": "Guide",
-        "purpose": "One-line guide under titles, muted ink."
+        "purpose": "Default text; guide copy at 13.5px."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Form labels, chips, status markers, queue section labels; sentence case."
+        "purpose": "Pills, chips, tabs, field labels, card meta."
       }
+    },
+    "themes": {
+      "switch": "Dark tokens apply under @media (prefers-color-scheme: dark) on :root:not([data-theme='light']) and under :root[data-theme='dark']; the dark-* colours are those overrides. Lemon, lemon-hover and lemon-ink are shared.",
+      "focusRing": {
+        "light": "#1A1B1D",
+        "dark": "#EDE65A"
+      }
+    },
+    "layouts": {
+      "switch": "html[data-layout='side'|'top']",
+      "side": "256px rail tile (228px under 1100px), sticky, inset 12px",
+      "top": "68px charcoal pill bar, sticky at 12px",
+      "mobile": "Under 860px both become a 60px charcoal header (bottom radius 22px) with a floating menu tile"
     },
     "shadows": [
       {
-        "name": "float",
-        "value": "0 1px 2px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.12)",
-        "dark": "0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.45)",
-        "purpose": "Dialogs, toasts, slide-in detail sheet, mobile nav overlay only."
+        "name": "lift",
+        "value": "0 1px 2px rgb(30 30 20 / .04), 0 10px 28px -14px rgb(30 30 20 / .16)",
+        "dark": "0 1px 2px rgb(0 0 0 / .3), 0 12px 30px -14px rgb(0 0 0 / .6)",
+        "purpose": "Card hover only."
       },
       {
-        "name": "tab-lift",
-        "value": "0 1px 2px rgba(0,0,0,.1)",
-        "purpose": "Selected segment in the segmented control."
+        "name": "pop",
+        "value": "0 2px 6px rgb(30 30 20 / .06), 0 24px 48px -16px rgb(30 30 20 / .28)",
+        "dark": "0 2px 8px rgb(0 0 0 / .4), 0 28px 56px -18px rgb(0 0 0 / .75)",
+        "purpose": "Popovers, dialogs, mobile menu, toasts."
       },
       {
-        "name": "focus-halo",
-        "value": "0 0 0 3px color-mix(in srgb, var(--focus) 25%, transparent)",
-        "purpose": "Focused input, paired with a focus-indigo border."
+        "name": "ring",
+        "value": "0 0 0 1px var(--ink)",
+        "purpose": "Current card and checked source option, paired with an ink border."
+      },
+      {
+        "name": "seg-raise",
+        "value": "0 1px 3px rgb(0 0 0 / .12)",
+        "purpose": "Chosen option in a segmented control."
       }
     ],
     "motion": [
       {
-        "name": "ease-out-dip",
+        "name": "ease",
         "value": "cubic-bezier(.16, 1, .3, 1)",
-        "purpose": "Swatch dip and detail sheet slide-in."
+        "purpose": "CSS ease for press scale, card shadow, theme sweep."
       },
       {
-        "name": "duration-dip",
-        "value": "220ms",
-        "purpose": "Detail swatch dye rising from the bottom on selection; sheet slide-in."
+        "name": "state-fade",
+        "value": "150ms",
+        "purpose": "Colour and border transitions on controls."
       },
       {
-        "name": "duration-state",
-        "value": "150ms ease",
-        "purpose": "Hover colour and border transitions."
+        "name": "press",
+        "value": "scale(.97) buttons, scale(.94) icon buttons, 120ms",
+        "purpose": "Press feedback."
       },
       {
-        "name": "row-leave",
-        "value": "200ms; opacity 0, translateX(16px)",
-        "purpose": "Logged lead lifts out of the queue."
+        "name": "flip-open",
+        "value": "GSAP Flip 0.45s expo.out",
+        "purpose": "Card-to-profile opening (default M.flip)."
       },
       {
-        "name": "dye-pulse",
-        "value": "1.6s ease-in-out infinite",
-        "purpose": "Live-work dot and pending-check marker. All motion off under prefers-reduced-motion."
+        "name": "flip-layout",
+        "value": "GSAP Flip 0.55s expo.out",
+        "purpose": "Side/top layout switch."
+      },
+      {
+        "name": "reflow",
+        "value": "GSAP Flip 0.4s expo.out; entering cards fade up 8px over 0.3s, stagger amount 0.12s",
+        "purpose": "List re-render after logging or filtering."
+      },
+      {
+        "name": "enter",
+        "value": "0.42s power3.out, y 10-18px, stagger 0.025-0.05s capped at 0.24s",
+        "purpose": "Detail tiles and first cards entering."
+      },
+      {
+        "name": "leave",
+        "value": "0.2s power2.in to opacity 0, scale .96",
+        "purpose": "Logged card folding away."
+      },
+      {
+        "name": "pop-in",
+        "value": "0.22s power3.out from y -6px, scale .97",
+        "purpose": "Mobile menu appearing."
+      },
+      {
+        "name": "dialog-in",
+        "value": "0.32s power3.out from y 14px, scale .98",
+        "purpose": "Dialog opening."
+      },
+      {
+        "name": "theme-sweep",
+        "value": "View Transition, clip-path circle from the toggle button, 0.55s",
+        "purpose": "Theme toggle."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "M.ok() false: changes apply instantly; CSS durations forced to .01ms",
+        "purpose": "prefers-reduced-motion and no-GSAP fallback."
+      },
+      {
+        "name": "booting",
+        "value": ".booting * { transition: none }",
+        "purpose": "Suppress transitions until the first view renders."
       }
     ],
     "breakpoints": [
       {
-        "name": "sheet",
-        "value": "1180px",
-        "purpose": "At or below: split collapses, detail becomes a slide-in sheet."
+        "name": "wide",
+        "value": "1280px"
       },
       {
-        "name": "topbar",
-        "value": "820px",
-        "purpose": "At or below: rail becomes a top bar; resist band moves to its bottom edge."
+        "name": "laptop",
+        "value": "1100px"
+      },
+      {
+        "name": "mobile",
+        "value": "860px"
+      },
+      {
+        "name": "small",
+        "value": "480px"
+      },
+      {
+        "name": "detail-two-col",
+        "value": "740px (container query)"
       }
     ]
   },
@@ -590,133 +951,136 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Ink-filled action (WhatsApp, confirm). Never a dye value.",
-      "html": "<button class=\"ds-btn ds-btn-primary\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z\"/></svg>WhatsApp</button>",
-      "css": ".ds-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:6px;padding:8px 15px;font:650 14px/1.25 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}.ds-btn-primary{background:#121A33;color:#FFFFFF}.ds-btn-primary:hover{background:color-mix(in srgb,#121A33 86%,#EEF0F5)}.ds-btn:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+      "description": "Lemon pill for the one next action per region (Find leads, the lead's main contact button).",
+      "html": "<button class='ds-btn-lemon'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>Find leads</button>",
+      "css": ".ds-btn-lemon{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:1px solid transparent;background:var(--lemon,#EDE65A);color:var(--lemon-ink,#1F1E0A);font-size:14px;font-weight:500;cursor:pointer;transition:background-color .15s,transform .12s cubic-bezier(.16,1,.3,1)}.ds-btn-lemon:hover{background:var(--lemon-hi,#E4DC3E)}.ds-btn-lemon:active{transform:scale(.97)}.ds-btn-lemon:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
     },
     {
       "name": "Quiet Button",
       "kind": "button",
       "refersTo": "button-quiet",
-      "description": "Secondary actions: Call, Open their site, Copy, Filters.",
-      "html": "<button class=\"ds-btn-quiet\">Call</button>",
-      "css": ".ds-btn-quiet{display:inline-flex;align-items:center;gap:7px;background:#FBFCFE;color:#121A33;border:1px solid #D5DAE8;border-radius:6px;padding:8px 15px;font:650 14px/1.25 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer;transition:border-color .15s ease}.ds-btn-quiet:hover{border-color:#8798D3}.ds-btn-quiet:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+      "description": "Tile-coloured pill with a hairline border for secondary actions (Call, Export, Filters).",
+      "html": "<button class='ds-btn-quiet'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v12m0 0-4-4m4 4 4-4M5 21h14'/></svg>Export CSV</button>",
+      "css": ".ds-btn-quiet{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--line,#E3E3DB);background:var(--tile,#FFFFFF);color:var(--ink,#1A1B1D);font-size:14px;font-weight:500;cursor:pointer;transition:background-color .15s,border-color .15s,transform .12s cubic-bezier(.16,1,.3,1)}.ds-btn-quiet:hover{background:var(--tile-2,#F6F6F1);border-color:var(--line-2,#D3D3CA)}.ds-btn-quiet:active{transform:scale(.97)}.ds-btn-quiet:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
     },
     {
-      "name": "Chip",
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "40px circle with a hairline border and an 18px stroke icon.",
+      "html": "<button class='ds-iconbtn' aria-label='Switch to dark mode'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/></svg></button>",
+      "css": ".ds-iconbtn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line,#E3E3DB);background:var(--tile,#FFFFFF);color:var(--ink,#1A1B1D);cursor:pointer;transition:background-color .15s,border-color .15s,transform .12s cubic-bezier(.16,1,.3,1)}.ds-iconbtn:hover{background:var(--tile-2,#F6F6F1);border-color:var(--line-2,#D3D3CA)}.ds-iconbtn:active{transform:scale(.94)}.ds-iconbtn:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Pill field with a leading icon; focus turns the border ink.",
+      "html": "<label class='ds-search'><svg width='17' height='17' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg><input type='search' placeholder='Search name, street, phone, notes'></label>",
+      "css": ".ds-search{position:relative;display:block;max-width:420px}.ds-search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--mut,#6A6B66)}.ds-search input{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;width:100%;height:42px;padding:0 16px 0 42px;border-radius:999px;border:1px solid var(--line,#E3E3DB);background:var(--tile,#FFFFFF);color:var(--ink,#1A1B1D);font-size:14px;transition:border-color .15s}.ds-search input:hover{border-color:var(--line-2,#D3D3CA)}.ds-search input:focus{outline:none;border-color:var(--ink,#1A1B1D)}.ds-search input:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:1px}.ds-search input::placeholder{color:var(--mut,#6A6B66)}"
+    },
+    {
+      "name": "Filter Chips",
       "kind": "chip",
       "refersTo": "chip",
-      "description": "Area and pipeline filters; the pressed state is ink.",
-      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">All areas</button><button class=\"ds-chip\" aria-pressed=\"true\">Portsmouth</button><button class=\"ds-chip\">Abuja <small>40</small></button></div>",
-      "css": ".ds-chips{display:flex;gap:6px;flex-wrap:wrap}.ds-chip{border:1px solid #D5DAE8;background:#FBFCFE;border-radius:999px;padding:5px 13px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977;cursor:pointer}.ds-chip:hover{border-color:#8798D3;color:#121A33}.ds-chip[aria-pressed=true]{background:#121A33;border-color:#121A33;color:#fff}.ds-chip small{font-weight:500;opacity:.75;margin-left:4px}.ds-chip:focus-visible{outline:2px solid #4A5FA0;outline-offset:2px}"
+      "description": "Pill chips; the selected chip is inverted ink, never lemon.",
+      "html": "<div class='ds-chips'><button class='ds-chip' aria-pressed='true'>Electricians</button><button class='ds-chip' aria-pressed='false'>Roofers</button><button class='ds-chip' aria-pressed='false'>Barbers</button></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:8px}.ds-chip{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line,#E3E3DB);background:var(--tile,#FFFFFF);color:var(--ink,#1A1B1D);font-size:13px;font-weight:500;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s}.ds-chip:hover{border-color:var(--line-2,#D3D3CA)}.ds-chip[aria-pressed='true']{background:var(--sel,#1F2023);border-color:var(--sel,#1F2023);color:var(--sel-ink,#F4F4EF)}.ds-chip:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
     },
     {
-      "name": "Text Input",
-      "kind": "input",
-      "refersTo": "input",
-      "description": "Hairline field with an indigo focus halo.",
-      "html": "<label class=\"ds-label\">Notes<input class=\"ds-input\" placeholder=\"Who you spoke to, what they said\"></label>",
-      "css": ".ds-label{display:flex;flex-direction:column;gap:5px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977}.ds-input{background:#FBFCFE;border:1px solid #D5DAE8;border-radius:6px;padding:8px 11px;min-height:38px;font:400 15px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#121A33;caret-color:#4E66B4}.ds-input::placeholder{color:#6A7491}.ds-input:focus{outline:none;border-color:#4A5FA0;box-shadow:0 0 0 3px color-mix(in srgb,#4A5FA0 25%,transparent)}"
+      "name": "Website Status Pills",
+      "kind": "custom",
+      "refersTo": "status-pill",
+      "description": "Dot + word on a tinted fill; an unverified 'No website listed' adds a diagonal hatch and a hollow dot.",
+      "html": "<div class='ds-pills'><span class='ds-pill ds-p-broken'>Domain expired</span><span class='ds-pill ds-p-none'>No website</span><span class='ds-pill ds-p-none ds-unv'>No website listed</span><span class='ds-pill ds-p-ok'>Good website</span></div>",
+      "css": ".ds-pills{display:flex;flex-wrap:wrap;gap:6px}.ds-pill{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:999px;font-size:12.5px;font-weight:500;white-space:nowrap;color:var(--c);background:var(--cb)}.ds-pill::before{content:'';box-sizing:border-box;width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}.ds-p-broken{--c:var(--p-broken,#B42318);--cb:var(--p-broken-bg,#FDECEA)}.ds-p-none{--c:var(--p-none,#8F5300);--cb:var(--p-none-bg,#FBEFD6)}.ds-p-ok{--c:var(--p-ok,#157339);--cb:var(--p-ok-bg,#E3F4E8)}.ds-unv{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 16%,transparent) 0 1.5px,transparent 1.5px 6px),var(--cb)}.ds-unv::before{background:none;border:1.5px solid currentColor}"
     },
     {
-      "name": "Rail Navigation",
+      "name": "Strength Meter",
+      "kind": "custom",
+      "refersTo": "status-pill",
+      "description": "Five rising ink bars: bars only on cards; with the word (and Lemon Wash at 'Very strong') in the open lead's header.",
+      "html": "<div class='ds-strrow'><span class='ds-str ds-bars ds-s4' role='img' aria-label='Lead strength: strong'><i></i><i></i><i></i><i></i><i></i></span><span class='ds-str ds-s5' role='img' aria-label='Lead strength: very strong'><i></i><i></i><i></i><i></i><i></i><b>Very strong</b></span></div>",
+      "css": ".ds-strrow{display:flex;gap:8px;align-items:center}.ds-str{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;gap:2px;height:26px;padding:0 10px 0 9px;border-radius:999px;background:var(--tile-2,#F6F6F1);color:var(--ink,#1A1B1D);font-size:12px;font-weight:600}.ds-str i{width:3px;border-radius:2px;background:var(--line-2,#D3D3CA)}.ds-str i:nth-child(1){height:5px}.ds-str i:nth-child(2){height:7px}.ds-str i:nth-child(3){height:9px}.ds-str i:nth-child(4){height:11px}.ds-str i:nth-child(5){height:13px}.ds-str b{margin-left:6px}.ds-s4 i:nth-child(-n+4),.ds-s5 i{background:var(--ink,#1A1B1D)}.ds-s5{background:var(--lemon-soft,#F8F4BE)}.ds-bars{padding:0 9px;background:transparent;border:1px solid var(--line,#E3E3DB)}"
+    },
+    {
+      "name": "Lead Card",
+      "kind": "card",
+      "refersTo": "lead-card",
+      "description": "A sparse 22px card: name, ink strength bars, one status pill, Google button. Lifts on hover.",
+      "html": "<article class='ds-card'><div class='ds-c-row'><h3>A Class Electrical</h3><span class='ds-cstr'><i></i><i></i><i></i><i></i><i></i></span></div><div class='ds-c-row'><span class='ds-cpill'>No website</span><a href='#' class='ds-gpill'>Google</a></div></article>",
+      "css": ".ds-card{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:flex;flex-direction:column;gap:10px;width:300px;padding:18px 18px 14px 20px;border-radius:22px;background:var(--tile,#FFFFFF);border:1px solid var(--line,#E3E3DB);color:var(--ink,#1A1B1D);transition:border-color .15s,box-shadow .2s cubic-bezier(.16,1,.3,1)}.ds-card:hover{border-color:var(--line-2,#D3D3CA);box-shadow:var(--shadow,0 1px 2px rgb(30 30 20 / .04),0 10px 28px -14px rgb(30 30 20 / .16))}.ds-c-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.ds-card h3{margin:0;font-size:16.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}.ds-cstr{display:inline-flex;align-items:center;gap:2px;height:26px;padding:0 9px;border-radius:999px;border:1px solid var(--line,#E3E3DB)}.ds-cstr i{width:3px;border-radius:2px;background:var(--ink,#1A1B1D)}.ds-cstr i:nth-child(1){height:5px}.ds-cstr i:nth-child(2){height:7px}.ds-cstr i:nth-child(3){height:9px}.ds-cstr i:nth-child(4){height:11px}.ds-cstr i:nth-child(5){height:13px}.ds-cpill{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px 0 9px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--p-none,#8F5300);background:var(--p-none-bg,#FBEFD6)}.ds-cpill::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}.ds-gpill{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line,#E3E3DB);background:var(--tile,#FFFFFF);color:var(--ink,#1A1B1D);font-size:12.5px;font-weight:500;text-decoration:none;transition:background-color .15s}.ds-gpill:hover{background:var(--tile-2,#F6F6F1)}.ds-gpill:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
+    },
+    {
+      "name": "Side Rail Navigation",
       "kind": "nav",
-      "refersTo": "nav-item-active",
-      "description": "Indigo rail with the starch-resist edge band, the only place the cloth pattern appears.",
-      "html": "<nav class=\"ds-rail\"><a href=\"#\" aria-current=\"page\">Next up <b>1,134</b></a><a href=\"#\">All leads <b>1,253</b></a><a href=\"#\">Follow-ups <b class=\"due\">3</b></a><button class=\"ds-cloth\">Find leads</button></nav>",
-      "css": ".ds-rail{position:relative;width:232px;background:#0E1838;padding:16px 26px 16px 16px;display:flex;flex-direction:column;gap:2px;font-family:'Hanken Grotesk','Segoe UI',system-ui,sans-serif}.ds-rail::after{content:'';position:absolute;top:0;bottom:0;right:0;width:10px;background:#1B2A5C url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='64' viewBox='0 0 10 64'%3E%3Crect width='10' height='64' fill='%231B2A5C'/%3E%3Cg fill='none' stroke='%235A70B8' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M2.2 2.5c1.6 1.1 3.9.6 5.6 1.9'/%3E%3Cpath d='M1.6 14.2c2.2-.8 4.4.4 6.7-.6'/%3E%3Cpath d='M3 25.8c1.3 1.4 3.4 1 4.6 2.1'/%3E%3Cpath d='M1.8 41.5c2-.9 4.6.6 6.2-.4'/%3E%3Cpath d='M2.6 53c1.8 1.2 3.4.5 5.2 1.6'/%3E%3C/g%3E%3Cg fill='%237387C9'%3E%3Ccircle cx='5' cy='8.6' r='1.05'/%3E%3Ccircle cx='3.4' cy='20' r='.85'/%3E%3Ccircle cx='6.6' cy='34' r='1.1'/%3E%3Ccircle cx='4.4' cy='47.4' r='.9'/%3E%3Ccircle cx='6' cy='59.4' r='.8'/%3E%3C/g%3E%3C/svg%3E\") repeat-y}.ds-rail a{display:flex;align-items:center;padding:9px 10px;border-radius:8px;color:#DCE3F7;text-decoration:none;font-weight:600;font-size:14.5px}.ds-rail a:hover{background:color-mix(in srgb,#2A3E7A 60%,transparent)}.ds-rail a[aria-current=page]{background:#2A3E7A;color:#fff}.ds-rail b{margin-left:auto;font-size:12.5px;font-weight:600;color:#9AA8D4}.ds-rail b.due{background:#EEF0F5;color:#0E1838;border-radius:999px;padding:0 8px}.ds-cloth{margin-top:16px;background:#EEF0F5;color:#0E1838;border:0;border-radius:6px;padding:8px 15px;font:650 14px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;cursor:pointer}.ds-cloth:hover{background:#fff}.ds-rail a:focus-visible,.ds-cloth:focus-visible{outline:2px solid #8EA2E8;outline-offset:2px}"
+      "refersTo": "nav-link-active",
+      "description": "Pill links in a 28px rail tile; the active link is lemon, counts are tabular.",
+      "html": "<nav class='ds-rail'><a href='#'>Next up<b>1,578</b></a><a href='#' aria-current='page'>All leads<b>1,799</b></a><a href='#'>Follow-ups</a><a href='#'>Searches</a></nav>",
+      "css": ".ds-rail{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:grid;gap:4px;width:228px;padding:14px;border-radius:28px;background:var(--tile,#FFFFFF);border:1px solid var(--line,#E3E3DB)}.ds-rail a{display:flex;align-items:center;gap:12px;height:44px;padding:0 12px 0 14px;border-radius:999px;color:var(--ink,#1A1B1D);text-decoration:none;font-size:14px;font-weight:500;transition:background-color .15s}.ds-rail a b{margin-left:auto;font-size:12px;font-weight:600;color:var(--mut,#6A6B66);font-variant-numeric:tabular-nums}.ds-rail a:hover:not([aria-current]){background:var(--tile-2,#F6F6F1)}.ds-rail a[aria-current='page']{background:var(--lemon,#EDE65A);color:var(--lemon-ink,#1F1E0A)}.ds-rail a[aria-current='page'] b{color:var(--lemon-ink,#1F1E0A);opacity:.75}.ds-rail a:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
     },
     {
-      "name": "Lead Row",
-      "kind": "custom",
-      "refersTo": "lead-swatch",
-      "description": "Hairline row led by a dye swatch; selection is an outline around the swatch, never a side stripe.",
-      "html": "<ol class=\"ds-rows\"><li><button class=\"ds-row\" aria-current=\"true\"><i class=\"ds-sw\" style=\"background:#0B1430\"></i><span><b>National Slimming &amp; Cosmetic Clinics</b><small>Aesthetics clinics · Portsmouth</small></span><span class=\"ds-mk ds-mk-broken\">Domain expired</span></button></li><li><button class=\"ds-row\"><i class=\"ds-sw\" style=\"background:#2A4396\"></i><span><b>Tan &amp; Envy</b><small>Beauty, nails &amp; lashes · Portsmouth</small></span><span class=\"ds-mk ds-mk-social\">Facebook only</span></button></li><li><button class=\"ds-row\"><i class=\"ds-sw\" style=\"background:#8798D3\"></i><span><b>Geo Heating</b><small>Plumbers · Fareham</small></span><span class=\"ds-mk ds-mk-none\">No website listed</span></button></li></ol>",
-      "css": ".ds-rows{list-style:none;margin:0;padding:0;background:#EEF0F5;font-family:'Hanken Grotesk','Segoe UI',system-ui,sans-serif}.ds-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;padding:12px 28px;border:0;border-top:1px solid #D5DAE8;background:transparent;cursor:pointer;color:#121A33;font:inherit;transition:background-color .15s ease}.ds-rows li:last-child .ds-row{border-bottom:1px solid #D5DAE8}.ds-row:hover{background:#F4F6FA}.ds-row[aria-current=true]{background:#FBFCFE}.ds-row[aria-current=true] .ds-sw{outline:2px solid #4A5FA0;outline-offset:2px}.ds-sw{width:26px;height:34px;border-radius:3px;display:block}.ds-row b{display:block;font-weight:700;font-size:15px}.ds-row small{display:block;font-size:13px;color:#4E5977}.ds-mk{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:650}.ds-mk::before{content:'';width:10px;height:10px;background:var(--c)}.ds-mk-broken{--c:#B93A0B}.ds-mk-none{--c:#7E3B8A}.ds-mk-none::before{border-radius:50%}.ds-mk-social{--c:#0E6F72}.ds-mk-social::before{transform:rotate(45deg) scale(.85)}.ds-row:focus-visible{outline:2px solid #4A5FA0;outline-offset:-2px}"
-    },
-    {
-      "name": "Status Marker",
-      "kind": "custom",
-      "description": "Shape plus word for every website status; never colour alone.",
-      "html": "<div class=\"ds-mks\"><span class=\"ds-m ds-m-b\">Domain expired</span><span class=\"ds-m ds-m-n\">No website listed</span><span class=\"ds-m ds-m-s\">Facebook only</span><span class=\"ds-m ds-m-w\">Weak website</span><span class=\"ds-m ds-m-nw\">Needs work</span><span class=\"ds-m ds-m-o\">Decent site</span><span class=\"ds-m ds-m-u\">Couldn't check</span></div>",
-      "css": ".ds-mks{display:flex;flex-direction:column;gap:8px;font:650 13px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#121A33}.ds-m{display:inline-flex;align-items:center;gap:7px}.ds-m::before{content:'';width:10px;height:10px;background:var(--c)}.ds-m-b{--c:#B93A0B}.ds-m-n{--c:#7E3B8A}.ds-m-n::before{border-radius:50%}.ds-m-s{--c:#0E6F72}.ds-m-s::before{transform:rotate(45deg) scale(.85)}.ds-m-w{--c:#A34D07}.ds-m-w::before{clip-path:polygon(50% 0,100% 100%,0 100%)}.ds-m-nw{--c:#876A0B}.ds-m-nw::before{clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.7}.ds-m-o::before{border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2.5px #2F7A4B}.ds-m-u::before{border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2px #6A7491}"
-    },
-    {
-      "name": "Dye Key",
-      "kind": "custom",
-      "description": "The five dye steps, weak to strong; thresholds come from /api/status dye_cuts.",
-      "html": "<div class=\"ds-key\"><span>Lead strength: weak</span><i style=\"background:#C5CEEC\"></i><i style=\"background:#8798D3\"></i><i style=\"background:#4E66B4\"></i><i style=\"background:#2A4396\"></i><i style=\"background:#0B1430\"></i><span>strong</span></div>",
-      "css": ".ds-key{display:flex;align-items:center;gap:5px;font:400 12.5px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;color:#4E5977}.ds-key span{margin-right:4px}.ds-key i{width:15px;height:11px;border-radius:2px}"
-    },
-    {
-      "name": "Toast",
-      "kind": "custom",
-      "refersTo": "toast",
-      "description": "Ink toast with an inline undo link; the error variant uses danger.",
-      "html": "<div class=\"ds-toast\">Logged as contacted. <button>Undo</button></div>",
-      "css": ".ds-toast{display:inline-flex;gap:16px;align-items:center;background:#121A33;color:#fff;padding:11px 16px;border-radius:10px;font:400 14px 'Hanken Grotesk','Segoe UI',system-ui,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.08),0 12px 32px rgba(0,0,0,.12)}.ds-toast button{background:none;border:0;padding:0;color:inherit;font-weight:650;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.ds-toast button:focus-visible{outline:2px solid #8EA2E8;outline-offset:2px}"
+      "name": "Stat Tile",
+      "kind": "card",
+      "refersTo": "stat-tile",
+      "description": "Pipeline count tile that filters the board; inverts to ink when pressed.",
+      "html": "<div class='ds-stats'><button class='ds-stat' aria-pressed='true'><small>New</small><b>1,204</b></button><button class='ds-stat' aria-pressed='false'><small>Contacted</small><b>312</b></button></div>",
+      "css": ".ds-stats{display:flex;gap:10px}.ds-stat{font-family:'Host Grotesk',ui-sans-serif,system-ui,sans-serif;display:grid;text-align:left;min-width:150px;padding:14px 16px;border-radius:22px;background:var(--tile,#FFFFFF);border:1px solid var(--line,#E3E3DB);color:var(--ink,#1A1B1D);cursor:pointer;transition:border-color .15s,background-color .15s,color .15s}.ds-stat:hover{border-color:var(--line-2,#D3D3CA)}.ds-stat small{font-size:12.5px;color:var(--mut,#6A6B66)}.ds-stat b{font-size:22px;font-weight:500;letter-spacing:-.02em;line-height:1.2;font-variant-numeric:tabular-nums}.ds-stat[aria-pressed='true']{background:var(--sel,#1F2023);border-color:var(--sel,#1F2023);color:var(--sel-ink,#F4F4EF)}.ds-stat[aria-pressed='true'] small{color:inherit;opacity:.78}.ds-stat:focus-visible{outline:2px solid var(--focus,#1A1B1D);outline-offset:2px}"
     }
   ],
   "narrative": {
-    "northStar": "Adire Dye Depth",
-    "overview": "LeadFinder is a working tool dressed in adire eleko, the Yoruba starch-resist indigo cloth. A deep indigo rail holds the navigation; a pale undyed-cloth ground carries the work; white panels hold the selected lead. The one idea the cloth carries is lead strength: the deeper a lead's swatch is dyed, the stronger the lead. Everything else stays quiet so that dye depth reads at a glance.\n\nDensity is that of a focused desk tool used for hours. Rows are separated by hairlines, not boxed into cards. Type is a single grotesk at modest sizes with tabular figures. Status never relies on colour: each one is a shaped marker plus a word. The cloth's pattern shows up in exactly one place, the starch-resist band along the rail's edge, so the motif stays special and never turns into wallpaper.\n\nThe system rejects the CRM default (a full database table led by numeric scores) as the home view. Tables exist for history pages, not for deciding who to contact next.",
+    "northStar": "The Bento Board",
+    "overview": "LeadFinder is a board of soft, rounded tiles on a warm grey ground. Each lead is a small card that carries only its name, a website-status pill, an ink strength meter and a Google button. Everything else lives one click deeper, in a bento of tiles that opens beside a narrowed list. At rest the board is calm and low in contrast. Charcoal ink does the structural work, and a single lemon yellow marks where the seller should act next.\n\nBoth themes share one geometry. Light mode puts clean white tiles with hairline borders on warm grey. Dark mode puts charcoal tiles on a near-black ground with warm off-white ink. Lemon looks the same in both themes. Selection is always inverted ink: charcoal on light, off-white on charcoal. Navigation has two layouts that use the same tokens: a 256px side rail tile, or a charcoal top bar shaped like a pill.\n\nMotion has one authored moment: a card opening into its profile. The grid collapses to a single column and the bento tiles stagger in. All other motion supports that moment: the reflow when a card is logged away, entrances, and the theme sweep. All of it turns off cleanly under reduced motion.",
     "keyCharacteristics": [
-      "Five dye steps encode lead strength and selection only; thresholds are server-supplied quintiles.",
-      "Ink, not dye, drives primary actions, pressed chips, badges and toasts.",
-      "Status = shape + word; rust is reserved for broken sites.",
-      "Hairline rows on an undyed ground; no cards, no floating containers in the flow.",
-      "One family (Hanken Grotesk), heavy weights for names, tabular numerals everywhere.",
-      "Light and dark themes share every rule; dark maps dye depth to chroma."
+      "Warm grey ground with white (light) or charcoal (dark) tiles; hairline borders, no heavy chrome.",
+      "Three nested radii: tiles 28px, cards 22px, and every control is a full pill or a circle.",
+      "Lemon is a rare signal for what to do next; selection is inverted ink.",
+      "Website status is a dot plus a word; an unverified status gets a diagonal hatch.",
+      "Host Grotesk only, at medium weights, with tabular numbers wherever a count appears.",
+      "GSAP Flip carries the card-to-profile opening; content stays visible without it."
     ],
     "rules": [
       {
-        "name": "The Dye Means Strength Rule",
-        "body": "A filled dye block (row swatch, detail swatch, dye key) means lead strength and nothing else. The selected row is shown by a focus outline around its swatch. Dye 2 and 3 may appear as a hairline or text accent (hover borders, links), never as a filled block for anything other than strength.",
+        "name": "The Lemon Means Act Rule",
+        "body": "Full-strength lemon appears only where the seller acts next or where the app is live: the primary button, the active nav item, the Google-profile row and the live dot. Cards on the board never carry lemon; their strength shows as ink bars only.",
         "section": "colors"
       },
       {
-        "name": "The Ink Acts Rule",
-        "body": "Primary buttons, pressed chips, badges and toasts use ink (`primary`), never a dye value, so an action can never be mistaken for a strong lead.",
+        "name": "The Inverted Ink Rule",
+        "body": "A selected state always uses the ink colour as its fill and the ground colour as its text, in both themes. Never show selection with lemon or with a status colour.",
         "section": "colors"
       },
       {
-        "name": "The Rust Is Broken Rule",
-        "body": "Rust appears only for broken sites and overdue follow-ups. Destructive actions use `danger`, a different red.",
-        "section": "colors"
-      },
-      {
-        "name": "The One Family Rule",
-        "body": "Hanken Grotesk everywhere, with no second display face and no monospace. Emphasis comes from weight.",
+        "name": "The Tabular Count Rule",
+        "body": "Any number that can change (tab counts, nav counts, stats, table numerals) uses tabular figures, so the board doesn't jitter as counts update.",
         "section": "typography"
       },
       {
-        "name": "The Only Floaters Rule",
-        "body": "Shadow belongs to overlays. Nothing in the reading flow (rows, filters, sections) gets a shadow.",
-        "section": "elevation"
+        "name": "The No Shouting Rule",
+        "body": "No uppercase, no letter-spaced labels. Hierarchy comes from size and weight only.",
+        "section": "typography"
       },
       {
-        "name": "The Starch-Resist Band",
-        "body": "The 10px band down the rail's right edge (an authored, repeating SVG of curved resist lines and dots on `resist-ground`) is the only place the cloth's pattern appears. It becomes a 6px strip along the bottom of the mobile top bar.",
-        "section": "shapes"
+        "name": "The Flat Until Touched Rule",
+        "body": "Tiles and cards sit flat with a hairline at rest. A card lifts only on hover, and only floating layers carry Pop.",
+        "section": "elevation"
       }
     ],
     "dos": [
-      "Do fill a lead swatch with exactly one of the five dye steps, chosen by the server's `dye_cuts` quintiles; leave unscored leads as a dashed empty swatch.",
-      "Do use ink (`primary`) for primary buttons, pressed chips, badges and toasts.",
-      "Do pair every status colour with its shape and a plain-word label.",
-      "Do separate list items with 1px hairlines on the undyed-cloth ground.",
-      "Do show selection as a 2px focus-indigo outline offset around the swatch.",
-      "Do keep the starch-resist band on the rail edge (bottom of the top bar on mobile) and nowhere else.",
-      "Do keep Hanken Grotesk for every role, with tabular figures."
+      "Do keep every control a full pill and every icon button a 40px circle; keep tiles at 28px and cards at 22px.",
+      "Do show selection as Inverted Ink (selected / selected-ink) in both themes.",
+      "Do write website status as dot + word, and hatch it when the status is unverified.",
+      "Do keep cards sparse: name, one or two status pills, ink strength bars, the Google button.",
+      "Do set every changing count in tabular figures.",
+      "Do route new motion through the motion module so it respects reduced motion and the boot guard."
     ],
     "donts": [
-      "Don't use a dye step as a fill for buttons, chips, badges, toasts or any non-strength meaning.",
-      "Don't use rust for anything but broken sites and overdue follow-ups.",
-      "Don't show status by colour alone.",
-      "Don't wrap rows or sections in floating cards or give in-flow elements a shadow.",
-      "Don't mark selection with a coloured side stripe.",
-      "Don't repeat the cloth pattern on backgrounds, headers or empty states.",
-      "Don't lead the home view with a full table or numeric scores."
+      "Don't put lemon on board cards or use it for a selected state; it marks the next action, the active nav item and live state only.",
+      "Don't set white text on lemon; use Lemon Ink.",
+      "Don't convey status by colour alone; the word is always there.",
+      "Don't give tiles or cards a resting shadow; Lift is for hover, Pop for floating layers.",
+      "Don't add uppercase or letter-spaced labels above headings.",
+      "Don't hide content behind animation; with no GSAP, changes just happen."
     ]
   }
 }

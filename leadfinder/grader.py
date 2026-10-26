@@ -445,7 +445,7 @@ def _analyze(page, h, low, text, words, title, kind, label, alt, site):
                             "There's no description for Google to show under your name, so it picks random text from the page."))
 
     spa = bool(re.search(r"""<div id=["'](root|app|__next|__nuxt)["'][^>]*>\s*</div>""", low) or "__next_data__" in low or "ng-version" in low)
-    if words < 120 and not spa:
+    if 20 <= words < 120 and not spa:  # under 20 words usually means the text is drawn by JavaScript we cannot read
         issues.append(issue("thin", "med", 10, "Very little content",
                             f"Your homepage has only about {words} words. Google needs more to rank you, and customers need more to trust you."))
 
