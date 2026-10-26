@@ -8,7 +8,7 @@ import io
 import re
 
 COLS = {
-    "name": ["name", "title", "business name", "business_name", "company", "company name", "place name", "place_name"],
+    "name": ["name", "business", "title", "business name", "business_name", "company", "company name", "place name", "place_name"],
     "website": ["website", "site", "url", "domain", "web", "website url", "website_url", "homepage"],
     "phone": ["phone", "phone number", "phone_number", "telephone", "tel", "mobile", "phone_1", "international phone", "phoneunformatted"],
     "email": ["email", "emails", "email_1", "e-mail", "email address"],
@@ -18,7 +18,7 @@ COLS = {
     "category": ["category", "main category", "main_category", "categoryname", "type", "categories", "subtypes"],
     "rating": ["rating", "stars", "totalscore", "total score", "average rating"],
     "reviews": ["reviews", "review count", "review_count", "reviews_count", "reviewscount", "user ratings total", "user_ratings_total", "rating count", "number of reviews"],
-    "gmaps_url": ["google maps url", "google_maps_url", "maps url", "location link", "location_link", "place url", "place_url", "google maps link"],
+    "gmaps_url": ["google maps", "google maps url", "google_maps_url", "maps url", "location link", "location_link", "place url", "place_url", "google maps link"],
 }
 COUNTRY_NAMES = {"united kingdom": "GB", "uk": "GB", "england": "GB", "scotland": "GB", "wales": "GB", "nigeria": "NG",
                  "united states": "US", "usa": "US", "united states of america": "US"}
