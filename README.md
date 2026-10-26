@@ -16,13 +16,86 @@ Each lead gets an **opportunity score** (0–100): how weak their web presence i
 
 ## Run it
 
-Double-click **start.bat**, or:
+LeadFinder runs on your own computer. It is not a website you host: it needs a program that stays running and a database file on disk, so services like Vercel or Netlify won't work.
+
+### 1. Install Python (once)
+
+You need **Python 3.10 or newer**. Check with `python --version` in a terminal.
+
+- **Windows:** download it from [python.org/downloads](https://www.python.org/downloads/). On the first installer screen, tick **"Add python.exe to PATH"**.
+- **Mac:** download it from python.org too, or run `brew install python`. On a Mac the command is `python3`, not `python`.
+
+### 2. Get the code (once)
+
+With git:
 
 ```
-python -X utf8 app.py
+git clone https://github.com/Axtitan/leadgen.git
+cd leadgen
 ```
 
-Then open http://127.0.0.1:8790. Needs Python 3.10+ and nothing else (it uses `certifi` for certificate checks if installed).
+Or, on the GitHub page, click **Code → Download ZIP** and unzip it.
+
+### 3. Optional: better certificate checks (once)
+
+```
+pip install certifi
+```
+
+Without it, some Windows computers wrongly report a "certificate problem" on sites that are fine. Everything else uses only Python's built-in parts, so there's nothing else to install.
+
+### 4. Start it
+
+- **Windows:** double-click **start.bat**. It opens the app in your browser.
+- **Mac / Linux / terminal:** run `python3 -X utf8 app.py` (Windows: `python -X utf8 app.py`), then open http://127.0.0.1:8790.
+
+Keep that window open while you use the app; closing it stops LeadFinder. Searches that were running pick up again the next time you start it.
+
+### 5. First-time setup in the app
+
+Open **Settings** and:
+
+1. Add your name, business name, website and phone, so the drafted messages are signed.
+2. Paste a **TomTom key**, the recommended free source. Get one at [developer.tomtom.com](https://developer.tomtom.com): sign up (no card needed), open your dashboard, and copy the key it creates for you. Each person should use their own key, since the free allowance is per account.
+3. A Google key is optional and needs a card on file with Google. OpenStreetMap needs no key at all.
+
+### Updating
+
+If you used git, get the latest version with:
+
+```
+git pull
+```
+
+Your leads and settings are not touched; they live in `data/`, which git ignores.
+
+### Working as a team
+
+Each copy of LeadFinder keeps its **own** leads, and copies don't sync with each other. When two people use it:
+
+- Split the work by area or business type so you don't message the same business twice.
+- To share a list, use **Export CSV** on the All leads page in one copy, then **Import** it on the Import & check page in the other. Imports skip businesses the other copy already has. Contact status and notes don't carry over, so mark the ones you've already contacted in your own copy.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `python` is not recognised | Python isn't on PATH. Reinstall it with "Add python.exe to PATH" ticked, or try `py -X utf8 app.py`. On Mac use `python3`. |
+| "Address already in use" | LeadFinder is already running in another window. Use that one, or start a second copy on another port: `python app.py --port 8791`. |
+| Page won't load | Check the terminal window is still open and shows "LeadFinder running at…". |
+| OpenStreetMap searches are slow or fail | The free public servers are busy. It retries automatically; TomTom is faster. |
+| Lots of "certificate problem" findings | Run `pip install certifi` and restart. |
+| Strange characters or crashes on Windows | Start it with `-X utf8` as shown above (start.bat already does). |
+
+### Command-line options
+
+```
+python app.py                    start the app (http://127.0.0.1:8790)
+python app.py --port 9000        use another port
+python app.py --grade URL        check one website in the terminal and exit
+```
+
+`--host` changes the address the app listens on. Leave it at the default: the app has no login, so making it reachable from other computers would expose your leads and keys.
 
 ## Finding leads
 
@@ -55,6 +128,6 @@ The "What to say" box drafts a WhatsApp message, an email and a call script from
 
 ## Files
 
-- `data/leadfinder.db`: all leads, notes and searches (SQLite). Back this up.
-- `data/settings.json`: your details and Google key (stays on this computer).
-- `python app.py --grade example.com`: check one site in the terminal.
+- `data/leadfinder.db`: all leads, notes and searches (SQLite). Back this up; it is not on GitHub. Copy it while the app is stopped.
+- `data/settings.json`: your details and API keys. They stay on this computer and are never uploaded.
+- `data/` is created on first start. Deleting it gives you a fresh, empty app.
